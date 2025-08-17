@@ -59,4 +59,21 @@ public class TournamentRunningTests(ITestOutputHelper testOutputHelper)
 			group.Players.Count.ShouldBeInRange(groupSize - 1, groupSize);
 		}
 	}
+
+	[Fact]
+	public void Run_Group_Stage()
+	{
+		int groupSize = 4;
+		Tournament tournament = CreateTestTournamentWithPlayers(groupSize);
+
+		tournament = tournament.DrawGroups(groupSize);
+
+		// Groups should have either n or n-1 players
+		foreach (Group group in tournament.Groups) {
+			testOutputHelper.WriteLine(group.AsString());
+			group.Players.Count.ShouldBeInRange(groupSize - 1, groupSize);
+		}
+
+
+	}
 }
