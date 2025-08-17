@@ -2,6 +2,6 @@ namespace Smab.TTInfo.CunninghamCup.Shared.Models;
 
 public record Group(
 	string Name,
-	List<PlayerEntry> Players,
+	List<Player> Players,
 	List<Match> Matches
 );

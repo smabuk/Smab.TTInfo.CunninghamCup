@@ -1,8 +1,8 @@
 namespace Smab.TTInfo.CunninghamCup.Shared.Models;
 
 public record Match(
-	PlayerEntry PlayerA,
-	PlayerEntry PlayerB,
+	Player PlayerA,
+	Player PlayerB,
 	DateTime? ScheduledTime,
 	Result? Result
 );

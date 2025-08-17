@@ -2,7 +2,7 @@
 
 namespace Smab.TTInfo.CunninghamCup.Shared.Extensions;
 
-public static class TournamentExtensions
+public static class TournamentSetupExtensions
 {
 	extension(Tournament)
 	{
@@ -14,7 +14,7 @@ public static class TournamentExtensions
 		public static Tournament Create(
 			string name,
 			DateTime date,
-			IEnumerable<PlayerEntry> players
+			IEnumerable<Player> players
 		) => new(Guid.CreateVersion7(), name, date, [], [..players]);
 	}
 
@@ -25,15 +25,19 @@ public static class TournamentExtensions
 
 		public bool HasGroups => tournament.Groups.Count > 0;
 
-		public void AddOrUpdatePlayer(string name, int? handicap = null)
+		public void AddOrUpdatePlayer(string name, int? handicap = null, int? tteId = null, int? ranking = null)
 		{
-			const int NotFoundIndex = -1;
+			const int NotFound = -1;
 
-			int ix = tournament.Players.FindIndex(p => p.Player.Name == name);
-			if (ix == NotFoundIndex) {
-				tournament.Players.Add(new(new(name), handicap));
+			int ix = tournament.Players.FindIndex(p => p.Name == name);
+			if (ix is NotFound) {
+				tournament.Players.Add(Player.Create(name, handicap, tteId, ranking));
 			} else {
-				tournament.Players[ix] = tournament.Players[ix] with { Handicap = handicap };
+				Player? player = tournament.Players[ix];
+				handicap ??= player.Handicap;
+				tteId    ??= player.TTEId;
+				ranking  ??= player.Ranking;
+				tournament.Players[ix] = player with { Handicap = handicap, TTEId = tteId, Ranking = ranking };
 			}
 		}
 	}
