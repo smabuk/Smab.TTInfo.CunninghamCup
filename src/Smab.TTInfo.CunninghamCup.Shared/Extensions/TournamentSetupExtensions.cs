@@ -9,13 +9,13 @@ public static class TournamentSetupExtensions
 		public static Tournament Create(
 			string name,
 			DateTime date
-		) => new(Guid.CreateVersion7(), name, date, [], []);
+		) => new(Guid.NewGuid(), name, date, [], []);
 
 		public static Tournament Create(
 			string name,
 			DateTime date,
 			IEnumerable<Player> players
-		) => new(Guid.CreateVersion7(), name, date, [], [..players]);
+		) => new(Guid.NewGuid(), name, date, [], [..players]);
 	}
 
 	extension(Tournament tournament)

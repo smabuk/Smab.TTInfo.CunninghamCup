@@ -36,12 +36,12 @@ public sealed class HandicapMatrix
 		};
 
 	public static int GetStart(int difference)
-	=> _defaultMatrix.TryGetValue(int.Abs(difference), out var start)
+	=> _defaultMatrix.TryGetValue(int.Abs(difference), out int start)
 		? start
 		: 18;
 
 	public static int GetStart(int handicapA, int handicapB)
-		=> _defaultMatrix.TryGetValue(int.Abs(handicapA - handicapB), out var start)
+		=> _defaultMatrix.TryGetValue(int.Abs(handicapA - handicapB), out int start)
 			? start
 			: 18;
 }
