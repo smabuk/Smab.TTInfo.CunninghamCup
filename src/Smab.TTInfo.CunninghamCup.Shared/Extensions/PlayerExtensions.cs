@@ -14,5 +14,7 @@ public static class PlayerExtensions
 
 	extension(Player player)
 	{
+		public int StartingHandicap(Player opponent)
+			=> HandicapMatrix.GetStart(player.Handicap ?? 0, opponent.Handicap ?? 0);
 	}
 }

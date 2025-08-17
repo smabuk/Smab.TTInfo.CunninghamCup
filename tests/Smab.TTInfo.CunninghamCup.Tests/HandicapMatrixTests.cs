@@ -17,8 +17,9 @@ public class HandicapMatrixTests
 	[InlineData(0, 0, 0)]
 	[InlineData(4, 4, 0)]
 	[InlineData(10, 8, 2)]
+	[InlineData(8, 10, 0)]
 	[InlineData(15, -1, 14)]
-	[InlineData(-1, 15, 14)]
+	[InlineData(-1, 15, 0)]
 	[InlineData(20, 10, 10)]
 	[InlineData(30, -3, 18)]
 	public void GetStart_WithHandicaps(int handicapA, int handicapB, int expected)

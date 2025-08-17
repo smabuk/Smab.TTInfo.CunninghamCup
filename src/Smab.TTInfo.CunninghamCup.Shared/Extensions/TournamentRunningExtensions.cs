@@ -14,15 +14,24 @@ public static class TournamentRunningExtensions
 				throw new InvalidOperationException("Cannot draw groups for a tournament with groups already drawn.");
 			}
 
+			List<Player> shuffledPlayers = [.. tournament.Players.Shuffle()];
 			List<Group> groups = [];
-			for (int i = 0; i < groupCount; i++) {
-				groups.Add(new($"Group {(char)(i + 32)}", [], []));
+
+			// Distribute players into groups
+			List<List<Player>> playerGroupings = [];
+			for (int i = 0; i < groupCount; i++)
+			{
+				playerGroupings.Add([]);
 			}
 
-			List<Player> shuffledPlayers = [.. tournament.Players.Shuffle()];
 			for (int i = 0; i < shuffledPlayers.Count; i++)
 			{
-				groups[i % groupCount].Players.Add(shuffledPlayers[i]);
+				playerGroupings[i % groupCount].Add(shuffledPlayers[i]);
+			}
+
+			for (int i = 0; i < groupCount; i++) {
+
+				groups.Add(Group.Create($"Group {(char)(i + 'A')}", playerGroupings[i]));
 			}
 
 			return tournament with { Groups = groups };
