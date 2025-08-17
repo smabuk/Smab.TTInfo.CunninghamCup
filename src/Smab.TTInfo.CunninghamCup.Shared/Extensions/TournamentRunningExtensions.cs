@@ -1,6 +1,4 @@
-﻿using Smab.TTInfo.CunninghamCup.Shared.Models;
-
-namespace Smab.TTInfo.CunninghamCup.Shared.Extensions;
+﻿namespace Smab.TTInfo.CunninghamCup.Shared.Extensions;
 
 public static class TournamentRunningExtensions
 {

@@ -1,5 +1,3 @@
-using Xunit.Abstractions;
-
 namespace Smab.TTInfo.CunninghamCup.Tests;
 
 public class GroupTests(ITestOutputHelper testOutputHelper)
@@ -8,7 +6,7 @@ public class GroupTests(ITestOutputHelper testOutputHelper)
 	{
 		List<Player> players = [];
 		for (int i = 0; i < playerCount; i++) {
-			Player player = Player.Create(($"Player {i + 1}"), i);
+			Player player = Player.Create(($"Player {i}"), i * 2);
 			players.Add(player);
 		}
 
@@ -28,20 +26,19 @@ public class GroupTests(ITestOutputHelper testOutputHelper)
 		group.Matches[0] = group.Matches[0].SetResult((21, 12), (21, 14));
 		group.Matches[1] = group.Matches[1].SetResult((21, 12), (14, 21), (21, 19));
 		group.Matches[2] = group.Matches[2].SetResult((21, 12), (14, 21), (21, 19));
-		group.Matches[3] = group.Matches[3].SetResult((21, 12), (14, 21), (21, 19));
+		group.Matches[3] = group.Matches[3].SetResult((28, 38), (14, 21));
 		group.Matches[4] = group.Matches[4].SetResult((21, 12), (14, 21), (21, 19));
 		group.Matches[5] = group.Matches[5].SetResult((21, 12), (14, 21));
 
-		testOutputHelper.WriteLine(group.AsString());
 
 		// Check if all matches have results
 		foreach (Match match in group.Matches) {
 			_ = match.Result.ShouldNotBeNull();
 
-			match.Result.PlayerAScore.ShouldBeGreaterThanOrEqualTo(0);
-			match.Result.PlayerAScore.ShouldBeLessThanOrEqualTo(30);
-			match.Result.PlayerBScore.ShouldBeGreaterThanOrEqualTo(0);
-			match.Result.PlayerBScore.ShouldBeLessThanOrEqualTo(30);
+			match.Result.PlayerASets.ShouldBeGreaterThanOrEqualTo(0);
+			match.Result.PlayerASets.ShouldBeLessThanOrEqualTo(30);
+			match.Result.PlayerBSets.ShouldBeGreaterThanOrEqualTo(0);
+			match.Result.PlayerBSets.ShouldBeLessThanOrEqualTo(30);
 		}
 
 		group.Matches[0].IsCompleted.ShouldBeTrue();
@@ -54,15 +51,20 @@ public class GroupTests(ITestOutputHelper testOutputHelper)
 		group.Matches[5] = group.Matches[5].SetResult((21, 12), (14, 21), (19, 21));
 		group.Matches[5].IsCompleted.ShouldBeTrue();
 
+		testOutputHelper.WriteLine(group.AsString());
 
 		group.Matches[0].IsPlayerAWin.ShouldBeTrue();
 		group.Matches[1].IsPlayerAWin.ShouldBeTrue();
 		group.Matches[2].IsPlayerAWin.ShouldBeTrue();
-		group.Matches[3].IsPlayerAWin.ShouldBeTrue();
+		group.Matches[3].IsPlayerBWin.ShouldBeTrue();
 		group.Matches[4].IsPlayerAWin.ShouldBeTrue();
 		group.Matches[5].IsPlayerBWin.ShouldBeTrue();
 
-
+		group.GroupPositions.Count.ShouldBe(noOfPlayers);
+		group.GroupPositions[0].Player.Name.ShouldBe(group.Players[0].Name);
+		group.GroupPositions[1].Player.Name.ShouldBe(group.Players[1].Name);
+		group.GroupPositions[2].Player.Name.ShouldBe(group.Players[3].Name);
+		group.GroupPositions[3].Player.Name.ShouldBe(group.Players[2].Name);
 
 	}
 }

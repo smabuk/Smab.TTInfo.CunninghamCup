@@ -1,7 +1,5 @@
 ﻿using System.Text;
 
-using Smab.TTInfo.CunninghamCup.Shared.Models;
-
 namespace Smab.TTInfo.CunninghamCup.Shared.Extensions;
 
 public static class GroupExtensions
@@ -50,13 +48,22 @@ public static class GroupExtensions
 			_ = sb.AppendLine($"Group: {group.Name}");
 			_ = sb.AppendLine($"Players ({group.Players.Count}):");
 			foreach (Player player in group.Players) {
-				_ = sb.AppendLine($"  - {player.Name,-12} ({player.Handicap,3})");
+				_ = sb.AppendLine($"- {player.Name,-12} ({player.Handicap,3})");
 			}
 
 			_ = sb.AppendLine();
 			_ = sb.AppendLine($"Matches ({group.Matches.Count}):");
 			foreach (Match match in group.Matches) {
-				_ = sb.AppendLine($"  - {match.PlayerA.Name,-12} ({match.PlayerA.StartingHandicap(match.PlayerB),3}) vs {match.PlayerB.Name,-12} ({match.PlayerB.StartingHandicap(match.PlayerA),3})");
+				_ = sb.AppendLine($"- {match.PlayerA.Name,-12} ({match.PlayerA.StartingHandicap(match.PlayerB),3}) vs {match.PlayerB.Name,-12} ({match.PlayerB.StartingHandicap(match.PlayerA),3})");
+			}
+
+			_ = sb.AppendLine();
+			foreach (GroupPlayerSummary groupPlayerSummary in group.GroupPositions) {
+				_ = sb.Append($"- {groupPlayerSummary.Player.Name,-12}");
+				_ = sb.Append($"  W: {groupPlayerSummary.MatchWins,2}, L: {groupPlayerSummary.MatchLosses,2}");
+				_ = sb.Append($"  SF: {groupPlayerSummary.SetsFor,2}, SA: {groupPlayerSummary.SetsAgainst,2}");
+				_ = sb.Append($"  PF: {groupPlayerSummary.PointsFor,2}, PA: {groupPlayerSummary.PointsAgainst,2}");
+				_ = sb.AppendLine();
 			}
 
 			return sb.ToString();

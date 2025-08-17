@@ -4,10 +4,6 @@ public static class MatchExtensions
 {
 	extension(Match)
 	{
-		//public static Match Create(string name) => new(name);
-		//public static Match Create(string name, int? handicap) => new(name, handicap);
-		//public static Match Create(string name, int? handicap, int? tteId) => new(name, handicap, tteId);
-		//public static Match Create(string name, int? handicap, int? tteId, int? ranking) => new(name, handicap, tteId, ranking);
 	}
 
 	extension(Match match)
