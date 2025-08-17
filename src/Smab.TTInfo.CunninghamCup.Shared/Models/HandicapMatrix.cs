@@ -1,8 +1,8 @@
 ﻿namespace Smab.TTInfo.CunninghamCup.Shared.Models;
 
-public class HandicapMatrix
+public sealed class HandicapMatrix
 {
-	public readonly static IReadOnlyDictionary<int, int> DefaultMatrix =
+	internal readonly static IReadOnlyDictionary<int, int> _defaultMatrix =
 		new Dictionary<int, int>
 		{
 			{ 00, 00 },
@@ -34,4 +34,14 @@ public class HandicapMatrix
 			{ 26, 18 },
 			{ 27, 18 }
 		};
+
+	public static int GetStart(int difference)
+	=> _defaultMatrix.TryGetValue(int.Abs(difference), out var start)
+		? start
+		: 18;
+
+	public static int GetStart(int handicapA, int handicapB)
+		=> _defaultMatrix.TryGetValue(int.Abs(handicapA - handicapB), out var start)
+			? start
+			: 18;
 }
