@@ -1,13 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<LangVersion>string</LangVersion>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Smab.TTInfo.CunninghamCup.Shared\Smab.TTInfo.CunninghamCup.Shared.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Smab.TTInfo.CunninghamCup.Shared\Smab.TTInfo.CunninghamCup.Shared.csproj" />
+	</ItemGroup>
 
 </Project>
