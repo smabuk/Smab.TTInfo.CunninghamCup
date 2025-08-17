@@ -8,12 +8,12 @@ public static class TournamentSetupExtensions
 	{
 		public static Tournament Create(
 			string name,
-			DateTime date
+			DateOnly date
 		) => new(Guid.NewGuid(), name, date, [], []);
 
 		public static Tournament Create(
 			string name,
-			DateTime date,
+			DateOnly date,
 			IEnumerable<Player> players
 		) => new(Guid.NewGuid(), name, date, [], [..players]);
 	}

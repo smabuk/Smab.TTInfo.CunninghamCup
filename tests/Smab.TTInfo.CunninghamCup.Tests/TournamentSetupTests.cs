@@ -1,3 +1,5 @@
+using System;
+
 namespace Smab.TTInfo.CunninghamCup.Tests;
 
 public class TournamentSetupTests
@@ -6,7 +8,7 @@ public class TournamentSetupTests
 	public void Create_Tournament_With_Name_And_Date_Should_Initialize_Empty_Groups_And_Players()
 	{
 		string name = "Test Tournament";
-		DateTime date = new(2025, 8, 17);
+		DateOnly date = new(2025, 8, 17);
 
 		Tournament tournament = Tournament.Create(name, date);
 
@@ -20,7 +22,7 @@ public class TournamentSetupTests
 	public void Create_Tournament_With_Players_Should_Initialize_Players()
 	{
 		string name = "Test Tournament";
-		DateTime date = new(2025, 8, 17);
+		DateOnly date = new(2025, 8, 17);
 		List<Player> players =
 		[
 			Player.Create("Alice", 10),
@@ -37,7 +39,7 @@ public class TournamentSetupTests
 	[Fact]
 	public void GroupsCount_Should_Return_Number_Of_Groups()
 	{
-		Tournament tournament = Tournament.Create("Test", DateTime.Now);
+		Tournament tournament = Tournament.Create("Test", DateOnly.FromDateTime(DateTime.Now));
 		tournament.Groups.Add(new Group("A", [], []));
 		tournament.Groups.Add(new Group("B", [], []));
 
@@ -47,7 +49,7 @@ public class TournamentSetupTests
 	[Fact]
 	public void PlayersCount_Should_Return_Number_Of_Players()
 	{
-		Tournament tournament = Tournament.Create("Test", DateTime.Now);
+		Tournament tournament = Tournament.Create("Test", DateOnly.FromDateTime(DateTime.Now));
 		tournament.Players.Add(Player.Create("Alice", 10));
 		tournament.Players.Add(Player.Create("Bob", 20));
 
@@ -57,7 +59,7 @@ public class TournamentSetupTests
 	[Fact]
 	public void HasGroups_Should_Return_True_If_Groups_Exist()
 	{
-		Tournament tournament = Tournament.Create("Test", DateTime.Now);
+		Tournament tournament = Tournament.Create("Test", DateOnly.FromDateTime(DateTime.Now));
 		tournament.Groups.Add(new Group("A", [], []));
 
 		tournament.HasGroups.ShouldBeTrue();
@@ -66,7 +68,7 @@ public class TournamentSetupTests
 	[Fact]
 	public void HasGroups_Should_Return_False_If_No_Groups()
 	{
-		Tournament tournament = Tournament.Create("Test", DateTime.Now);
+		Tournament tournament = Tournament.Create("Test", DateOnly.FromDateTime(DateTime.Now));
 
 		tournament.HasGroups.ShouldBeFalse();
 	}
@@ -74,7 +76,7 @@ public class TournamentSetupTests
 	[Fact]
 	public void AddOrUpdatePlayer_Should_Add_New_Player_If_Not_Exists()
 	{
-		Tournament tournament = Tournament.Create("Test", DateTime.Now);
+		Tournament tournament = Tournament.Create("Test", DateOnly.FromDateTime(DateTime.Now));
 
 		tournament.AddOrUpdatePlayer("Alice", 15);
 
@@ -86,7 +88,7 @@ public class TournamentSetupTests
 	[Fact]
 	public void AddOrUpdatePlayer_Should_Update_Handicap_If_Player_Exists()
 	{
-		Tournament tournament = Tournament.Create("Test", DateTime.Now);
+		Tournament tournament = Tournament.Create("Test", DateOnly.FromDateTime(DateTime.Now));
 
 		tournament.AddOrUpdatePlayer("Alice", 10);
 		tournament.AddOrUpdatePlayer("Alice", 20);

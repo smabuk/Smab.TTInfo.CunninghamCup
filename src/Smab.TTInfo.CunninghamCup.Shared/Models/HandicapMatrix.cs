@@ -32,7 +32,9 @@ public sealed class HandicapMatrix
 			{ 24, 17 },
 			{ 25, 18 },
 			{ 26, 18 },
-			{ 27, 18 }
+			{ 27, 18 },
+			{ 28, 18 },
+			{ 29, 18 }
 		};
 
 	public static int GetStart(int difference)
@@ -41,7 +43,7 @@ public sealed class HandicapMatrix
 		: 18;
 
 	public static int GetStart(int handicapA, int handicapB)
-		=> handicapA < handicapB
+		=> handicapA <= handicapB
 			? 0
 			: _defaultMatrix.TryGetValue(handicapA - handicapB, out int start)
 				? start

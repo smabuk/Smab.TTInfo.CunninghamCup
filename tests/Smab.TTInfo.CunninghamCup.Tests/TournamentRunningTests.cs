@@ -12,7 +12,7 @@ public class TournamentRunningTests(ITestOutputHelper testOutputHelper)
 			players.Add(player);
 		}
 
-		return Tournament.Create("Test Tournament", DateTime.Now, players);
+		return Tournament.Create("Test Tournament", DateOnly.FromDateTime(DateTime.Now), players);
 	}
 
 	[Theory]
