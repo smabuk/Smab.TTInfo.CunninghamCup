@@ -1,35 +1,20 @@
 {
   "$schema": "https://json.schemastore.org/launchsettings.json",
-    "iisSettings": {
-      "windowsAuthentication": false,
-      "anonymousAuthentication": true,
-        "iisExpress": {
-            "applicationUrl": "http://Smab.TTInfo.CunninghamCup.localhost:5387",
-            "sslPort": 44382
-        }
-    },
     "profiles": {
-        "http": {
-            "commandName": "Project",
-            "dotnetRunMessages": true,
-            "launchBrowser": true,
-            "applicationUrl": "http://Smab.TTInfo.CunninghamCup.localhost:5286",
-            "environmentVariables": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            }
-        },
-        "https": {
-            "commandName": "Project",
-            "dotnetRunMessages": true,
-            "launchBrowser": true,
-            "applicationUrl": "https://Smab.TTInfo.CunninghamCup.localhost:7063;http://Smab.TTInfo.CunninghamCup.localhost:5286",
-            "environmentVariables": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            }
-        },
-      "IIS Express": {
-        "commandName": "IISExpress",
+      "http": {
+        "commandName": "Project",
+        "dotnetRunMessages": true,
         "launchBrowser": true,
+        "applicationUrl": "http://smab_ttinfo_cunninghamcup_web.dev.localhost:5147",
+        "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development"
+        }
+      },
+      "https": {
+        "commandName": "Project",
+        "dotnetRunMessages": true,
+        "launchBrowser": true,
+        "applicationUrl": "https://smab_ttinfo_cunninghamcup_web.dev.localhost:7000;http://smab_ttinfo_cunninghamcup_web.dev.localhost:5147",
         "environmentVariables": {
           "ASPNETCORE_ENVIRONMENT": "Development"
         }

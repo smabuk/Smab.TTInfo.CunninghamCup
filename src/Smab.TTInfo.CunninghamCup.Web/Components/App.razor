@@ -5,14 +5,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
-    <link rel="stylesheet" href="_content/Smab.TTInfo.CunninghamCup.Shared/app.css" />
-    <link rel="stylesheet" href="Smab.TTInfo.CunninghamCup.Web.styles.css" />
-    <HeadOutlet @rendermode="InteractiveServer" />
+    <ResourcePreloader />
+    <link rel="stylesheet" href="@Assets["app.css"]" />
+    <link rel="stylesheet" href="@Assets["Smab.TTInfo.CunninghamCup.Web.styles.css"]" />
+    <ImportMap />
+    <HeadOutlet />
 </head>
 
 <body>
-    <Routes @rendermode="InteractiveServer" />
-    <script src="_framework/blazor.web.js"></script>
+    <Routes />
+    <ReconnectModal />
+    <script src="@Assets["_framework/blazor.web.js"]"></script>
 </body>
 
 </html>
