@@ -2,13 +2,16 @@ namespace Smab.TTInfo.CunninghamCup.Tests;
 
 public class GroupTests(ITestOutputHelper testOutputHelper)
 {
-	private Group CreateGroupWithPlayers(int playerCount)
+	/// <summary>
+	/// Creates a new group with the specified number of players.
+	/// </summary>
+	/// <param name="playerCount">The number of players to include in the group. Must be a non-negative integer.</param>
+	/// <returns>A <see cref="Group"/> instance containing the specified number of players.</returns>
+	private static Group CreateGroupWithPlayers(int playerCount)
 	{
-		List<Player> players = [];
-		for (int i = 0; i < playerCount; i++) {
-			Player player = Player.Create(($"Player {i}"), i * 2);
-			players.Add(player);
-		}
+		List<Player> players = [..
+			Enumerable.Range(0, playerCount)
+			.Select(i => Player.Create($"Player {i}", i * 2))];
 
 		return Group.Create("Test Group", players);
 	}
@@ -26,7 +29,7 @@ public class GroupTests(ITestOutputHelper testOutputHelper)
 		group.Matches[0] = group.Matches[0].SetResult((21, 12), (21, 14));
 		group.Matches[1] = group.Matches[1].SetResult((21, 12), (14, 21), (21, 19));
 		group.Matches[2] = group.Matches[2].SetResult((21, 12), (14, 21), (21, 19));
-		group.Matches[3] = group.Matches[3].SetResult((28, 38), (14, 21));
+		group.Matches[3] = group.Matches[3].SetResult((28, 30), (14, 21));
 		group.Matches[4] = group.Matches[4].SetResult((21, 12), (14, 21), (21, 19));
 		group.Matches[5] = group.Matches[5].SetResult((21, 12), (14, 21));
 

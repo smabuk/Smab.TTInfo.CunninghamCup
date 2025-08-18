@@ -12,6 +12,11 @@ public static class PlayerExtensions
 
 	extension(Player player)
 	{
+		/// <summary>
+		/// Calculates the starting handicap for the current player based on the opponent's handicap.
+		/// </summary>
+		/// <param name="opponent">The opponent player whose handicap is used in the calculation. Cannot be null.</param>
+		/// <returns>The starting handicap for the current player as an integer.</returns>
 		public int StartingHandicap(Player opponent)
 			=> HandicapMatrix.GetStart(player.Handicap ?? 0, opponent.Handicap ?? 0);
 	}

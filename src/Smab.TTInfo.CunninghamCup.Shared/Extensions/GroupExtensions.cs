@@ -36,12 +36,20 @@ public static class GroupExtensions
 				}
 			}
 
-			return new(name, players, matches);
+			return new(name, [.. players], [.. matches]);
 		}
 	}
 
 	extension(Group group)
 	{
+		/// <summary>
+		/// Generates a detailed string representation of the group, including its players, matches, and player summaries.
+		/// </summary>
+		/// <remarks>The returned string includes the group's name, a list of players with their handicaps, a list of
+		/// matches with player details and starting handicaps,  and a summary of each player's performance within the group.
+		/// This method is useful for creating a human-readable overview of the group's state.</remarks>
+		/// <returns>A string containing a formatted representation of the group's details, including players, matches, and performance
+		/// summaries.</returns>
 		public string AsString()
 		{
 			StringBuilder sb = new();
