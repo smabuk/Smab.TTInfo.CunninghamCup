@@ -9,7 +9,7 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 
 		List<Player> players = [..
 			Enumerable.Range(0, playerCount)
-			.Select(i => Player.Create($"Player {i}", i * 2))];
+			.Select(i => Player.Create($"Player {i}", Random.Shared.Next(-10, 10)))];
 
 		Tournament tournament = Tournament.Create(name, tomorrow, players);
 		tournament = tournament.DrawGroups(groupSize);
@@ -21,15 +21,7 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 	{
 		foreach (Group group in tournament.Groups) {
 			for (int i = 0; i < group.Matches.Count; i++) {
-				bool[] playerAWins = [Random.Shared.Next(2) == 0, Random.Shared.Next(2) == 0, Random.Shared.Next(2) == 0];
-				List<Set> sets = playerAWins switch
-				{
-					[true, true, _] => [new Set(21, Random.Shared.Next(19)), new Set(21, Random.Shared.Next(19))],
-					[false, false, _] => [new Set(Random.Shared.Next(19), 21), new Set(Random.Shared.Next(19), 21)],
-					[_, _, true] => [new Set(21, Random.Shared.Next(19)), new Set(Random.Shared.Next(19), 21), new Set(21, Random.Shared.Next(19))],
-					_ => [new Set(21, Random.Shared.Next(19)), new Set(Random.Shared.Next(19), 21), new Set(Random.Shared.Next(19), 21)],
-				};
-				group.Matches[i] = group.Matches[i].SetResult(sets);
+				group.Matches[i] = group.Matches[i].SetRandomResult();
 			}
 
 			testOutputHelper.WriteLine(group.AsString(tournament));
@@ -40,11 +32,11 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 
 
 
-	[Fact]
-	public void Tournament_Should_Run()
+	[Theory]
+	[InlineData(32, 4, 4)]
+	[InlineData(28, 4, 4)]
+	public void Tournament_Should_Run(int noOfPlayers, int groupSize, int expectedNoOfRounds)
 	{
-		int noOfPlayers = 32;
-		int groupSize = 4;
 		Tournament tournament = CreateTestTournamentWithPlayers(noOfPlayers, groupSize);
 		tournament = RunTheGroups(tournament);
 		tournament.GroupsCompleted.ShouldBeTrue();
@@ -53,6 +45,6 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 		message.ShouldBeEmpty();
 		_ = newTournament.ShouldNotBeNull();
 		_ = newTournament!.KnockoutStage.ShouldNotBeNull();
-		newTournament.KnockoutStage!.Rounds.Count.ShouldBe(4); // 16 players qualiify -> 4 rounds
+		newTournament.KnockoutStage!.Rounds.Count.ShouldBe(expectedNoOfRounds);
 	}
 }
