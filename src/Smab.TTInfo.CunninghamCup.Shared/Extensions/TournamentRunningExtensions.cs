@@ -96,18 +96,18 @@ public static class TournamentRunningExtensions
 				};
 				for (int i = 0; i < matchesPerRound; i++)
 				{
-
-					//matches.Add(new Match(
-					//	(MatchId)$"{roundName} {matchNo++}",
-					//	PlayerId.Empty,
-					//	PlayerId.Empty,
-					//	0,
-					//	0,
-					//	null,
-					//	null));
+					matchNo++;
+					matches.Add(new Match(
+						(MatchId)$"{roundName} {matchNo}",
+						(PlayerId)$"|{matchNo - (matchesPerRound * 2) + i}",
+						(PlayerId)$"|{matchNo - (matchesPerRound * 2) + i + 1}",
+						0,
+						0,
+						null,
+						null));
 
 				}
-				
+
 				knockoutRounds.Add(new KnockoutRound($"{roundName}", [..matches]));
 			}
 
