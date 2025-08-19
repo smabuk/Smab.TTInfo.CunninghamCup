@@ -19,15 +19,24 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 
 	private Tournament RunTheGroups(Tournament tournament)
 	{
-		foreach (Group group in tournament.Groups) {
-			for (int i = 0; i < group.Matches.Count; i++) {
-				group.Matches[i] = group.Matches[i].SetRandomResult();
-			}
-
+		List<Group> groups = [.. tournament.Groups];
+		for (int groupIdx = 0; groupIdx < groups.Count; groupIdx++) {
+			Group group = groups[groupIdx];
+			groups[groupIdx] = group.CompleteWithRandomResults();
 			testOutputHelper.WriteLine(group.AsString(tournament));
+			
 		}
 
-		return tournament;
+		return tournament with { Groups = groups };
+	}
+
+	private Tournament RunGroup(Tournament tournament, int groupIndex)
+	{
+		List<Group> groups = [.. tournament.Groups];
+		Group group = groups[groupIndex];
+		groups[groupIndex] = group.CompleteWithRandomResults();
+
+		return tournament with { Groups = groups };
 	}
 
 
@@ -38,14 +47,36 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 	[InlineData(20, 5, 3)]
 	public void Tournament_Should_Run(int noOfPlayers, int groupSize, int expectedNoOfRounds)
 	{
-		Tournament tournament = CreateTestTournamentWithPlayers(noOfPlayers, groupSize);
+		Tournament? tournament = CreateTestTournamentWithPlayers(noOfPlayers, groupSize);
+
+		// Ensure the tournament has groups drawn
+		tournament.TryDrawKnockoutStage(out tournament, out string? message).ShouldBeTrue();
+		tournament.KnockoutStage!.Rounds.Count.ShouldBe(expectedNoOfRounds);
+		tournament.KnockoutStage!.Rounds[0].Matches
+			.Any(match => match.PlayerA.IsPlayer).ShouldBeFalse();
+		message.ShouldBeEmpty();
+
+		// Run a single group to completion
+		tournament = RunGroup(tournament, 2);
+		tournament.GroupsCompleted.ShouldBeFalse();
+		tournament.Groups[2].IsCompleted.ShouldBeTrue();
+
+		// Ensure the tournament can still draw knockout stage
+		tournament.TryDrawKnockoutStage(out tournament, out message).ShouldBeTrue();
+		tournament.KnockoutStage!.Rounds.Count.ShouldBe(expectedNoOfRounds);
+		tournament.KnockoutStage!.Rounds[0].Matches
+			.Any(match => match.PlayerA.IsPlayer).ShouldBeTrue();
+		message.ShouldBeEmpty();
+
+		// Run all groups to completion
 		tournament = RunTheGroups(tournament);
 		tournament.GroupsCompleted.ShouldBeTrue();
-		bool success = tournament.TryDrawKnockoutStage(out Tournament? newTournament, out string? message);
+		bool success = tournament.TryDrawKnockoutStage(out tournament, out message);
 		success.ShouldBeTrue();
 		message.ShouldBeEmpty();
-		_ = newTournament.ShouldNotBeNull();
-		_ = newTournament!.KnockoutStage.ShouldNotBeNull();
-		newTournament.KnockoutStage!.Rounds.Count.ShouldBe(expectedNoOfRounds);
+		_ = tournament.ShouldNotBeNull();
+		_ = tournament!.KnockoutStage.ShouldNotBeNull();
+		tournament.KnockoutStage!.Rounds.Count.ShouldBe(expectedNoOfRounds);
+
 	}
 }
