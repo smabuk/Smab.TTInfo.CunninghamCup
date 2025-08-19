@@ -3,9 +3,9 @@ public static class PlayerIdExtensions
 {
 	extension(PlayerId playerId)
 	{
-		public bool IsBye => playerId.stringId.StartsWith("BYE");
-		public bool IsPlaceHolder => playerId.stringId.StartsWith("|");
+		public bool IsBye => playerId.StringId.StartsWith("BYE");
+		public bool IsPlaceHolder => playerId.StringId.StartsWith("|");
 		public bool IsPlayer => !(playerId.IsBye || playerId.IsPlaceHolder);
-		public bool IsWithdrawn => playerId.stringId.StartsWith("-|");
+		public bool IsWithdrawn => playerId.StringId.StartsWith("-|");
 	}
 }

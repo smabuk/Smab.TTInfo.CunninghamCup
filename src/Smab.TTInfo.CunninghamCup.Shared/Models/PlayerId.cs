@@ -1,10 +1,10 @@
 ﻿namespace Smab.TTInfo.CunninghamCup.Shared.Models;
 
 [JsonConverter(typeof(PlayerIdConverter))]
-public readonly record struct PlayerId(string stringId)
+public readonly record struct PlayerId(string StringId)
 {
-	public override string ToString() => stringId;
-	public static implicit operator string(PlayerId id) => id.stringId;
+	public override string ToString() => StringId;
+	public static implicit operator string(PlayerId id) => id.StringId;
 	public static explicit operator PlayerId(string value) => new(value);
 }
 
