@@ -141,38 +141,46 @@ public static class TournamentRunningExtensions
 			// take top 2 players from each group
 			foreach (Group group in newTournament.Groups)
 			{
-				if (group.IsCompleted)
-				{
+				if (group.IsCompleted) {
 					int winnerIndex = newTournament.KnockoutStage!
 						.Rounds[0]
 						.Matches
-						.FindIndex(m => m.PlayerA.IsPlaceHolder && m.PlayerA.stringId == $"|{group.Name} Winner" );
+						.FindIndex(m => m.PlayerA.IsPlaceHolder && m.PlayerA.stringId == $"|{group.Name} Winner");
 					if (winnerIndex >= 0) {
-						newTournament.KnockoutStage!.Rounds[0].Matches[winnerIndex]
-							= newTournament.KnockoutStage!.Rounds[0].Matches[winnerIndex] with { PlayerA = group.GroupPositions[0].PlayerId };
+						Match match = newTournament.KnockoutStage!.Rounds[0].Matches[winnerIndex];
+						match = match with { PlayerA = group.GroupPositions[0].PlayerId };
+						if (match.PlayerB.IsPlayer) {
+							(int playerAStart, int playerBStart) = newTournament.StartingHandicap(match.PlayerA, match.PlayerB);
+							match = match with
+							{
+								PlayerAStart = playerAStart,
+								PlayerBStart = playerBStart,
+							};
+
+						}
+
+						newTournament.KnockoutStage!.Rounds[0].Matches[winnerIndex] = match;
 					}
 
 					int runnerUpIndex = newTournament.KnockoutStage!
 						.Rounds[0]
 						.Matches
-						.FindIndex(m => m.PlayerB.IsPlaceHolder && m.PlayerB.stringId == $"|{group.Name} Runner Up" );
+						.FindIndex(m => m.PlayerB.IsPlaceHolder && m.PlayerB.stringId == $"|{group.Name} Runner Up");
 					if (runnerUpIndex >= 0) {
-						newTournament.KnockoutStage!.Rounds[0].Matches[runnerUpIndex]
-							= newTournament.KnockoutStage!.Rounds[0].Matches[runnerUpIndex] with { PlayerB = group.GroupPositions[1].PlayerId };
-					}
-				}
-			}
+						Match match = newTournament.KnockoutStage!.Rounds[0].Matches[runnerUpIndex];
+						match = match with { PlayerB = group.GroupPositions[0].PlayerId };
+						if (match.PlayerA.IsPlayer) {
+							(int playerAStart, int playerBStart) = newTournament.StartingHandicap(match.PlayerA, match.PlayerB);
+							match = match with
+							{
+								PlayerAStart = playerAStart,
+								PlayerBStart = playerBStart,
+							};
 
-			for (int matchIdx = 0; matchIdx < newTournament.KnockoutStage!.Rounds[0].Matches.Count; matchIdx++)
-			{
-				Match match = newTournament.KnockoutStage!.Rounds[0].Matches[matchIdx];
-				if (match.PlayerA.IsPlayer && match.PlayerB.IsPlayer)
-				{
-					newTournament.KnockoutStage!.Rounds[0].Matches[matchIdx] = match with
-					{
-						PlayerAStart = newTournament.GetPlayer(match.PlayerA).StartingHandicap(newTournament.GetPlayer(match.PlayerB)),
-						PlayerBStart = newTournament.GetPlayer(match.PlayerB).StartingHandicap(newTournament.GetPlayer(match.PlayerA))
-					};
+						}
+
+						newTournament.KnockoutStage!.Rounds[0].Matches[runnerUpIndex] = match;
+					}
 				}
 			}
 

@@ -35,6 +35,7 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 	[Theory]
 	[InlineData(32, 4, 4)]
 	[InlineData(28, 4, 4)]
+	[InlineData(20, 5, 3)]
 	public void Tournament_Should_Run(int noOfPlayers, int groupSize, int expectedNoOfRounds)
 	{
 		Tournament tournament = CreateTestTournamentWithPlayers(noOfPlayers, groupSize);
