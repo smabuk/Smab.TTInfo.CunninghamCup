@@ -4,10 +4,10 @@ public static class PlayerExtensions
 {
 	extension(Player)
 	{
-		public static Player Create(string name) => new(name);
-		public static Player Create(string name, int? handicap) => new(name, handicap);
-		public static Player Create(string name, int? handicap, int? tteId) => new(name, handicap, tteId);
-		public static Player Create(string name, int? handicap, int? tteId, int? ranking) => new(name, handicap, tteId, ranking);
+		public static Player Create(string name) => new((PlayerId)name, name);
+		public static Player Create(string name, int? handicap) => new((PlayerId)name, name, handicap);
+		public static Player Create(string name, int? handicap, int? tteId) => new((PlayerId)name, name, handicap, tteId);
+		public static Player Create(string name, int? handicap, int? tteId, int? ranking) => new((PlayerId)name, name, handicap, tteId, ranking);
 	}
 
 	extension(Player player)

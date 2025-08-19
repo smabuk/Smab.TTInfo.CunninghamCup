@@ -16,13 +16,13 @@ public static class TournamentRunningExtensions
 		/// <exception cref="InvalidOperationException">Thrown if the tournament already has groups drawn.</exception>
 		public Tournament DrawGroups(int groupSize)
 		{
-			int groupCount = (int)Math.Ceiling((double)tournament.Players.Count / groupSize);
+			int groupCount = (int)Math.Ceiling((double)tournament.ActivePlayers.Count / groupSize);
 			if (tournament.Groups.Count > 0)
 			{
 				throw new InvalidOperationException("Cannot draw groups for a tournament with groups already drawn.");
 			}
 
-			List<Player> shuffledPlayers = [.. tournament.Players.Shuffle()];
+			List<Player> shuffledPlayers = [.. tournament.ActivePlayers.Shuffle()];
 			List<Group> groups = [];
 
 			// Distribute players into groups

@@ -1,5 +1,3 @@
-using System;
-
 namespace Smab.TTInfo.CunninghamCup.Tests;
 
 public class TournamentSetupTests
@@ -32,8 +30,12 @@ public class TournamentSetupTests
 		Tournament tournament = Tournament.Create(name, date, players);
 
 		tournament.Players.Count.ShouldBe(2);
-		tournament.Players[0].Name.ShouldBe("Alice");
-		tournament.Players[1].Name.ShouldBe("Bob");
+		tournament.Players.ShouldContainKey((PlayerId)"Alice");
+		tournament.Players.ShouldContainKey((PlayerId)"Alice");
+		tournament.GetPlayer((PlayerId)"Alice").Name.ShouldBe("Alice");
+		tournament.GetPlayer((PlayerId)"Bob").Name.ShouldBe("Bob");
+		tournament.ActivePlayers[0].Name.ShouldBe("Alice");
+		tournament.ActivePlayers[1].Name.ShouldBe("Bob");
 	}
 
 	[Fact]
@@ -50,8 +52,8 @@ public class TournamentSetupTests
 	public void PlayersCount_Should_Return_Number_Of_Players()
 	{
 		Tournament tournament = Tournament.Create("Test", DateOnly.FromDateTime(DateTime.Now));
-		tournament.Players.Add(Player.Create("Alice", 10));
-		tournament.Players.Add(Player.Create("Bob", 20));
+		tournament.AddOrUpdatePlayer(Player.Create("Alice", 10));
+		tournament.AddOrUpdatePlayer(Player.Create("Bob", 20));
 
 		tournament.PlayersCount.ShouldBe(2);
 	}
@@ -81,8 +83,8 @@ public class TournamentSetupTests
 		tournament.AddOrUpdatePlayer("Alice", 15);
 
 		tournament.Players.Count.ShouldBe(1);
-		tournament.Players[0].Name.ShouldBe("Alice");
-		tournament.Players[0].Handicap.ShouldBe(15);
+		tournament.Players.ShouldContainKey((PlayerId)"Alice");
+		tournament.Players[(PlayerId)"Alice"].Handicap.ShouldBe(15);
 	}
 
 	[Fact]
@@ -94,6 +96,6 @@ public class TournamentSetupTests
 		tournament.AddOrUpdatePlayer("Alice", 20);
 
 		tournament.Players.Count.ShouldBe(1);
-		tournament.Players[0].Handicap.ShouldBe(20);
+		tournament.Players[(PlayerId)"Alice"].Handicap.ShouldBe(20);
 	}
 }

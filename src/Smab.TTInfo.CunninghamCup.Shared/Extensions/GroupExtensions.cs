@@ -25,18 +25,30 @@ public static class GroupExtensions
 				for (int i = 0; i < order.GetLength(0); i++) {
 					int a = order[i, 0];
 					int b = order[i, 1];
-					matches.Add(new Match(players[a], players[b], null, null));
+					matches.Add(new Match(
+						players[a].Id,
+						players[b].Id,
+						players[a].StartingHandicap(players[b]),
+						players[b].StartingHandicap(players[a]),
+						null,
+						null));
 				}
 			} else {
 				// Fallback: round-robin for other sizes
 				for (int i = 0; i < n; i++) {
 					for (int j = i + 1; j < n; j++) {
-						matches.Add(new Match(players[i], players[j], null, null));
+						matches.Add(new Match(
+							players[i].Id,
+							players[j].Id,
+							players[i].StartingHandicap(players[j]),
+							players[j].StartingHandicap(players[i]),
+							null,
+							null));
 					}
 				}
 			}
 
-			return new(name, [.. players], [.. matches]);
+			return new(name, [.. players.Select(p => p.Id)], [.. matches]);
 		}
 	}
 
@@ -50,24 +62,24 @@ public static class GroupExtensions
 		/// This method is useful for creating a human-readable overview of the group's state.</remarks>
 		/// <returns>A string containing a formatted representation of the group's details, including players, matches, and performance
 		/// summaries.</returns>
-		public string AsString()
+		public string AsString(Tournament tournament)
 		{
 			StringBuilder sb = new();
 			_ = sb.AppendLine($"Group: {group.Name}");
 			_ = sb.AppendLine($"Players ({group.Players.Count}):");
-			foreach (Player player in group.Players) {
-				_ = sb.AppendLine($"- {player.Name,-12} ({player.Handicap,3})");
+			foreach (PlayerId playerId in group.Players) {
+				_ = sb.AppendLine($"- {tournament.GetPlayer(playerId).Name,-12} ({tournament.GetPlayer(playerId).Handicap,3})");
 			}
 
 			_ = sb.AppendLine();
 			_ = sb.AppendLine($"Matches ({group.Matches.Count}):");
 			foreach (Match match in group.Matches) {
-				_ = sb.AppendLine($"- {match.PlayerA.Name,-12} ({match.PlayerA.StartingHandicap(match.PlayerB),3}) vs {match.PlayerB.Name,-12} ({match.PlayerB.StartingHandicap(match.PlayerA),3})");
+				_ = sb.AppendLine($"- {tournament.GetPlayer(match.PlayerA).Name,-12} ({match.PlayerAStart,3}) vs {tournament.GetPlayer(match.PlayerB).Name,-12} ({match.PlayerBStart,3})");
 			}
 
 			_ = sb.AppendLine();
 			foreach (GroupPlayerSummary groupPlayerSummary in group.GroupPositions) {
-				_ = sb.Append($"- {groupPlayerSummary.Player.Name,-12}");
+				_ = sb.Append($"- {tournament.GetPlayer(groupPlayerSummary.PlayerId).Name,-12}");
 				_ = sb.Append($"  W: {groupPlayerSummary.MatchWins,2}, L: {groupPlayerSummary.MatchLosses,2}");
 				_ = sb.Append($"  SF: {groupPlayerSummary.SetsFor,2}, SA: {groupPlayerSummary.SetsAgainst,2}");
 				_ = sb.Append($"  PF: {groupPlayerSummary.PointsFor,2}, PA: {groupPlayerSummary.PointsAgainst,2}");

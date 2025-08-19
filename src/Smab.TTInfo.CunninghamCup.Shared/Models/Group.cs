@@ -11,7 +11,7 @@ namespace Smab.TTInfo.CunninghamCup.Shared.Models;
 /// <param name="Matches">The list of matches played within the group.</param>
 public record Group(
 	string Name,
-	List<Player> Players,
+	List<PlayerId> Players,
 	List<Match> Matches
 )
 {
@@ -26,14 +26,14 @@ public record Group(
 	/// determine the order. Future enhancements may include using difference averages to further  refine
 	/// tie-breaking.</remarks>
 	public List<GroupPlayerSummary> GroupPositions => [.. Players
-		.Select(player => new GroupPlayerSummary(
-			player,
-			Matches.Count(m => (m.IsPlayerAWin && m.PlayerA == player) || (m.IsPlayerBWin && m.PlayerB == player)),
-			Matches.Count(m => (m.IsPlayerAWin && m.PlayerB == player) || (m.IsPlayerBWin && m.PlayerA == player)),
-			Matches.Where(m => m.PlayerA.Name == player.Name).Sum(m => m.PlayerASets) + Matches.Where(m => m.PlayerB.Name == player.Name).Sum(m => m.PlayerBSets),
-			Matches.Where(m => m.PlayerA.Name == player.Name).Sum(m => m.PlayerBSets) + Matches.Where(m => m.PlayerB.Name == player.Name).Sum(m => m.PlayerASets),
-			Matches.Where(m => m.PlayerA.Name == player.Name).Sum(m => m.PlayerATotalPoints) + Matches.Where(m => m.PlayerB.Name == player.Name).Sum(m => m.PlayerBTotalPoints),
-			Matches.Where(m => m.PlayerA.Name == player.Name).Sum(m => m.PlayerBTotalPoints) + Matches.Where(m => m.PlayerB.Name == player.Name).Sum(m => m.PlayerATotalPoints)
+		.Select(playerId => new GroupPlayerSummary(
+			playerId,
+			Matches.Count(m => (m.IsPlayerAWin && m.PlayerA == playerId) || (m.IsPlayerBWin && m.PlayerB == playerId)),
+			Matches.Count(m => (m.IsPlayerAWin && m.PlayerB == playerId) || (m.IsPlayerBWin && m.PlayerA == playerId)),
+			Matches.Where(m => m.PlayerA == playerId).Sum(m => m.PlayerASets) + Matches.Where(m => m.PlayerB == playerId).Sum(m => m.PlayerBSets),
+			Matches.Where(m => m.PlayerA == playerId).Sum(m => m.PlayerBSets) + Matches.Where(m => m.PlayerB == playerId).Sum(m => m.PlayerASets),
+			Matches.Where(m => m.PlayerA == playerId).Sum(m => m.PlayerATotalPoints) + Matches.Where(m => m.PlayerB == playerId).Sum(m => m.PlayerBTotalPoints),
+			Matches.Where(m => m.PlayerA == playerId).Sum(m => m.PlayerBTotalPoints) + Matches.Where(m => m.PlayerB == playerId).Sum(m => m.PlayerATotalPoints)
 		))
 		.OrderByDescending(gp => gp.MatchWins)
 		.ThenBy(gp => gp.MatchLosses)

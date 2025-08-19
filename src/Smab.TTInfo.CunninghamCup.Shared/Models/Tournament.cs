@@ -17,6 +17,6 @@ public record Tournament(
 	string Name,
 	DateOnly Date,
 	List<Group> Groups,
-	List<Player> Players,
+	Dictionary<PlayerId, Player> Players,
 	KnockoutStage? KnockoutStage = null
 );

@@ -7,21 +7,30 @@ public class GroupTests(ITestOutputHelper testOutputHelper)
 	/// </summary>
 	/// <param name="playerCount">The number of players to include in the group. Must be a non-negative integer.</param>
 	/// <returns>A <see cref="Group"/> instance containing the specified number of players.</returns>
-	private static Group CreateGroupWithPlayers(int playerCount)
+	private static Tournament CreateTestTournamentWithPlayers(int playerCount, int groupSize)
 	{
+		string name = "Test Tournament";
+		DateOnly date = new(2025, 8, 17);
+
+
 		List<Player> players = [..
 			Enumerable.Range(0, playerCount)
 			.Select(i => Player.Create($"Player {i}", i * 2))];
 
-		return Group.Create("Test Group", players);
+		Tournament tournament = Tournament.Create(name, date, players);
+		tournament = tournament.DrawGroups(groupSize);
+
+		return tournament;
 	}
 
 	[Fact]
 	public void Group_Matches_And_Result()
 	{
 		int noOfPlayers = 4;
+		int groupSize = 4;
+		Tournament tournament = CreateTestTournamentWithPlayers(noOfPlayers, groupSize);
 
-		Group group = CreateGroupWithPlayers(4);
+		Group group = tournament.Groups[0];
 		group.Players.Count.ShouldBe(noOfPlayers);
 
 		group.Matches.Count.ShouldBe(6);
@@ -54,7 +63,7 @@ public class GroupTests(ITestOutputHelper testOutputHelper)
 		group.Matches[5] = group.Matches[5].SetResult((21, 12), (14, 21), (19, 21));
 		group.Matches[5].IsCompleted.ShouldBeTrue();
 
-		testOutputHelper.WriteLine(group.AsString());
+		testOutputHelper.WriteLine(group.AsString(tournament));
 
 		group.Matches[0].IsPlayerAWin.ShouldBeTrue();
 		group.Matches[1].IsPlayerAWin.ShouldBeTrue();
@@ -64,10 +73,10 @@ public class GroupTests(ITestOutputHelper testOutputHelper)
 		group.Matches[5].IsPlayerBWin.ShouldBeTrue();
 
 		group.GroupPositions.Count.ShouldBe(noOfPlayers);
-		group.GroupPositions[0].Player.Name.ShouldBe(group.Players[0].Name);
-		group.GroupPositions[1].Player.Name.ShouldBe(group.Players[1].Name);
-		group.GroupPositions[2].Player.Name.ShouldBe(group.Players[3].Name);
-		group.GroupPositions[3].Player.Name.ShouldBe(group.Players[2].Name);
+		group.GroupPositions[0].PlayerId.ShouldBe(group.Players[0]);
+		group.GroupPositions[1].PlayerId.ShouldBe(group.Players[1]);
+		group.GroupPositions[2].PlayerId.ShouldBe(group.Players[3]);
+		group.GroupPositions[3].PlayerId.ShouldBe(group.Players[2]);
 
 	}
 }

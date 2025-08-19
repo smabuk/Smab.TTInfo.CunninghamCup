@@ -12,7 +12,7 @@
 /// <param name="PointsFor">The total number of points scored by the player.</param>
 /// <param name="PointsAgainst">The total number of points scored against the player.</param>
 public record GroupPlayerSummary(
-	Player Player,
+	PlayerId PlayerId,
 	int MatchWins, int MatchLosses,
 	int SetsFor  , int SetsAgainst,
 	int PointsFor, int PointsAgainst

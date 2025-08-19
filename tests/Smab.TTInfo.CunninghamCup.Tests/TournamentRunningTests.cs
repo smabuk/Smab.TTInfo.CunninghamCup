@@ -55,7 +55,7 @@ public class TournamentRunningTests(ITestOutputHelper testOutputHelper)
 
 		// Groups should have either n or n-1 players
 		foreach (Group group in tournament.Groups) {
-			testOutputHelper.WriteLine(group.AsString());
+			testOutputHelper.WriteLine(group.AsString(tournament));
 			group.Players.Count.ShouldBeInRange(groupSize - 1, groupSize);
 		}
 	}
@@ -70,7 +70,7 @@ public class TournamentRunningTests(ITestOutputHelper testOutputHelper)
 
 		// Groups should have either n or n-1 players
 		foreach (Group group in tournament.Groups) {
-			testOutputHelper.WriteLine(group.AsString());
+			testOutputHelper.WriteLine(group.AsString(tournament));
 			group.Players.Count.ShouldBeInRange(groupSize - 1, groupSize);
 		}
 

@@ -12,8 +12,10 @@ namespace Smab.TTInfo.CunninghamCup.Shared.Models;
 /// <param name="ScheduledTime">The scheduled date and time for the match. Can be <see langword="null"/> if not set.</param>
 /// <param name="Result">The result of the match, if available. Can be <see langword="null"/> if the match has not been completed.</param>
 public record Match(
-	Player PlayerA,
-	Player PlayerB,
+	PlayerId PlayerA,
+	PlayerId PlayerB,
+	int PlayerAStart,
+	int PlayerBStart,
 	DateTime? ScheduledTime,
 	Result? Result
 )
