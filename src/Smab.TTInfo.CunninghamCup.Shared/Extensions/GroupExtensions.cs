@@ -12,19 +12,17 @@ public static class GroupExtensions
 			List<Match> matches = [];
 
 			// Define match orders for group sizes 3-6
-			Dictionary<int, int[,]> matchOrders = new()
+			Dictionary<int, List<(int, int)>> matchOrders = new()
 			{
-				{ 3, new[,] { {1,2}, {0,1}, {0,2} } },
-				{ 4, new[,] { {0,3}, {1,2}, {0,1}, {2,3}, {1,3}, {0,2} } },
-				{ 5, new[,] { {1,4}, {2,3}, {0,1}, {2,4}, {0,3}, {3,4}, {0,2}, {1,3}, {0,4}, {1,2} } },
-				{ 6, new[,] { {0,5}, {1,4}, {2,3}, {0,1}, {2,4}, {3,5}, {0,3}, {1,2}, {4,5}, {0,4}, {1,3}, {2,5}, {0,2}, {1,5}, {3,4} } }
+				{ 3, [ (1,2), (0,1), (0,2) ] },
+				{ 4, [ (0,3), (1,2), (0,1), (2,3), (1,3), (0,2) ] },
+				{ 5, [ (1,4), (2,3), (0,1), (2,4), (0,3), (3,4), (0,2), (1,3), (0,4), (1,2) ] },
+				{ 6, [ (0,5), (1,4), (2,3), (0,1), (2,4), (3,5), (0,3), (1,2), (4,5), (0,4), (1,3), (2,5), (0,2), (1,5), (3,4) ] }
 			};
 
 			int n = players.Count;
-			if (matchOrders.TryGetValue(n, out int[,]? order)) {
-				for (int i = 0; i < order.GetLength(0); i++) {
-					int a = order[i, 0];
-					int b = order[i, 1];
+			if (matchOrders.TryGetValue(n, out List<(int, int)>? order)) {
+				foreach ((int a, int b) in order) {
 					matches.Add(new Match(
 						players[a].Id,
 						players[b].Id,
@@ -35,13 +33,13 @@ public static class GroupExtensions
 				}
 			} else {
 				// Fallback: round-robin for other sizes
-				for (int i = 0; i < n; i++) {
-					for (int j = i + 1; j < n; j++) {
+				for (int a = 0; a < n; a++) {
+					for (int b = a + 1; b < n; b++) {
 						matches.Add(new Match(
-							players[i].Id,
-							players[j].Id,
-							players[i].StartingHandicap(players[j]),
-							players[j].StartingHandicap(players[i]),
+							players[a].Id,
+							players[b].Id,
+							players[a].StartingHandicap(players[b]),
+							players[b].StartingHandicap(players[a]),
 							null,
 							null));
 					}
