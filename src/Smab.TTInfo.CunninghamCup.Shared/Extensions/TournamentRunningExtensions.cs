@@ -1,4 +1,6 @@
-﻿namespace Smab.TTInfo.CunninghamCup.Shared.Extensions;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Smab.TTInfo.CunninghamCup.Shared.Extensions;
 
 public static class TournamentRunningExtensions
 {
@@ -43,6 +45,78 @@ public static class TournamentRunningExtensions
 			}
 
 			return tournament with { Groups = groups };
+		}
+
+		public bool TryDrawKnockoutStage(out Tournament newTournament, [NotNullWhen(false)] out string? message)
+		{
+			newTournament = tournament;
+			message = "";
+			KnockoutStage? knockoutStage = tournament.KnockoutStage;
+			if (knockoutStage is not null)
+			{
+				message = "Cannot draw knockout stage for a tournament with knockout stage already drawn.";
+				return false;
+			}
+
+			if (tournament.GroupsCompleted is false)
+			{
+				message = "Cannot draw knockout stage for a tournament with incomplete groups.";
+				return false;
+			}
+
+			int noOfRounds = (tournament.GroupsCount, tournament.ActivePlayers.Count) switch
+			{
+				(1,    _) => 0,
+				(2,    _) => 1,
+				(3,    _) => 2,
+				(4,    _) => 2,
+				(5,    _) => 3,
+				(6,    _) => 2,
+				(7, < 24) => 3,
+				(7,    _) => 4,
+				(8, < 24) => 3,
+				(8,    _) => 4,
+				_ => 0
+			};
+
+			List<KnockoutRound> knockoutRounds = [];
+			int matchNo = 0;
+			for (int round = noOfRounds; round > 0;round--)
+			{
+				int matchesPerRound = (int)Math.Pow(2, round) / 2;
+				List<Match> matches = [];
+				string roundName = round switch
+				{
+					1 => $"Final",
+					2 => $"Semi-Final",
+					3 => $"Quarter-Final",
+					4 => $"Round of 16",
+					5 => $"Round of 32",
+					_ => $"Round {noOfRounds - round + 1}"
+				};
+				for (int i = 0; i < matchesPerRound; i++)
+				{
+
+					//matches.Add(new Match(
+					//	(MatchId)$"{roundName} {matchNo++}",
+					//	PlayerId.Empty,
+					//	PlayerId.Empty,
+					//	0,
+					//	0,
+					//	null,
+					//	null));
+
+				}
+				
+				knockoutRounds.Add(new KnockoutRound($"{roundName}", [..matches]));
+			}
+
+			knockoutStage = new KnockoutStage("Knockout", [], knockoutRounds);
+
+
+
+			newTournament = tournament with { KnockoutStage = knockoutStage };
+			return true;
 		}
 
 	}

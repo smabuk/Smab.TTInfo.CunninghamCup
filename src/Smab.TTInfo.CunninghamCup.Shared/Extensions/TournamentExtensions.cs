@@ -3,6 +3,10 @@ public static class TournamentExtensions
 {
 	extension(Tournament tournament)
 	{
+
+		public bool GroupsCompleted => tournament.Groups.All(g => g.IsCompleted);
+
+
 		/// <summary>
 		/// Calculates the starting handicap values for two players in a tournament.
 		/// </summary>

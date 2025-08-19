@@ -1,5 +1,3 @@
-using Xunit.Abstractions;
-
 namespace Smab.TTInfo.CunninghamCup.Tests;
 
 public class TournamentRunningTests(ITestOutputHelper testOutputHelper)
