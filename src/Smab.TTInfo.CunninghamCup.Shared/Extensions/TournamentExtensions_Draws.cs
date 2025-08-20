@@ -122,7 +122,6 @@ public static partial class TournamentExtensions
 				int matchesPerRound = (int)Math.Pow(2, noOfRounds - round) / 2;
 				List<Match> matches = [];
 				RoundType roundType = (RoundType)(noOfRounds - round);
-				//string roundName = roundType.ToString();
 
 				int noOfGroups = tournament.GroupsCount;
 				if (round == 0) {

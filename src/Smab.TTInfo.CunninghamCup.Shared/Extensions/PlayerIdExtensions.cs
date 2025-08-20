@@ -10,10 +10,6 @@ public static class PlayerIdExtensions
 	}
 	extension(PlayerId playerId)
 	{
-		public string DisplayName => playerId.IsBye || playerId.IsPlaceHolder
-			? playerId.StringId[1..]
-			: playerId.StringId;
-
 		public bool IsBye => playerId == PlayerId.Bye;
 		public bool IsPlaceHolder => playerId.StringId.StartsWith(PlayerId.PlaceHolderSymbol);
 		public bool IsPlayer => !(playerId.IsBye || playerId.IsPlaceHolder);

@@ -1,4 +1,4 @@
-﻿namespace Smab.TTInfo.CunninghamCup.Shared.Extensions;
+﻿namespace Smab.TTInfo.CunninghamCup.Tests.Extensions;
 public static class RoundTypeExtension
 {
 	extension(RoundType roundType)
