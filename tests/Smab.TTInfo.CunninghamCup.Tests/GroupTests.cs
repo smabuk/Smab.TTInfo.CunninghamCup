@@ -35,12 +35,12 @@ public class GroupTests(ITestOutputHelper testOutputHelper)
 
 		group.Matches.Count.ShouldBe(6);
 		
-		group.Matches[0] = group.Matches[0].SetResult((21, 12), (21, 14));
-		group.Matches[1] = group.Matches[1].SetResult((21, 12), (14, 21), (21, 19));
-		group.Matches[2] = group.Matches[2].SetResult((21, 12), (14, 21), (21, 19));
-		group.Matches[3] = group.Matches[3].SetResult((28, 30), (14, 21));
-		group.Matches[4] = group.Matches[4].SetResult((21, 12), (14, 21), (21, 19));
-		group.Matches[5] = group.Matches[5].SetResult((21, 12), (14, 21));
+		group.Matches[0] = group.Matches[0].SetResult([(21, 12), (21, 14)]);
+		group.Matches[1] = group.Matches[1].SetResult([(21, 12), (14, 21), (21, 19)]);
+		group.Matches[2] = group.Matches[2].SetResult([(21, 12), (14, 21), (21, 19)]);
+		group.Matches[3] = group.Matches[3].SetResult([(28, 30), (14, 21)]);
+		group.Matches[4] = group.Matches[4].SetResult([(21, 12), (14, 21), (21, 19)]);
+		group.Matches[5] = group.Matches[5].SetResult([(21, 12), (14, 21)]);
 
 
 		// Check if all matches have results
@@ -60,7 +60,7 @@ public class GroupTests(ITestOutputHelper testOutputHelper)
 		group.Matches[4].IsCompleted.ShouldBeTrue();
 		group.Matches[5].IsCompleted.ShouldBeFalse();
 
-		group.Matches[5] = group.Matches[5].SetResult((21, 12), (14, 21), (19, 21));
+		group.Matches[5] = group.Matches[5].SetResult([(21, 12), (14, 21), (19, 21)]);
 		group.Matches[5].IsCompleted.ShouldBeTrue();
 
 		testOutputHelper.WriteLine(group.AsString(tournament));
