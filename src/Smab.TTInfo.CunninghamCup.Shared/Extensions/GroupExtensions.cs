@@ -69,18 +69,18 @@ public static class GroupExtensions
 			_ = sb.AppendLine($"Group: {group.Name}");
 			_ = sb.AppendLine($"Players ({group.Players.Count}):");
 			foreach (PlayerId playerId in group.Players) {
-				_ = sb.AppendLine($"- {tournament.GetPlayer(playerId).Name,-12} ({tournament.GetPlayer(playerId).Handicap,3})");
+				_ = sb.AppendLine($"- {playerId.DisplayName,-12} ({tournament.GetPlayer(playerId).Handicap,3})");
 			}
 
 			_ = sb.AppendLine();
 			_ = sb.AppendLine($"Matches ({group.Matches.Count}):");
 			foreach (Match match in group.Matches) {
-				_ = sb.AppendLine($"- {tournament.GetPlayer(match.PlayerA).Name,-12} ({match.PlayerAStart,3}) vs {tournament.GetPlayer(match.PlayerB).Name,-12} ({match.PlayerBStart,3})  Id: {match.Id}");
+				_ = sb.AppendLine($"- {match.PlayerA.DisplayName,-12} ({match.PlayerAStart,3}) vs {match.PlayerB.DisplayName,-12} ({match.PlayerBStart,3})  Id: {match.Id}");
 			}
 
 			_ = sb.AppendLine();
 			foreach (GroupPlayerSummary groupPlayerSummary in group.GroupPositions) {
-				_ = sb.Append($"- {tournament.GetPlayer(groupPlayerSummary.PlayerId).Name,-12}");
+				_ = sb.Append($"- {groupPlayerSummary.PlayerId.DisplayName,-12}");
 				_ = sb.Append($"  W: {groupPlayerSummary.MatchWins,2}, L: {groupPlayerSummary.MatchLosses,2}");
 				_ = sb.Append($"  SF: {groupPlayerSummary.SetsFor,2}, SA: {groupPlayerSummary.SetsAgainst,2}");
 				_ = sb.Append($"  PF: {groupPlayerSummary.PointsFor,3}, PA: {groupPlayerSummary.PointsAgainst,3}");
