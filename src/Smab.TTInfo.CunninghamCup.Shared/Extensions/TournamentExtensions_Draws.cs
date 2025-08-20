@@ -49,8 +49,18 @@ public static partial class TournamentExtensions
 		{
 			int noOfByes = (matchesPerRound * 2) - (noOfGroups * 2);
 			// Assuming 2 players from each group qualify for the knockout stage
-			List<int> winnerPositions = [.. Enumerable.Range(0, noOfGroups).Select(i => i * 2).Shuffle()];
+			List<int> winnerPositions = [.. Enumerable.Range(0, matchesPerRound).Select(i => i * 2).Shuffle().Take(noOfGroups)];
 			List<int> byePositions = [.. winnerPositions.Take(noOfByes).Select(i => i + 1)];
+			if (byePositions.Count < noOfByes) {
+				byePositions = [
+					.. byePositions,
+					.. Enumerable.Range(0, matchesPerRound * 2)
+						.Except(winnerPositions)
+						.Except(byePositions)
+						.Shuffle()
+						.Take(noOfByes - byePositions.Count)
+						];
+			}
 
 			List<int> runnerUpPositions = [.. Enumerable.Range(0, matchesPerRound * 2).Except(winnerPositions).Except(byePositions).Shuffle()];
 
@@ -97,9 +107,10 @@ public static partial class TournamentExtensions
 
 			int noOfRounds = (tournament.GroupsCount, tournament.ActivePlayers.Count) switch
 			{
-				(1, _) => 0,
+				(4, _) => 3,
+				(5, _) => 4,
 				(_, > 23) => 4,
-				(_, > 16) => 3,
+				(_, > 12) => 3,
 				(_, > 8) => 2,
 				(8, _) => 4,
 				_ => 0

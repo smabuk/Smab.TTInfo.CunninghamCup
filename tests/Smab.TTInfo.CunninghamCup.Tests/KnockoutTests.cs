@@ -42,6 +42,8 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 
 
 	[Theory]
+	[InlineData(15, 3, 4)]
+	[InlineData(15, 4, 3)]
 	[InlineData(32, 4, 4)]
 	[InlineData(28, 4, 4)]
 	[InlineData(20, 5, 3)]
