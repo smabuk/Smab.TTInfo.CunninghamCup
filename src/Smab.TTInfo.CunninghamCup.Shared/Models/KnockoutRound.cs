@@ -1,3 +1,3 @@
 namespace Smab.TTInfo.CunninghamCup.Shared.Models;
 
-public record KnockoutRound(string Name, List<Match> Matches);
+public record KnockoutRound(RoundType Type, List<Match> Matches);

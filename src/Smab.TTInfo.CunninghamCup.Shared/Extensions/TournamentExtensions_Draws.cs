@@ -41,8 +41,51 @@ public static partial class TournamentExtensions
 			return tournament with { Groups = groups };
 		}
 
-		public KnockoutStage DrawKnockoutStage(string name)
+		public static List<Match> CreateFirstKnockoutRound(
+			int matchesPerRound,
+			int noOfGroups,
+			RoundType roundType
+		)
 		{
+
+			List<int> winnerPositions = [.. Enumerable.Range(0, noOfGroups).Shuffle()];
+			List<int> runnerUpPositions = [.. Enumerable.Range(0, noOfGroups).Shuffle()];
+
+			while (winnerPositions.Zip(runnerUpPositions).Any(p => p.First == p.Second)) {
+				runnerUpPositions = [.. runnerUpPositions.Shuffle()];
+			}
+
+			List<int> firstRoundPlacements = [.. Enumerable.Range(0, matchesPerRound).Shuffle()];
+
+			List<Match> matches = [];
+			for (int i = 0; i < matchesPerRound; i++) {
+				PlayerId playerA = PlayerId.Bye;
+				PlayerId playerB = PlayerId.Bye;
+				int drawPlacement = firstRoundPlacements[i];
+				if (drawPlacement < noOfGroups) {
+					playerA = (PlayerId)$"{PlayerId.PlaceHolderSymbol}Group {(char)(winnerPositions[drawPlacement] + 'A')} Winner";
+					playerB = (PlayerId)$"{PlayerId.PlaceHolderSymbol}Group {(char)(runnerUpPositions[drawPlacement] + 'A')} Runner Up";
+				}
+
+				matches.Add(new Match(
+					(MatchId)$"{roundType} {(i + 1):D2}",
+					playerA,
+					playerB,
+					0,
+					0,
+					null,
+					null));
+			}
+
+			return matches;
+		}
+
+		public KnockoutStage DrawKnockoutStage(string name, bool redraw = false)
+		{
+			if (tournament.KnockoutStage is not null && redraw is false) {
+				return tournament.KnockoutStage;
+			}
+
 			int noOfRounds = (tournament.GroupsCount, tournament.ActivePlayers.Count) switch
 			{
 				(1, _) => 0,
@@ -58,49 +101,18 @@ public static partial class TournamentExtensions
 			for (int round = 0; round < noOfRounds; round++) {
 				int matchesPerRound = (int)Math.Pow(2, noOfRounds - round) / 2;
 				List<Match> matches = [];
-				string roundName = (noOfRounds - round) switch
-				{
-					1 => $"Final",
-					2 => $"Semi-Final",
-					3 => $"Quarter-Final",
-					4 => $"Round of 16",
-					5 => $"Round of 32",
-					_ => $"Round {round + 1}"
-				};
+				RoundType roundType = (RoundType)(noOfRounds - round);
+				//string roundName = roundType.ToString();
 
 				int noOfGroups = tournament.GroupsCount;
-
-				List<int> winnerPositions = [.. Enumerable.Range(0, noOfGroups).Shuffle()];
-				List<int> runnerUpPositions = [.. Enumerable.Range(0, noOfGroups).Shuffle()];
-
-				while (winnerPositions.Zip(runnerUpPositions).Any(p => p.First == p.Second)) {
-					runnerUpPositions = [.. runnerUpPositions.Shuffle()];
-				}
-
-				List<int> firstRoundPlacements = [.. Enumerable.Range(0, matchesPerRound).Shuffle()];
-
-				for (int i = 0; i < matchesPerRound; i++) {
-					matchNo++;
-					if (round == 0) {
-						int drawPlacement = firstRoundPlacements[i];
-						// For the first round, we use the group winners and runners-up
-						PlayerId playerA = PlayerId.Bye;
-						PlayerId playerB = PlayerId.Bye;
-						if (drawPlacement < noOfGroups) {
-							playerA = (PlayerId)$"{PlayerId.PlaceHolderSymbol}Group {(char)(winnerPositions[drawPlacement] + 'A')} Winner";
-							playerB = (PlayerId)$"{PlayerId.PlaceHolderSymbol}Group {(char)(runnerUpPositions[drawPlacement] + 'A')} Runner Up";
-						}
+				if (round == 0) {
+					matches = CreateFirstKnockoutRound(matchesPerRound, noOfGroups, roundType);
+					matchNo += matches.Count;
+				} else {
+					for (int i = 0; i < matchesPerRound; i++) {
+						matchNo++;
 						matches.Add(new Match(
-							(MatchId)$"{roundName} {matchNo:D2}",
-							playerA,
-							playerB,
-							0,
-							0,
-							null,
-							null));
-					} else {
-						matches.Add(new Match(
-							(MatchId)$"{roundName} {matchNo:D2}",
+							(MatchId)$"{roundType} {matchNo:D2}",
 							(PlayerId)$"{PlayerId.PlaceHolderSymbol}{matchNo - (matchesPerRound * 2) + i:D2}",
 							(PlayerId)$"{PlayerId.PlaceHolderSymbol}{matchNo - (matchesPerRound * 2) + i + 1:D2}",
 							0,
@@ -108,13 +120,12 @@ public static partial class TournamentExtensions
 							null,
 							null));
 					}
-
 				}
 
-				knockoutRounds.Add(new KnockoutRound($"{roundName}", [.. matches]));
+				knockoutRounds.Add(new KnockoutRound(roundType, [.. matches]));
 			}
 
-			return new KnockoutStage("Knockout", knockoutRounds);
+			return new KnockoutStage(name, knockoutRounds);
 		}
 
 
@@ -123,10 +134,10 @@ public static partial class TournamentExtensions
 			newTournament = tournament;
 			message = "";
 
-			if (newTournament.KnockoutStage is null)
-			{
-				newTournament = tournament with { KnockoutStage = tournament.DrawKnockoutStage("Knockout Stage") };
-			}
+			//if (newTournament.KnockoutStage is null)
+			//{
+			//	newTournament = tournament with { KnockoutStage = tournament.DrawKnockoutStage("Knockout Stage") };
+			//}
 
 			if (newTournament.KnockoutStage is null) { 
 				message = "Cannot draw knockout stage for a tournament with no knockout stage defined.";

@@ -20,7 +20,7 @@ public static class KnockoutRoundExtensions
 		public string AsString()
 		{
 			StringBuilder sb = new();
-			_ = sb.AppendLine($"Round: {knockoutRound.Name}");
+			_ = sb.AppendLine($"Round: {knockoutRound.Type.ToFriendlyString()}");
 
 			foreach (Match match in knockoutRound.Matches) {
 				string playerA = $"{match.PlayerA.DisplayName,-18}";

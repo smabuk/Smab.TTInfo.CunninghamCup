@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace Smab.TTInfo.CunninghamCup.Shared.Extensions;
+﻿namespace Smab.TTInfo.CunninghamCup.Shared.Extensions;
 
 public static partial class TournamentExtensions
 {

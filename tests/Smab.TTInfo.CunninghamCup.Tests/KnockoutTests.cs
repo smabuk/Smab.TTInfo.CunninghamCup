@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace Smab.TTInfo.CunninghamCup.Tests;
 
 public class KnockoutTests(ITestOutputHelper testOutputHelper)
@@ -52,11 +50,10 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 		Tournament? tournament = CreateTestTournamentWithPlayers(noOfPlayers, groupSize);
 
 		// Ensure the tournament has groups drawn
-		tournament.TryDrawKnockoutStage(out tournament, out string? message).ShouldBeTrue();
+		tournament = tournament with { KnockoutStage = tournament.DrawKnockoutStage("Knockout Stage")};
 		tournament.KnockoutStage!.Rounds.Count.ShouldBe(expectedNoOfRounds);
-		tournament.KnockoutStage!.Rounds[0].Matches
+		tournament.KnockoutStage.Rounds[0].Matches
 			.Any(match => match.PlayerA.IsPlayer).ShouldBeFalse();
-		message.ShouldBeEmpty();
 
 		// Run a single group to completion
 		tournament = RunGroup(tournament, 2);
@@ -64,7 +61,7 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 		tournament.Groups[2].IsCompleted.ShouldBeTrue();
 
 		// Ensure the tournament can still draw knockout stage
-		tournament.TryDrawKnockoutStage(out tournament, out message).ShouldBeTrue();
+		tournament.TryDrawKnockoutStage(out tournament, out string? message).ShouldBeTrue();
 		if(tournament.KnockoutStage is null)
 		{
 			return;
