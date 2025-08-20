@@ -25,24 +25,18 @@ public static partial class TournamentExtensions
 			}
 
 			List<Player> shuffledPlayers = [.. tournament.ActivePlayers.Shuffle()];
-			List<Group> groups = [];
 
 			// Distribute players into groups
-			List<List<Player>> playerGroupings = [];
-			for (int i = 0; i < groupCount; i++)
-			{
-				playerGroupings.Add([]);
-			}
+			List<List<Player>> playerGroupings = [.. Enumerable
+				.Range(0, groupCount)
+				.Select(groupIdx => shuffledPlayers
+					.Where((_, playerIdx) => playerIdx % groupCount == groupIdx)
+					.ToList())];
 
-			for (int i = 0; i < shuffledPlayers.Count; i++)
-			{
-				playerGroupings[i % groupCount].Add(shuffledPlayers[i]);
-			}
-
-			for (int i = 0; i < groupCount; i++) {
-
-				groups.Add(Group.Create($"Group {(char)(i + 'A')}", playerGroupings[i]));
-			}
+			List<Group> groups = [.. Enumerable
+				.Range(0, groupCount)
+				.Select(i => Group.Create($"Group {(char)(i + 'A')}", [.. playerGroupings[i]]))
+				];
 
 			return tournament with { Groups = groups };
 		}
