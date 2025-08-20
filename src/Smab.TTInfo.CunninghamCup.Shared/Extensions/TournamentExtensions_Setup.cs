@@ -1,6 +1,6 @@
 ﻿namespace Smab.TTInfo.CunninghamCup.Shared.Extensions;
 
-public static class TournamentSetupExtensions
+public static partial class TournamentExtensions
 {
 	extension(Tournament)
 	{
