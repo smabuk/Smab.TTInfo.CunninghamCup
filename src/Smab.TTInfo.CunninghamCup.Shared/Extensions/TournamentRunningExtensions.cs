@@ -125,7 +125,7 @@ public static class TournamentRunningExtensions
 					knockoutRounds.Add(new KnockoutRound($"{roundName}", [.. matches]));
 				}
 
-				knockoutStage = new KnockoutStage("Knockout", [], knockoutRounds);
+				knockoutStage = new KnockoutStage("Knockout", knockoutRounds);
 
 
 
@@ -167,7 +167,7 @@ public static class TournamentRunningExtensions
 								.FindIndex(m => m.PlayerB.IsPlaceHolder && m.PlayerB.StringId == $"|{group.Name} Runner Up");
 							if (runnerUpIndex >= 0) {
 								Match match = knockoutRound.Matches[runnerUpIndex];
-								match = match with { PlayerB = group.GroupPositions[0].PlayerId };
+								match = match with { PlayerB = group.GroupPositions[1].PlayerId };
 								if (match.PlayerA.IsPlayer) {
 									(int playerAStart, int playerBStart) = newTournament.StartingHandicap(match.PlayerA, match.PlayerB);
 									match = match with
@@ -196,7 +196,7 @@ public static class TournamentRunningExtensions
 								match = match with { PlayerA = previousMatch.Winner ?? match.PlayerA };
 							}
 
-							if (match.PlayerB.IsPlayer) {
+							if (match.PlayerA.IsPlayer && match.PlayerB.IsPlayer) {
 								(int playerAStart, int playerBStart) = newTournament.StartingHandicap(match.PlayerA, match.PlayerB);
 								match = match with
 								{
@@ -215,7 +215,7 @@ public static class TournamentRunningExtensions
 								match = match with { PlayerB = previousMatch.Winner ?? match.PlayerB };
 							}
 
-							if (match.PlayerA.IsPlayer) {
+							if (match.PlayerA.IsPlayer && match.PlayerB.IsPlayer) {
 								(int playerAStart, int playerBStart) = newTournament.StartingHandicap(match.PlayerA, match.PlayerB);
 								match = match with
 								{

@@ -87,5 +87,23 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 		tournament.KnockoutStage.Rounds[0].IsPopulated.ShouldBeTrue();
 		tournament.KnockoutStage.Rounds[0].IsCompleted.ShouldBeFalse();
 
+		for (int roundIndex = 0; roundIndex < tournament.KnockoutStage!.Rounds.Count; roundIndex++) {
+
+			KnockoutRound round = tournament.KnockoutStage.Rounds[roundIndex];
+			for (int matchIndex = 0; matchIndex < round.Matches.Count; matchIndex++) {
+				Match match = round.Matches[matchIndex];
+				if (match.IsCompleted) {
+					continue;
+				}
+
+				match = match.SetRandomResult();
+				round.Matches[matchIndex] = match;
+			}
+
+			round.IsCompleted.ShouldBeTrue();
+			bool _ = tournament.TryDrawKnockoutStage(out tournament, out message);
+		}
+
+
 	}
 }

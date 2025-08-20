@@ -17,6 +17,10 @@ public static class MatchExtensions
 		/// <returns>A new <see cref="Match"/> instance with the updated result.</returns>
 		public Match SetResult(params IEnumerable<Set> sets)
 		{
+			if (match.PlayerA.IsPlaceHolder || match.PlayerB.IsPlaceHolder) {
+				throw new InvalidOperationException("Cannot set the result of a match with placeholder players.");
+			}
+
 			Result result = new([.. sets], null);
 			return match with { Result = result };
 		}
@@ -31,6 +35,10 @@ public static class MatchExtensions
 		/// <returns>A new <see cref="Match"/> instance with the updated result.</returns>
 		public Match SetResult(params IEnumerable<(int PlayerAScore, int PlayerBScore)> sets)
 		{
+			if (match.PlayerA.IsPlaceHolder || match.PlayerB.IsPlaceHolder) {
+				throw new InvalidOperationException("Cannot set the result of a match with placeholder players.");
+			}
+
 			Result result = new([.. sets.Select(s => new Set(s.PlayerAScore, s.PlayerBScore))], null);
 			return match with { Result = result };
 		}
