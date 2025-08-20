@@ -41,89 +41,91 @@ public static partial class TournamentExtensions
 			return tournament with { Groups = groups };
 		}
 
+		public KnockoutStage DrawKnockoutStage(string name)
+		{
+			int noOfRounds = (tournament.GroupsCount, tournament.ActivePlayers.Count) switch
+			{
+				(1, _) => 0,
+				(_, > 23) => 4,
+				(_, > 16) => 3,
+				(_, > 8) => 2,
+				(8, _) => 4,
+				_ => 0
+			};
+
+			List<KnockoutRound> knockoutRounds = [];
+			int matchNo = 0;
+			for (int round = 0; round < noOfRounds; round++) {
+				int matchesPerRound = (int)Math.Pow(2, noOfRounds - round) / 2;
+				List<Match> matches = [];
+				string roundName = (noOfRounds - round) switch
+				{
+					1 => $"Final",
+					2 => $"Semi-Final",
+					3 => $"Quarter-Final",
+					4 => $"Round of 16",
+					5 => $"Round of 32",
+					_ => $"Round {round + 1}"
+				};
+
+				int noOfGroups = tournament.GroupsCount;
+
+				List<int> winnerPositions = [.. Enumerable.Range(0, noOfGroups).Shuffle()];
+				List<int> runnerUpPositions = [.. Enumerable.Range(0, noOfGroups).Shuffle()];
+
+				while (winnerPositions.Zip(runnerUpPositions).Any(p => p.First == p.Second)) {
+					runnerUpPositions = [.. runnerUpPositions.Shuffle()];
+				}
+
+				List<int> firstRoundPlacements = [.. Enumerable.Range(0, matchesPerRound).Shuffle()];
+
+				for (int i = 0; i < matchesPerRound; i++) {
+					matchNo++;
+					if (round == 0) {
+						int drawPlacement = firstRoundPlacements[i];
+						// For the first round, we use the group winners and runners-up
+						PlayerId playerA = PlayerId.Bye;
+						PlayerId playerB = PlayerId.Bye;
+						if (drawPlacement < noOfGroups) {
+							playerA = (PlayerId)$"{PlayerId.PlaceHolderSymbol}Group {(char)(winnerPositions[drawPlacement] + 'A')} Winner";
+							playerB = (PlayerId)$"{PlayerId.PlaceHolderSymbol}Group {(char)(runnerUpPositions[drawPlacement] + 'A')} Runner Up";
+						}
+						matches.Add(new Match(
+							(MatchId)$"{roundName} {matchNo:D2}",
+							playerA,
+							playerB,
+							0,
+							0,
+							null,
+							null));
+					} else {
+						matches.Add(new Match(
+							(MatchId)$"{roundName} {matchNo:D2}",
+							(PlayerId)$"{PlayerId.PlaceHolderSymbol}{matchNo - (matchesPerRound * 2) + i:D2}",
+							(PlayerId)$"{PlayerId.PlaceHolderSymbol}{matchNo - (matchesPerRound * 2) + i + 1:D2}",
+							0,
+							0,
+							null,
+							null));
+					}
+
+				}
+
+				knockoutRounds.Add(new KnockoutRound($"{roundName}", [.. matches]));
+			}
+
+			return new KnockoutStage("Knockout", knockoutRounds);
+		}
+
+
 		public bool TryDrawKnockoutStage(out Tournament newTournament, [NotNullWhen(false)] out string? message)
 		{
 			newTournament = tournament;
 			message = "";
-			KnockoutStage? knockoutStage = tournament.KnockoutStage;
-			if (knockoutStage is null)
+
+			if (newTournament.KnockoutStage is null)
 			{
-				int noOfRounds = (tournament.GroupsCount, tournament.ActivePlayers.Count) switch
-				{
-					(1, _)    => 0,
-					(_, > 23) => 4,
-					(_, > 16) => 3,
-					(_, > 8)  => 2,
-					(8, _)    => 4,
-					_         => 0
-				};
-
-				List<KnockoutRound> knockoutRounds = [];
-				int matchNo = 0;
-				for (int round = 0; round < noOfRounds; round++) {
-					int matchesPerRound = (int)Math.Pow(2, noOfRounds - round) / 2;
-					List<Match> matches = [];
-					string roundName = (noOfRounds - round) switch
-					{
-						1 => $"Final",
-						2 => $"Semi-Final",
-						3 => $"Quarter-Final",
-						4 => $"Round of 16",
-						5 => $"Round of 32",
-						_ => $"Round {round + 1}"
-					};
-
-					int noOfGroups = tournament.GroupsCount;
-
-					List<int> winnerPositions   = [.. Enumerable.Range(0, noOfGroups).Shuffle()];
-					List<int> runnerUpPositions = [.. Enumerable.Range(0, noOfGroups).Shuffle()];
-
-					while (winnerPositions.Zip(runnerUpPositions).Any(p => p.First == p.Second)) {
-						runnerUpPositions = [.. runnerUpPositions.Shuffle()];
-					}
-
-					List<int> firstRoundPlacements = [.. Enumerable.Range(0, matchesPerRound).Shuffle()];
-
-					for (int i = 0; i < matchesPerRound; i++) {
-						matchNo++;
-						if (round == 0) {
-							int drawPlacement = firstRoundPlacements[i];
-							// For the first round, we use the group winners and runners-up
-							PlayerId playerA = PlayerId.Bye;
-							PlayerId playerB = PlayerId.Bye;
-							if (drawPlacement < noOfGroups) {
-								playerA = (PlayerId)$"{PlayerId.PlaceHolderSymbol}Group {(char)(winnerPositions[drawPlacement] + 'A')} Winner";
-								playerB = (PlayerId)$"{PlayerId.PlaceHolderSymbol}Group {(char)(runnerUpPositions[drawPlacement] + 'A')} Runner Up";
-							}
-							matches.Add(new Match(
-								(MatchId)$"{roundName} {matchNo:D2}",
-								playerA,
-								playerB,
-								0,
-								0,
-								null,
-								null));
-						} else {
-							matches.Add(new Match(
-								(MatchId)$"{roundName} {matchNo:D2}",
-								(PlayerId)$"{PlayerId.PlaceHolderSymbol}{matchNo - (matchesPerRound * 2) + i:D2}",
-								(PlayerId)$"{PlayerId.PlaceHolderSymbol}{matchNo - (matchesPerRound * 2) + i + 1:D2}",
-								0,
-								0,
-								null,
-								null));
-						}
-
-					}
-
-					knockoutRounds.Add(new KnockoutRound($"{roundName}", [.. matches]));
-				}
-
-				knockoutStage = new KnockoutStage("Knockout", knockoutRounds);
-
-
-
-				newTournament = tournament with { KnockoutStage = knockoutStage };
+				newTournament = tournament with { KnockoutStage = tournament.DrawKnockoutStage("Knockout Stage") };
 			}
 
 			if (newTournament.KnockoutStage is null) { 
