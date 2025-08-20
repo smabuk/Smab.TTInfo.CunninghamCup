@@ -17,7 +17,7 @@ public static class KnockoutRoundExtensions
 			.All(match =>	(match.PlayerA.IsPlayer || match.PlayerA.IsBye)
 						&&	(match.PlayerB.IsPlayer || match.PlayerB.IsBye));
 
-		public string AsString(Tournament tournament)
+		public string AsString()
 		{
 			StringBuilder sb = new();
 			_ = sb.AppendLine($"Round: {knockoutRound.Name}");

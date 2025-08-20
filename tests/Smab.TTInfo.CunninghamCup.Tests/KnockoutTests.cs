@@ -77,12 +77,15 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 		tournament.KnockoutStage.Rounds[0].IsCompleted.ShouldBeFalse();
 		message.ShouldBeEmpty();
 
-		testOutputHelper.WriteLine(tournament.KnockoutStage.Rounds[0].AsString(tournament));
-		testOutputHelper.WriteLine(tournament.KnockoutStage.Rounds[1].AsString(tournament));
-
 		// Run all groups to completion
 		tournament = RunTheGroups(tournament);
 		tournament.GroupsCompleted.ShouldBeTrue();
+
+		testOutputHelper.WriteLine("After 1 group has been added to the knockout stage:");
+		testOutputHelper.WriteLine(tournament.KnockoutStage!.Rounds[0].AsString());
+		testOutputHelper.WriteLine(tournament.KnockoutStage.Rounds[1].AsString());
+
+
 		bool success = tournament.TryDrawKnockoutStage(out tournament, out message);
 		success.ShouldBeTrue();
 		message.ShouldBeEmpty();
@@ -109,8 +112,9 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 			bool _ = tournament.TryDrawKnockoutStage(out tournament, out message);
 		}
 
+		testOutputHelper.WriteLine("After all the rounds have been played:");
 		foreach (KnockoutRound round in tournament.KnockoutStage!.Rounds) {
-			testOutputHelper.WriteLine(round.AsString(tournament));
+			testOutputHelper.WriteLine(round.AsString());
 			round.IsCompleted.ShouldBeTrue();
 			round.IsPopulated.ShouldBeTrue();
 			round.Matches
