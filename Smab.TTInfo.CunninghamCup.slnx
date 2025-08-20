@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Solution Items/">
     <File Path="data/DEV - 2018 groups and results for Cunningham Cup - Copy.xlsx" />
+    <File Path="README.md" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/Smab.TTInfo.CunninghamCup.Shared/Smab.TTInfo.CunninghamCup.Shared.csproj" />
