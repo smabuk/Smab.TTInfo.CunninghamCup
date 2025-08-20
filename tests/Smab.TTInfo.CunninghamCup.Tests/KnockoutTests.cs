@@ -104,6 +104,15 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 			bool _ = tournament.TryDrawKnockoutStage(out tournament, out message);
 		}
 
+		foreach (KnockoutRound round in tournament.KnockoutStage!.Rounds) {
+			round.IsCompleted.ShouldBeTrue();
+			round.IsPopulated.ShouldBeTrue();
+			round.Matches
+				.SelectMany(m => (List<PlayerId>)[m.PlayerA, m.PlayerB])
+				.Where(p => p.IsPlayer)
+				.ShouldBeUnique();
+			round.Matches.All(m => m.IsCompleted).ShouldBeTrue();
+		}
 
 	}
 }

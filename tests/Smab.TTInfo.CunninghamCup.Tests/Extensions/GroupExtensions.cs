@@ -1,6 +1,5 @@
-﻿using Xunit.Sdk;
+﻿namespace Smab.TTInfo.CunninghamCup.Tests.Extensions;
 
-namespace Smab.TTInfo.CunninghamCup.Tests.Extensions;
 public static class GroupExtensions
 {
 	extension(Group group)

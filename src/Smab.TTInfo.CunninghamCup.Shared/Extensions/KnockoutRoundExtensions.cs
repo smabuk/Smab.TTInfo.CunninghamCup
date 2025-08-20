@@ -12,7 +12,7 @@ public static class KnockoutRoundExtensions
 		public bool IsNotPopulated => !knockoutRound.IsPopulated;
 		public bool IsPopulated => knockoutRound.Matches is not []
 		&& knockoutRound.Matches
-			.All(match =>	(match.PlayerA.IsPlayer && match.PlayerB.IsPlayer)
-						||	(match.PlayerA.IsBye    && match.PlayerB.IsBye));
+			.All(match =>	(match.PlayerA.IsPlayer || match.PlayerA.IsBye)
+						&&	(match.PlayerB.IsPlayer || match.PlayerB.IsBye));
 	}
 }
