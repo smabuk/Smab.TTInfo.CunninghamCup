@@ -1,4 +1,5 @@
 ﻿namespace Smab.TTInfo.CunninghamCup.Shared.Extensions;
+
 public static class PlayerIdExtensions
 {
 	extension(PlayerId)

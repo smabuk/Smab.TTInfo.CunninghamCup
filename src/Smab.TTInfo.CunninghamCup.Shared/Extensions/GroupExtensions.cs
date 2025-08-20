@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Smab.TTInfo.CunninghamCup.Shared.Extensions;
+﻿namespace Smab.TTInfo.CunninghamCup.Shared.Extensions;
 
 public static class GroupExtensions
 {
