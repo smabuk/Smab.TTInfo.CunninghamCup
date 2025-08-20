@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace Smab.TTInfo.CunninghamCup.Tests;
 
 public class KnockoutTests(ITestOutputHelper testOutputHelper)
@@ -75,6 +77,9 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 		tournament.KnockoutStage.Rounds[0].IsCompleted.ShouldBeFalse();
 		message.ShouldBeEmpty();
 
+		testOutputHelper.WriteLine(tournament.KnockoutStage.Rounds[0].AsString(tournament));
+		testOutputHelper.WriteLine(tournament.KnockoutStage.Rounds[1].AsString(tournament));
+
 		// Run all groups to completion
 		tournament = RunTheGroups(tournament);
 		tournament.GroupsCompleted.ShouldBeTrue();
@@ -105,6 +110,7 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 		}
 
 		foreach (KnockoutRound round in tournament.KnockoutStage!.Rounds) {
+			testOutputHelper.WriteLine(round.AsString(tournament));
 			round.IsCompleted.ShouldBeTrue();
 			round.IsPopulated.ShouldBeTrue();
 			round.Matches

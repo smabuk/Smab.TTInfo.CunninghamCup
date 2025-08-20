@@ -95,11 +95,11 @@ public static class TournamentRunningExtensions
 						if (round == 0) {
 							int drawPlacement = firstRoundPlacements[i];
 							// For the first round, we use the group winners and runners-up
-							PlayerId playerA = (PlayerId)$"BYE";
-							PlayerId playerB = (PlayerId)$"BYE";
+							PlayerId playerA = PlayerId.Bye;
+							PlayerId playerB = PlayerId.Bye;
 							if (drawPlacement < noOfGroups) {
-								playerA = (PlayerId)$"|Group {(char)(winnerPositions[drawPlacement] + 'A')} Winner";
-								playerB = (PlayerId)$"|Group {(char)(runnerUpPositions[drawPlacement] + 'A')} Runner Up";
+								playerA = (PlayerId)$"{PlayerId.PlaceHolderSymbol}Group {(char)(winnerPositions[drawPlacement] + 'A')} Winner";
+								playerB = (PlayerId)$"{PlayerId.PlaceHolderSymbol}Group {(char)(runnerUpPositions[drawPlacement] + 'A')} Runner Up";
 							}
 							matches.Add(new Match(
 								(MatchId)$"{roundName} {matchNo:D2}",
@@ -112,8 +112,8 @@ public static class TournamentRunningExtensions
 						} else {
 							matches.Add(new Match(
 								(MatchId)$"{roundName} {matchNo:D2}",
-								(PlayerId)$"|{matchNo - (matchesPerRound * 2) + i:D2}",
-								(PlayerId)$"|{matchNo - (matchesPerRound * 2) + i + 1:D2}",
+								(PlayerId)$"{PlayerId.PlaceHolderSymbol}{matchNo - (matchesPerRound * 2) + i:D2}",
+								(PlayerId)$"{PlayerId.PlaceHolderSymbol}{matchNo - (matchesPerRound * 2) + i + 1:D2}",
 								0,
 								0,
 								null,
@@ -146,7 +146,7 @@ public static class TournamentRunningExtensions
 						if (group.IsCompleted) {
 							int winnerIndex = knockoutRound
 								.Matches
-								.FindIndex(m => m.PlayerA.IsPlaceHolder && m.PlayerA.StringId == $"|{group.Name} Winner");
+								.FindIndex(m => m.PlayerA.IsPlaceHolder && m.PlayerA.StringId == $"{PlayerId.PlaceHolderSymbol}{group.Name} Winner");
 							if (winnerIndex >= 0) {
 								Match match = knockoutRound.Matches[winnerIndex];
 								match = match with { PlayerA = group.GroupPositions[0].PlayerId };
@@ -164,7 +164,7 @@ public static class TournamentRunningExtensions
 
 							int runnerUpIndex = knockoutRound
 								.Matches
-								.FindIndex(m => m.PlayerB.IsPlaceHolder && m.PlayerB.StringId == $"|{group.Name} Runner Up");
+								.FindIndex(m => m.PlayerB.IsPlaceHolder && m.PlayerB.StringId == $"{PlayerId.PlaceHolderSymbol}{group.Name} Runner Up");
 							if (runnerUpIndex >= 0) {
 								Match match = knockoutRound.Matches[runnerUpIndex];
 								match = match with { PlayerB = group.GroupPositions[1].PlayerId };
