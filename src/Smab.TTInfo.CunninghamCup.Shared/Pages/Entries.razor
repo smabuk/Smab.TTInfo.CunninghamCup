@@ -1,17 +1,21 @@
 @page "/entries"
 @page "/entries/{MembershipId:int?}"
 @inject TTClubsReader _TTClubsReader
+@rendermode InteractiveServer
 
-<ul>
-	@foreach(MembershipItem membership in Membership?.Items ?? [])
-	{
-		<li>
-			<strong>@membership.Contact.FullName</strong>
-			@membership.Contact.User.MembershipNo
-			@membership.Contact.User.MembershipType
-		</li>
-	}
-</ul>
+<PageTitle>Cunningham Cup Entries</PageTitle>
+
+<h2>Cunningham Cup Entries</h2>
+
+<QuickGrid ref="membershipGrid" Items="@FilteredItems?.AsQueryable()">
+	<PropertyColumn Title="Name" Property="@(m => m.Contact.FullName)" Sortable="true" />
+	<PropertyColumn Title="TTE #" Property="@(m => m.Contact.User.MembershipNo)" Sortable="true" />
+	<PropertyColumn Title="Membership Type" Property="@(m => Pretty(m.Contact.User.MembershipType))" Sortable="true" />
+	<PropertyColumn Title="Phone #" Property="@(m => PrettyPhone(m.Contact.User.PhoneNumber))" Sortable="false" />
+	<PropertyColumn
+		Title="Gender"
+		Property="@(m => m.Contact.User.Gender == 1 ? "Male" : "Female")" Sortable="true" />
+</QuickGrid>
 
 @code {
 
@@ -24,9 +28,12 @@
 	[PersistentState]
 	public Membership? Membership { get; set; }
 
+	private IEnumerable<MembershipItem>? FilteredItems => Membership?.Items;
+
 	protected override async Task OnInitializedAsync()
 	{
 		string ttinfoId = "olop";
+
 		if (MembershipId is null)
 		{
 			Memberships ??= await _TTClubsReader.GetMemberships(ttinfoId);
@@ -34,9 +41,51 @@
 				MembershipId = Memberships.Items.Single(m => m.Name.Contains("Cunningham")).Id;
 			}
 		}
+
 		if (MembershipId is not null)
 		{
 			Membership ??= await _TTClubsReader.GetMembership(ttinfoId, (int)MembershipId);
 		}
+	}
+
+	string Pretty(string input)
+	{
+		string newString = $"{input[0]}";
+
+		for (int i = 1; i < input.Length; i++)
+		{
+			if (char.IsUpper(input[i]))
+			{
+				newString = $"{newString} {input[i]}";
+			}
+			else
+			{
+				newString = $"{newString}{input[i]}";
+			}
+		}
+
+		return newString;
+	}
+	string PrettyPhone(string input)
+	{
+		string newString = $"{input}";
+
+		newString = newString
+		.Replace("+44 0", "+44")
+		.Replace("+44 ", "+44")
+		.Replace("+44", "+44 ")
+		.Trim();
+
+		if (newString[0] == '0')
+		{
+			newString = $"+44 {newString[1..]}";
+		}
+
+		if (newString[8] != ' ')
+		{
+			newString = $"{newString[..8]} {newString[8..]}";
+		}
+
+		return newString;
 	}
 }

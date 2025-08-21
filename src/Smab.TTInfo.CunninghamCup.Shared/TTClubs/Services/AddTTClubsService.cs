@@ -32,7 +32,7 @@ public static class TTClubsServiceExtensions
 
 		_ = services.AddOptions<TTClubsOptions>()
 			.BindConfiguration(configSectionName)
-			//.ValidateDataAnnotations()
+			.ValidateDataAnnotations()
 			.ValidateOnStart();
 
 		return services.AddScoped<TTClubsReader>();
