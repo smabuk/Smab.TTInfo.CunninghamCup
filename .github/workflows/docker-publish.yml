@@ -24,10 +24,10 @@ jobs:
           dotnet-version: ${{ env.PREVIEW_DOTNET_VERSION }}
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore src/Smab.TTInfo.CunninghamCup.Web/Smab.TTInfo.CunninghamCup.Web.csproj
 
       - name: Build
-        run: dotnet build --configuration Release
+        run: dotnet build src/Smab.TTInfo.CunninghamCup.Web/Smab.TTInfo.CunninghamCup.Web.csproj --configuration Release
 
       - name: Publish
         run: dotnet publish src/Smab.TTInfo.CunninghamCup.Web/Smab.TTInfo.CunninghamCup.Web.csproj --configuration Release --output ./publish
