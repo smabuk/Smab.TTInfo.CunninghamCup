@@ -3,9 +3,9 @@
 @inject TTClubsReader _TTClubsReader
 @rendermode InteractiveServer
 
-<PageTitle>Cunningham Cup Entries</PageTitle>
+<PageTitle>@MembershipName</PageTitle>
 
-<h2>Cunningham Cup Entries</h2>
+<h2>@MembershipName</h2>
 
 <QuickGrid ref="membershipGrid" Items="@FilteredItems?.AsQueryable()">
 	<PropertyColumn Title="Name" Property="@(m => m.Contact.FullName)" Sortable="true" />
@@ -28,15 +28,17 @@
 	[PersistentState]
 	public Membership? Membership { get; set; }
 
+	private string MembershipName => Memberships?.Items.SingleOrDefault(m => m.Id == MembershipId)?.Name ?? "No Entries";
+
 	private IEnumerable<MembershipItem>? FilteredItems => Membership?.Items;
 
 	protected override async Task OnInitializedAsync()
 	{
 		string ttinfoId = "olop";
 
+		Memberships ??= await _TTClubsReader.GetMemberships(ttinfoId);
 		if (MembershipId is null)
 		{
-			Memberships ??= await _TTClubsReader.GetMemberships(ttinfoId);
 			if (Memberships is not null) {
 				MembershipId = Memberships.Items.Single(m => m.Name.Contains("Cunningham")).Id;
 			}
