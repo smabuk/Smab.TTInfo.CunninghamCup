@@ -21,9 +21,8 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 	{
 		List<Group> groups = [.. tournament.Groups];
 		for (int groupIdx = 0; groupIdx < groups.Count; groupIdx++) {
-			Group group = groups[groupIdx];
-			groups[groupIdx] = group.CompleteWithRandomResults();
-			testOutputHelper.WriteLine(group.AsString(tournament));
+			groups[groupIdx] = groups[groupIdx].CompleteWithRandomResults();
+			testOutputHelper.WriteLine(groups[groupIdx].AsString(tournament));
 			
 		}
 

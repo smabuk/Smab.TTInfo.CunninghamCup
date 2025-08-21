@@ -27,13 +27,14 @@ public record Group(
 	/// tie-breaking.</remarks>
 	public List<GroupPlayerSummary> GroupPositions => [.. Players
 		.Select(playerId => new GroupPlayerSummary(
-			playerId,
-			Matches.Count(m => (m.IsPlayerAWin && m.PlayerA == playerId) || (m.IsPlayerBWin && m.PlayerB == playerId)),
-			Matches.Count(m => (m.IsPlayerAWin && m.PlayerB == playerId) || (m.IsPlayerBWin && m.PlayerA == playerId)),
-			Matches.Where(m => m.PlayerA == playerId).Sum(m => m.PlayerASets) + Matches.Where(m => m.PlayerB == playerId).Sum(m => m.PlayerBSets),
-			Matches.Where(m => m.PlayerA == playerId).Sum(m => m.PlayerBSets) + Matches.Where(m => m.PlayerB == playerId).Sum(m => m.PlayerASets),
-			Matches.Where(m => m.PlayerA == playerId).Sum(m => m.PlayerATotalPoints) + Matches.Where(m => m.PlayerB == playerId).Sum(m => m.PlayerBTotalPoints),
-			Matches.Where(m => m.PlayerA == playerId).Sum(m => m.PlayerBTotalPoints) + Matches.Where(m => m.PlayerB == playerId).Sum(m => m.PlayerATotalPoints)
+			PlayerId: playerId,
+			Played:        Matches.Count(m => m.IsCompleted && ((m.PlayerA == playerId) || (m.PlayerB == playerId))),
+			MatchWins:     Matches.Count(m => (m.IsPlayerAWin && m.PlayerA == playerId) || (m.IsPlayerBWin && m.PlayerB == playerId)),
+			MatchLosses:   Matches.Count(m => (m.IsPlayerAWin && m.PlayerB == playerId) || (m.IsPlayerBWin && m.PlayerA == playerId)),
+			SetsFor:       Matches.Where(m => m.PlayerA == playerId).Sum(m => m.PlayerASets) + Matches.Where(m => m.PlayerB == playerId).Sum(m => m.PlayerBSets),
+			SetsAgainst:   Matches.Where(m => m.PlayerA == playerId).Sum(m => m.PlayerBSets) + Matches.Where(m => m.PlayerB == playerId).Sum(m => m.PlayerASets),
+			PointsFor:     Matches.Where(m => m.PlayerA == playerId).Sum(m => m.PlayerATotalPoints) + Matches.Where(m => m.PlayerB == playerId).Sum(m => m.PlayerBTotalPoints),
+			PointsAgainst: Matches.Where(m => m.PlayerA == playerId).Sum(m => m.PlayerBTotalPoints) + Matches.Where(m => m.PlayerB == playerId).Sum(m => m.PlayerATotalPoints)
 		))
 		.OrderByDescending(gp => gp.MatchWins)
 		.ThenBy(gp => gp.MatchLosses)

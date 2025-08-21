@@ -44,6 +44,7 @@ public static class GroupExtensions
 			_ = sb.AppendLine();
 			foreach (GroupPlayerSummary groupPlayerSummary in group.GroupPositions) {
 				_ = sb.Append($"- {groupPlayerSummary.PlayerId.DisplayName,-12}");
+				_ = sb.Append($"  PL: {groupPlayerSummary.Played,2}");
 				_ = sb.Append($"  W: {groupPlayerSummary.MatchWins,2}, L: {groupPlayerSummary.MatchLosses,2}");
 				_ = sb.Append($"  SF: {groupPlayerSummary.SetsFor,2}, SA: {groupPlayerSummary.SetsAgainst,2}");
 				_ = sb.Append($"  PF: {groupPlayerSummary.PointsFor,3}, PA: {groupPlayerSummary.PointsAgainst,3}");
