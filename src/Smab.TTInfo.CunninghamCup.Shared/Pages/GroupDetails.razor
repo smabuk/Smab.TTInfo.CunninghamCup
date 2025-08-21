@@ -5,8 +5,12 @@
 
 
 <PageTitle>Group Details</PageTitle>
+<h2>@tournament?.Name</h2>
 
-@if (group is null || players is null) {
+@if (tournament?.Groups.Count == 0) {
+	<h3>No Groups Available</h3>
+	<p>Groups have not been drawn yet.</p>
+} else if (group is null || players is null) {
 	<p>Group or player data not loaded.</p>
 } else {
 	<div class="group-header">
