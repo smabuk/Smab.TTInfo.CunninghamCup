@@ -29,17 +29,11 @@ jobs:
       - name: Build
         run: dotnet build src/Smab.TTInfo.CunninghamCup.Web/Smab.TTInfo.CunninghamCup.Web.csproj --configuration Release
 
-      - name: Publish
-        run: dotnet publish src/Smab.TTInfo.CunninghamCup.Web/Smab.TTInfo.CunninghamCup.Web.csproj --configuration Release --output ./publish
-
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest ./publish
-
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+      - name: Publish
+        run: dotnet publish src/Smab.TTInfo.CunninghamCup.Web/Smab.TTInfo.CunninghamCup.Web.csproj --os linux --arch x64 /t:PublishContainer --configuration Release -p:ContainerRegistry=docker.io -p:ContainerRepository=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }} -p:ContainerImageTag=latest
