@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Solution Items/">
+    <File Path=".github/workflows/docker-publish.yml" />
     <File Path="data/DEV - 2018 groups and results for Cunningham Cup - Copy.xlsx" />
     <File Path="README.md" />
   </Folder>
