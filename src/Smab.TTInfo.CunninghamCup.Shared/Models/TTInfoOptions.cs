@@ -1,9 +1,9 @@
-﻿namespace Smab.TTInfo.CunninghamCup.Shared.TTClubs.Services;
+﻿namespace Smab.TTInfo.CunninghamCup.Shared.Models;
 
 /// <summary>
 /// Base options for TTInfo configuration.
 /// </summary>
-public abstract class TTInfoOptions
+public class TTInfoOptions
 {
 	/// <summary>
 	/// The folder path for caching data.

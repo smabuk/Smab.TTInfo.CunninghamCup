@@ -13,7 +13,7 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
 
-builder.Services.AddSingleton<ITournamentService, TournamentService>();
+builder.Services.AddTournamentService();
 builder.Services.AddTTClubsService();
 
 var app = builder.Build();
