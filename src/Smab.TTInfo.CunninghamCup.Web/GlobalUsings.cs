@@ -1,2 +1,2 @@
-﻿global using Smab.TTInfo.CunninghamCup.Shared.TTLeagues;
-global using Smab.TTInfo.CunninghamCup.Shared.TTLeagues.Services;
+﻿global using Smab.TTInfo.CunninghamCup.Shared.TTClubs;
+global using Smab.TTInfo.CunninghamCup.Shared.TTClubs.Services;

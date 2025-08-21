@@ -5,5 +5,5 @@ global using System.Text.Json.Serialization;
 global using Smab.TTInfo.CunninghamCup.Shared.Models;
 global using Smab.TTInfo.CunninghamCup.Shared.Extensions;
 global using Smab.TTInfo.CunninghamCup.Shared.Helpers;
-global using Smab.TTInfo.CunninghamCup.Shared.TTLeagues.Models;
-global using Smab.TTInfo.CunninghamCup.Shared.TTLeagues.Services;
+global using Smab.TTInfo.CunninghamCup.Shared.TTClubs.Models;
+global using Smab.TTInfo.CunninghamCup.Shared.TTClubs.Services;

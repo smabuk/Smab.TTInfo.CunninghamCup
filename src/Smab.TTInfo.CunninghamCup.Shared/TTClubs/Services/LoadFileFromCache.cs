@@ -1,9 +1,9 @@
-﻿namespace Smab.TTInfo.CunninghamCup.Shared.TTLeagues.Services;
+﻿namespace Smab.TTInfo.CunninghamCup.Shared.TTClubs.Services;
 
 /// <summary>
-/// Provides functionality to read files from the TTLeagues cache.
+/// Provides functionality to read files from the TTClubs cache.
 /// </summary>
-public sealed partial class TTLeaguesReader
+public sealed partial class TTClubsReader
 {
 	/// <summary>
 	/// Loads a file from the cache for a given file name.

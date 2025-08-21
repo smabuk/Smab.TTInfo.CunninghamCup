@@ -1,4 +1,4 @@
-namespace Smab.TTInfo.CunninghamCup.Shared.TTLeagues;
+namespace Smab.TTInfo.CunninghamCup.Shared.TTClubs;
 
 public interface ITournamentService
 {

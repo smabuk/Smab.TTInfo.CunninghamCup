@@ -1,9 +1,9 @@
-﻿namespace Smab.TTInfo.CunninghamCup.Shared.TTLeagues.Services;
+﻿namespace Smab.TTInfo.CunninghamCup.Shared.TTClubs.Services;
 
 /// <summary>
-/// Provides functionality to read match data from TTLeagues.
+/// Provides functionality to read match data from TTClubs.
 /// </summary>
-public sealed partial class TTLeaguesReader
+public sealed partial class TTClubsReader
 {
 	public async Task<Membership?> GetMembership(string ttinfoId, int id)
 	{

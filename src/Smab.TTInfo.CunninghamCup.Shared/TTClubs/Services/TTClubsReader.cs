@@ -2,32 +2,32 @@
 
 using Microsoft.Extensions.Options;
 
-namespace Smab.TTInfo.CunninghamCup.Shared.TTLeagues.Services;
+namespace Smab.TTInfo.CunninghamCup.Shared.TTClubs.Services;
 
-internal interface ITTLeaguesReader
+internal interface ITTClubsReader
 {
 }
 
 
 /// <summary>
-/// Provides methods to read and manage TTLeagues data, including caching and API access.
+/// Provides methods to read and manage TTClubs data, including caching and API access.
 /// </summary>
-public sealed partial class TTLeaguesReader : ITTLeaguesReader
+public sealed partial class TTClubsReader : ITTClubsReader
 {
 	/// <summary>
 	/// Prefix for cache files.
 	/// </summary>
-	private static readonly string CACHEFILE_PREFIX = "ttl_";
+	private static readonly string CACHEFILE_PREFIX = "ttclubs_";
 	/// <summary>
 	/// The culture info for Great Britain.
 	/// </summary>
 	private static readonly CultureInfo GB_CULTURE = new("en-GB");
 	/// <summary>
-	/// The base URL for the TTLeagues API.
+	/// The base URL for the TTClubs API.
 	/// </summary>
-	private static readonly string TTLEAGUES_API = "https://ttleagues-api.azurewebsites.net/api/";
+	private static readonly string TTClubs_API = "https://ttleagues-api.azurewebsites.net/api/";
 	/// <summary>
-	/// The default JSON serializer options for TTLeagues data.
+	/// The default JSON serializer options for TTClubs data.
 	/// </summary>
 	private static readonly JsonSerializerOptions JSON_SER_OPTIONS = new()
 	{
@@ -39,12 +39,12 @@ public sealed partial class TTLeaguesReader : ITTLeaguesReader
 	private readonly TimeProvider timeProvider;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="TTLeaguesReader"/> class.
+	/// Initializes a new instance of the <see cref="TTClubsReader"/> class.
 	/// </summary>
-	/// <param name="options">The TTLeagues options.</param>
+	/// <param name="options">The TTClubs options.</param>
 	/// <param name="httpClient">The HTTP client for API requests.</param>
 	/// <param name="timeProvider">The time provider for cache management.</param>
-	public TTLeaguesReader(IOptions<TTLeaguesOptions> options, HttpClient httpClient, TimeProvider timeProvider)
+	public TTClubsReader(IOptions<TTClubsOptions> options, HttpClient httpClient, TimeProvider timeProvider)
 	{
 		CacheFolder = options.Value.CacheFolder;
 		CacheHours = options.Value.CacheHours;
@@ -52,7 +52,7 @@ public sealed partial class TTLeaguesReader : ITTLeaguesReader
 
 		this.httpClient = httpClient;
 		this.timeProvider = timeProvider;
-		this.httpClient.BaseAddress = new Uri(TTLEAGUES_API);
+		this.httpClient.BaseAddress = new Uri(TTClubs_API);
 	}
 
 	/// <summary>

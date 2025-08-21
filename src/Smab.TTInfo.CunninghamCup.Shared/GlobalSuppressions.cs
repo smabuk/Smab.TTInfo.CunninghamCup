@@ -5,9 +5,9 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~F:Smab.TTInfo.CunninghamCup.Shared.TTLeagues.TTLeaguesReader.CACHEFILE_PREFIX")]
-[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~F:Smab.TTInfo.CunninghamCup.Shared.TTLeagues.TTLeaguesReader.GB_CULTURE")]
-[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~F:Smab.TTInfo.CunninghamCup.Shared.TTLeagues.TTLeaguesReader.httpClient")]
-[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~F:Smab.TTInfo.CunninghamCup.Shared.TTLeagues.TTLeaguesReader.JSON_SER_OPTIONS")]
-[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~F:Smab.TTInfo.CunninghamCup.Shared.TTLeagues.TTLeaguesReader.timeProvider")]
-[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~F:Smab.TTInfo.CunninghamCup.Shared.TTLeagues.TTLeaguesReader.TTLEAGUES_API")]
+[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~F:Smab.TTInfo.CunninghamCup.Shared.TTClubs.TTClubsReader.CACHEFILE_PREFIX")]
+[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~F:Smab.TTInfo.CunninghamCup.Shared.TTClubs.TTClubsReader.GB_CULTURE")]
+[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~F:Smab.TTInfo.CunninghamCup.Shared.TTClubs.TTClubsReader.httpClient")]
+[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~F:Smab.TTInfo.CunninghamCup.Shared.TTClubs.TTClubsReader.JSON_SER_OPTIONS")]
+[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~F:Smab.TTInfo.CunninghamCup.Shared.TTClubs.TTClubsReader.timeProvider")]
+[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~F:Smab.TTInfo.CunninghamCup.Shared.TTClubs.TTClubsReader.TTClubs_API")]

@@ -1,6 +1,6 @@
 @page "/entries"
 @page "/entries/{MembershipId:int?}"
-@inject TTLeaguesReader _ttLeaguesReader
+@inject TTClubsReader _TTClubsReader
 
 <ul>
 	@foreach(MembershipItem membership in Membership?.Items ?? [])
@@ -29,14 +29,14 @@
 		string ttinfoId = "olop";
 		if (MembershipId is null)
 		{
-			Memberships ??= await _ttLeaguesReader.GetMemberships(ttinfoId);
+			Memberships ??= await _TTClubsReader.GetMemberships(ttinfoId);
 			if (Memberships is not null) {
 				MembershipId = Memberships.Items.Single(m => m.Name.Contains("Cunningham")).Id;
 			}
 		}
 		if (MembershipId is not null)
 		{
-			Membership ??= await _ttLeaguesReader.GetMembership(ttinfoId, (int)MembershipId);
+			Membership ??= await _TTClubsReader.GetMembership(ttinfoId, (int)MembershipId);
 		}
 	}
 }

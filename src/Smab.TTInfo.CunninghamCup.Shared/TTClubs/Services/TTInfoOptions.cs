@@ -1,4 +1,4 @@
-﻿namespace Smab.TTInfo.CunninghamCup.Shared.TTLeagues.Services;
+﻿namespace Smab.TTInfo.CunninghamCup.Shared.TTClubs.Services;
 
 /// <summary>
 /// Base options for TTInfo configuration.

@@ -1,9 +1,9 @@
-﻿namespace Smab.TTInfo.CunninghamCup.Shared.TTLeagues.Services;
+﻿namespace Smab.TTInfo.CunninghamCup.Shared.TTClubs.Services;
 
 /// <summary>
 /// Ensures default request headers are set for HTTP requests.
 /// </summary>
-public sealed partial class TTLeaguesReader
+public sealed partial class TTClubsReader
 {
 	internal void EnsureDefaultRequestHeaders(string ttinfoId)
 	{

@@ -1,4 +1,4 @@
-﻿namespace Smab.TTInfo.CunninghamCup.Shared.TTLeagues.Models;
+﻿namespace Smab.TTInfo.CunninghamCup.Shared.TTClubs.Models;
 
 public sealed record MembershipsItem
 (
