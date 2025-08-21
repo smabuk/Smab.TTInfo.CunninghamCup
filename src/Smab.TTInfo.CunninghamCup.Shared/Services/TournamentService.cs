@@ -5,7 +5,9 @@ public interface ITournamentService
 	Tournament GetTournament();
 	void AddOrUpdateTournament(Tournament tournament);
 
-	Task<IEnumerable<Tournament>> LoadTournamentFromJsonAsync(string filePath);
+	Task<Tournament> LoadTournamentFromJsonAsync(string filePath);
+	public Task<bool> SaveTournamentToJsonAsync(string filePath);
+
 	Tournament SeedRandomTournament();
 }
 
@@ -18,9 +20,15 @@ public class TournamentService : ITournamentService
 
 	public void AddOrUpdateTournament(Tournament tournament) => _tournament = tournament;
 
-	public Task<IEnumerable<Tournament>> LoadTournamentFromJsonAsync(string filePath)
+	public Task<Tournament> LoadTournamentFromJsonAsync(string filePath)
 	{
-		// Implementation for loading tournaments from a JSON file
+		// Implementation for loading a tournament from a JSON file
+		throw new NotImplementedException();
+	}
+
+	public Task<bool> SaveTournamentToJsonAsync(string filePath)
+	{
+		// Implementation for saving a tournament to a JSON file
 		throw new NotImplementedException();
 	}
 
