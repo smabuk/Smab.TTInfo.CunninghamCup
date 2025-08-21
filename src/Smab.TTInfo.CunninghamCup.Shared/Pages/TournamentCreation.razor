@@ -1,0 +1,76 @@
+@page "/tournament/create"
+@using Smab.TTInfo.CunninghamCup.Shared.Models
+
+<PageTitle>Create Tournament</PageTitle>
+
+<h2>Create Tournament</h2>
+
+<EditForm Model="tournamentModel" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label>Tournament Name</label>
+        <InputText @bind-Value="tournamentModel.Name" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Date</label>
+        <InputDate @bind-Value="tournamentModel.Date" class="form-control" />
+    </div>
+    <h3>Players</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Handicap</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var player in players)
+            {
+                <tr>
+                    <td><InputText @bind-Value="player.Name" class="form-control" /></td>
+                    <td><InputNumber @bind-Value="player.Handicap" class="form-control" /></td>
+                    <td>
+                        <button type="button" class="btn btn-danger" @onclick="() => RemovePlayer(player)">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-primary" @onclick="AddPlayer">Add Player</button>
+    <br /><br />
+    <button type="submit" class="btn btn-success">Confirm & Draw Groups</button>
+</EditForm>
+
+@code {
+    private TournamentModel tournamentModel = new() { Name = string.Empty, Date = DateOnly.FromDateTime(DateTime.Today) };
+    private List<PlayerModel> players = new();
+
+    private void AddPlayer()
+    {
+        players.Add(new PlayerModel { Name = string.Empty, Handicap = 0 });
+    }
+
+    private void RemovePlayer(PlayerModel player)
+    {
+        players.Remove(player);
+    }
+
+    private void HandleValidSubmit()
+    {
+        // TODO: Create Tournament instance and navigate to GroupDraw page
+    }
+
+    // Helper models for form binding
+    private class TournamentModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+    }
+    private class PlayerModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public int Handicap { get; set; }
+    }
+}

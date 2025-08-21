@@ -1,0 +1,107 @@
+@page "/group/{GroupName}"
+@using Smab.TTInfo.CunninghamCup.Shared.Models
+@inject Smab.TTInfo.CunninghamCup.Shared.TTLeagues.ITournamentService _tournamentService
+
+<PageTitle>Group Details</PageTitle>
+
+@if (group is null || players is null) {
+	<p>Group or player data not loaded.</p>
+} else {
+	<div class="group-header">
+		<h2>@group.Name</h2>
+		<span class="badge bg-info">Round Robin</span>
+		<span class="badge bg-secondary">Size @group.Players.Count</span>
+	</div>
+
+	<h3>Round</h3>
+	<table class="table table-dark table-striped">
+		<thead>
+			<tr>
+				<th>Player</th>
+				<th>W</th>
+				<th>L</th>
+				<th>S</th>
+				<th>GM</th>
+				<th>PTS</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (GroupPlayerSummary summary in group.GroupPositions) {
+				Player player = players.ContainsKey(summary.PlayerId) ? players[summary.PlayerId] : new Player(summary.PlayerId, "Unknown");
+				<tr>
+					<td>@player.Name</td>
+					<td>@summary.MatchWins</td>
+					<td>@summary.MatchLosses</td>
+					<td>@summary.SetsFor-@summary.SetsAgainst</td>
+					<td>@summary.PointsFor-@summary.PointsAgainst</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+
+	<h3>Matches</h3>
+	<table class="table table-dark table-bordered">
+		<thead>
+			<tr>
+				<th>Round</th>
+				<th>Player A</th>
+				<th>Player B</th>
+				<th>Score</th>
+				<th>Time</th>
+				<th>Table</th>
+				<th>Edit</th>
+			</tr>
+		</thead>
+		<tbody>
+			@for (int i = 0; i < group.Matches.Count; i++) {
+				Match match = group.Matches[i];
+				Player playerA = players.ContainsKey(match.PlayerA) ? players[match.PlayerA] : new Player(match.PlayerA, "Unknown");
+				Player playerB = players.ContainsKey(match.PlayerB) ? players[match.PlayerB] : new Player(match.PlayerB, "Unknown");
+				string score = match.Result is not null
+				? $"{match.PlayerASets}-{match.PlayerBSets} ({string.Join(", ", match.Result.Sets.Select(set => $"{set.PlayerAScore}-{set.PlayerBScore}"))})"
+				: "-";
+				<tr>
+					<td>Round @(i + 1)</td>
+					<td>@playerA.Name</td>
+					<td>@playerB.Name</td>
+					<td>@score</td>
+					<td>@(match.ScheduledTime?.ToString("ddd dd/MM/yyyy HH:mm") ?? "-")</td>
+					<td>@(match.Notes ?? "-")</td>
+					<td>
+						<button class="btn btn-primary btn-sm" @onclick="() => EditMatch(match)">Edit</button>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	[Parameter] public string GroupName { get; set; } = string.Empty;
+
+	public GroupDetails(string groupName)
+	{
+		GroupName = groupName;
+	}
+
+	private Group? group;
+	private Dictionary<PlayerId, Player>? players;
+	private Tournament? tournament;
+
+	protected override void OnInitialized()
+	{
+		// For demo, use the first tournament. In production, use a tournament selector or context.
+		tournament = _tournamentService.GetAllTournaments().FirstOrDefault();
+		if (tournament is not null) {
+			group = tournament.Groups.FirstOrDefault(g => string.Equals(g.Name, GroupName, StringComparison.OrdinalIgnoreCase));
+			players = tournament.Players;
+		}
+	}
+}
+
+@code {
+	private void EditMatch(Match match)
+	{
+		// TODO: Show match editor dialog/modal
+	}
+}

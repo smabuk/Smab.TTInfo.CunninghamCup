@@ -1,0 +1,70 @@
+@page "/tournament/knockoutphase"
+@using Smab.TTInfo.CunninghamCup.Shared.Models
+
+<PageTitle>Knockout Phase</PageTitle>
+
+<h2>Knockout Phase</h2>
+
+@if (tournament is null || tournament.KnockoutStage is null)
+{
+    <p>No knockout rounds available.</p>
+}
+else
+{
+    @foreach (KnockoutRound round in tournament.KnockoutStage.Rounds)
+    {
+        <div class="card mb-4">
+            <div class="card-header">
+                <strong>@round.Type.ToString()</strong>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Player A</th>
+                            <th>Player B</th>
+                            <th>Score</th>
+                            <th>Edit</th>
+                            <th>Advance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Match match in round.Matches)
+                        {
+                            string playerAName = tournament.Players.ContainsKey(match.PlayerA) ? tournament.Players[match.PlayerA].Name : match.PlayerA.ToString();
+                            string playerBName = tournament.Players.ContainsKey(match.PlayerB) ? tournament.Players[match.PlayerB].Name : match.PlayerB.ToString();
+                            string score = match.Result is not null
+                                ? $"{match.Result.PlayerASets}-{match.Result.PlayerBSets} ({string.Join(", ", match.Result.Sets.Select(set => $"{set.PlayerAScore}-{set.PlayerBScore}"))})"
+                                : "-";
+                            <tr>
+                                <td>@playerAName</td>
+                                <td>@playerBName</td>
+                                <td>@score</td>
+                                <td>
+                                    <button class="btn btn-primary" @onclick="() => EditMatch(match)">Edit</button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-success" @onclick="() => AdvanceWinner(match)">Advance</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    [Parameter] public Tournament? tournament { get; set; }
+
+    private void EditMatch(Match match)
+    {
+        // TODO: Show match editor dialog
+    }
+
+    private void AdvanceWinner(Match match)
+    {
+        // TODO: Advance winner to next round
+    }
+}

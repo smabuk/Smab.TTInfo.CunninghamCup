@@ -1,0 +1,41 @@
+@page "/tournament/groupdraw"
+@using Smab.TTInfo.CunninghamCup.Shared.Models
+
+<PageTitle>Group Draw</PageTitle>
+
+<h2>Group Draw</h2>
+
+@if (tournament is null)
+{
+    <p>No tournament loaded.</p>
+}
+else
+{
+    <h3>Groups</h3>
+    @foreach (Group group in tournament.Groups)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                <strong>@group.Name</strong>
+            </div>
+            <div class="card-body">
+                <ul>
+                    @foreach (PlayerId playerId in group.Players)
+                    {
+                        <li>@(tournament.Players.ContainsKey(playerId) ? tournament.Players[playerId].Name : playerId.ToString())</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+    <button class="btn btn-success" @onclick="ConfirmGroups">Confirm & Generate Matches</button>
+}
+
+@code {
+    [Parameter] public Tournament? tournament { get; set; }
+
+    private void ConfirmGroups()
+    {
+        // TODO: Draw matches and navigate to GroupPhase page
+    }
+}
