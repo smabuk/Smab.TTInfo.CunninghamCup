@@ -5,7 +5,7 @@
 
 
 <PageTitle>Group Details</PageTitle>
-<h2>@tournament?.Name</h2>
+<h1>@tournament?.Name</h1>
 
 @if (tournament?.Groups.Count == 0) {
 	<h3>No Groups Available</h3>
@@ -19,15 +19,15 @@
 		<span class="badge bg-secondary">Size @group.Players.Count</span>
 	</div>
 
-	<h3>Round</h3>
+	<h3>Summary</h3>
 	<table class="table table-dark table-striped">
 		<thead>
 			<tr>
 				<th>Player</th>
+				<th>PL</th>
 				<th>W</th>
 				<th>L</th>
 				<th>S</th>
-				<th>GM</th>
 				<th>PTS</th>
 			</tr>
 		</thead>
@@ -36,6 +36,7 @@
 				Player player = players.ContainsKey(summary.PlayerId) ? players[summary.PlayerId] : new Player(summary.PlayerId, "Unknown");
 				<tr>
 					<td>@player.Name</td>
+					<td>@summary.Played</td>
 					<td>@summary.MatchWins</td>
 					<td>@summary.MatchLosses</td>
 					<td>@summary.SetsFor-@summary.SetsAgainst</td>
@@ -67,7 +68,7 @@
 				? $"{match.PlayerASets}-{match.PlayerBSets} ({string.Join(", ", match.Result.Sets.Select(set => $"{set.PlayerAScore}-{set.PlayerBScore}"))})"
 				: "-";
 				<tr>
-					<td>Round @(i + 1)</td>
+					<td>Match @(i + 1)</td>
 					<td>@playerA.Name</td>
 					<td>@playerB.Name</td>
 					<td>@score</td>
