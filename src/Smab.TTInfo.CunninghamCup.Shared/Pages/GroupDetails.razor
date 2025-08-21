@@ -91,12 +91,9 @@
 
 	protected override void OnInitialized()
 	{
-		// For demo, use the first tournament. In production, use a tournament selector or context.
-		tournament = _tournamentService.GetAllTournaments().FirstOrDefault();
-		if (tournament is not null) {
-			group = tournament.Groups.FirstOrDefault(g => string.Equals(g.Name, GroupName, StringComparison.OrdinalIgnoreCase));
-			players = tournament.Players;
-		}
+		tournament ??= _tournamentService.GetTournament();
+		group = tournament.Groups.FirstOrDefault(g => string.Equals(g.Name, GroupName, StringComparison.OrdinalIgnoreCase));
+		players = tournament.Players;
 	}
 }
 
