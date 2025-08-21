@@ -1,0 +1,42 @@
+@page "/entries"
+@page "/entries/{MembershipId:int?}"
+@inject TTLeaguesReader _ttLeaguesReader
+
+<ul>
+	@foreach(MembershipItem membership in Membership?.Items ?? [])
+	{
+		<li>
+			<strong>@membership.Contact.FullName</strong>
+			@membership.Contact.User.MembershipNo
+			@membership.Contact.User.MembershipType
+		</li>
+	}
+</ul>
+
+@code {
+
+	[Parameter]
+	public int? MembershipId { get; set; } = null;
+
+	[PersistentState]
+	public Memberships? Memberships { get; set; }
+
+	[PersistentState]
+	public Membership? Membership { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		string ttinfoId = "olop";
+		if (MembershipId is null)
+		{
+			Memberships ??= await _ttLeaguesReader.GetMemberships(ttinfoId);
+			if (Memberships is not null) {
+				MembershipId = Memberships.Items.Single(m => m.Name.Contains("Cunningham")).Id;
+			}
+		}
+		if (MembershipId is not null)
+		{
+			Membership ??= await _ttLeaguesReader.GetMembership(ttinfoId, (int)MembershipId);
+		}
+	}
+}
