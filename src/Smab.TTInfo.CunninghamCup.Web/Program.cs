@@ -1,3 +1,4 @@
+using Smab.TTInfo.CunninghamCup.Shared.Services;
 using Smab.TTInfo.CunninghamCup.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +30,11 @@ app.UseStatusCodePagesWithReExecute("/not-found", createScopeForErrors: true);
 app.UseHttpsRedirection();
 
 app.UseAntiforgery();
+
+app.Services
+	.GetRequiredService<ITournamentService>()
+	.SeedRandomTournament()
+	;
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

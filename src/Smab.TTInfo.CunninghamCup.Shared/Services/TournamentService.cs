@@ -1,4 +1,4 @@
-namespace Smab.TTInfo.CunninghamCup.Shared.TTClubs;
+namespace Smab.TTInfo.CunninghamCup.Shared.Services;
 
 public interface ITournamentService
 {
@@ -6,6 +6,9 @@ public interface ITournamentService
 	Tournament? GetTournament(Guid id);
 	IEnumerable<Tournament> GetAllTournaments();
 	void AddOrUpdateTournament(Tournament tournament);
+
+	Task<IEnumerable<Tournament>> LoadTournamentsFromJsonAsync(string filePath);
+	Tournament SeedRandomTournament();
 }
 
 public class TournamentService : ITournamentService
@@ -28,4 +31,24 @@ public class TournamentService : ITournamentService
 	public IEnumerable<Tournament> GetAllTournaments() => _tournaments.Values;
 
 	public void AddOrUpdateTournament(Tournament tournament) => _tournaments[tournament.Id] = tournament;
+
+	public Task<IEnumerable<Tournament>> LoadTournamentsFromJsonAsync(string filePath)
+	{
+		// Implementation for loading tournaments from a JSON file
+		throw new NotImplementedException();
+	}
+
+	public Tournament SeedRandomTournament()
+	{
+		Tournament tournament = Tournament.Create(
+				name: "Test Cunningham Cup",
+				date: DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
+				players: [.. Enumerable.Range(1, 15)
+						.Select(i => Player.Create($"Player {i}", Random.Shared.Next(-10, 10)))]
+			);
+
+		AddOrUpdateTournament(tournament);
+
+		return tournament;
+	}
 }

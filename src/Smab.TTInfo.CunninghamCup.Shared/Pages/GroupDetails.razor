@@ -1,6 +1,8 @@
+@page "/group"
 @page "/group/{GroupName}"
-@using Smab.TTInfo.CunninghamCup.Shared.Models
-@inject Smab.TTInfo.CunninghamCup.Shared.TTClubs.ITournamentService _tournamentService
+@using Smab.TTInfo.CunninghamCup.Shared.Services
+@inject ITournamentService _tournamentService
+
 
 <PageTitle>Group Details</PageTitle>
 
@@ -78,11 +80,6 @@
 
 @code {
 	[Parameter] public string GroupName { get; set; } = string.Empty;
-
-	public GroupDetails(string groupName)
-	{
-		GroupName = groupName;
-	}
 
 	private Group? group;
 	private Dictionary<PlayerId, Player>? players;
