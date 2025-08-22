@@ -44,24 +44,45 @@
 	<table class="table table-dark table-striped">
 		<thead>
 			<tr>
+				<th>#</th>
 				<th>Player</th>
 				<th>PL</th>
-				<th>W</th>
-				<th>L</th>
+				<th>M</th>
 				<th>S</th>
-				<th>PTS</th>
+				<th>GM</th>
+				<th>History</th>
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (GroupPlayerSummary summary in group.GroupPositions) {
+			@foreach ((int i, GroupPlayerSummary summary) in group.GroupPositions.Index()) {
 				Player player = players.ContainsKey(summary.PlayerId) ? players[summary.PlayerId] : new Player(summary.PlayerId, "Unknown");
 				<tr>
+					<td>@(i + 1)</td>
 					<td>@player.Name (@player.Handicap)</td>
 					<td>@summary.Played</td>
-					<td>@summary.MatchWins</td>
-					<td>@summary.MatchLosses</td>
+					<td>@summary.MatchWins-@summary.MatchLosses</td>
 					<td>@summary.SetsFor-@summary.SetsAgainst</td>
 					<td>@summary.PointsFor-@summary.PointsAgainst</td>
+					<td>
+						@foreach (Match match in group.Matches.Where(m => summary.PlayerId == m.PlayerA || summary.PlayerId == m.PlayerB)) {
+							@if (match.IsCompleted) {
+								@if (match.PlayerA == summary.PlayerId) {
+									@if (match.IsPlayerAWin) {
+										<span class="badge bg-success rounded-pill">W</span>
+									} else {
+										<span class="badge bg-danger rounded-pill">L</span>
+									}
+								} 
+								@if (match.PlayerB == summary.PlayerId) {
+									@if (match.IsPlayerBWin) {
+										<span class="badge bg-success rounded-pill">W</span>
+									} else {
+										<span class="badge bg-danger rounded-pill">L</span>
+									}
+								} 
+							}
+						}
+					</td>
 				</tr>
 			}
 		</tbody>
@@ -74,29 +95,31 @@
 				<th>#</th>
 				<th>Player A</th>
 				<th>Player B</th>
+				<th>Sets</th>
 				<th>Score</th>
-				@* <th>Time</th> *@
-				@* <th>Table</th> *@
 				<th>Edit</th>
 			</tr>
 		</thead>
 		<tbody>
 			@for (int i = 0; i < group.Matches.Count; i++) {
+				int matchNo = i;
 				Match match = group.Matches[i];
 				Player playerA = players.ContainsKey(match.PlayerA) ? players[match.PlayerA] : new Player(match.PlayerA, "Unknown");
 				Player playerB = players.ContainsKey(match.PlayerB) ? players[match.PlayerB] : new Player(match.PlayerB, "Unknown");
 				string score = match.Result is not null
-				? $"{match.PlayerASets}-{match.PlayerBSets} ({string.Join(", ", match.Result.Sets.Select(set => $"{set.PlayerAScore}-{set.PlayerBScore}"))})"
+				? $"{string.Join(", ", match.Result.Sets.Select(set => $"{set.PlayerAScore}-{set.PlayerBScore}"))}"
 				: "";
 				<tr>
 					<td>@(i + 1)</td>
 					<td>@playerA.Name (@match.PlayerAStart)</td>
 					<td>@playerB.Name (@match.PlayerBStart)</td>
+					<td>@($"{match.PlayerASets}-{match.PlayerBSets}")</td>
 					<td>@score</td>
 					@* <td>@(match.ScheduledTime?.ToString("ddd dd/MM/yyyy HH:mm") ?? "-")</td> *@
 					@* <td>@(match.Notes ?? "-")</td> *@
 					<td>
 						<button class="btn btn-primary btn-sm" @onclick="() => EditMatch(match)">Edit</button>
+						<button class="btn btn-sm btn-warning float-end" @onclick="() => CompleteMatchWithRandomScores(matchNo)">Random</button>
 					</td>
 				</tr>
 			}
@@ -132,6 +155,11 @@
 	private void CompleteWithRandomScores()
 	{
 		group = _tournamentService.CompleteGroupWithRandomResults(group!.Name);
+	}
+
+	private void CompleteMatchWithRandomScores(int matchNo)
+	{
+		group = _tournamentService.CompleteMatchWithRandomScores(group!.Name, matchNo);
 	}
 
 	private void ResetGroup()

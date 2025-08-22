@@ -33,7 +33,7 @@ app.UseAntiforgery();
 
 app.Services
 	.GetRequiredService<ITournamentService>()
-	.SeedRandomTournament(15).DrawGroups(4)
+	.SeedRandomTournament(15).DrawGroups(5)
 	;
 
 app.MapStaticAssets();
