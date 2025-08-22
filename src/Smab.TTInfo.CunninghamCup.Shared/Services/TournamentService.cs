@@ -9,8 +9,6 @@ public interface ITournamentService
 
 	Task<Tournament> LoadTournamentFromJsonAsync(string filePath);
 	public Task<bool> SaveTournamentToJsonAsync(string filePath);
-
-	Tournament SeedRandomTournament();
 }
 
 public class TournamentService : ITournamentService
@@ -32,22 +30,6 @@ public class TournamentService : ITournamentService
 	{
 		// Implementation for saving a tournament to a JSON file
 		throw new NotImplementedException();
-	}
-
-	public Tournament SeedRandomTournament()
-	{
-		Tournament tournament = Tournament.Create(
-			name: "Test Cunningham Cup",
-			date: DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
-			players: [.. Enumerable.Range(1, 15)
-				.Select(i => Player.Create($"Player {i}", Random.Shared.Next(-10, 10)))]
-		);
-
-		tournament = tournament.DrawGroups(4);
-
-		AddOrUpdateTournament(tournament);
-
-		return tournament;
 	}
 }
 

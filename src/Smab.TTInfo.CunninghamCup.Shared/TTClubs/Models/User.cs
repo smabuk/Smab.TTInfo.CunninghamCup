@@ -11,6 +11,7 @@ public sealed record User
 	int LinkId,
 	string Initials,
 	object ImageId,
+	[Display(Name = "TTE #")]
 	int MembershipNo,
 	string MembershipType,
 	int Gender,

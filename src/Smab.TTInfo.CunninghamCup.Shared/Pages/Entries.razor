@@ -11,7 +11,7 @@
 	<PropertyColumn Title="Name" Property="@(m => m.Contact.FullName)" Sortable="true" />
 	<PropertyColumn Title="TTE #" Property="@(m => m.Contact.User.MembershipNo)" Sortable="true" />
 	<PropertyColumn Title="Membership Type" Property="@(m => Pretty(m.Contact.User.MembershipType))" Sortable="true" />
-	<PropertyColumn Title="Phone #" Property="@(m => PrettyPhone(m.Contact.User.PhoneNumber))" Sortable="false" />
+	@* <PropertyColumn Title="Phone #" Property="@(m => PrettyPhone(m.Contact.User.PhoneNumber))" Sortable="false" /> *@
 	<PropertyColumn
 		Title="Gender"
 		Property="@(m => m.Contact.User.Gender == 1 ? "Male" : "Female")" Sortable="true" />
