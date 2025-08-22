@@ -1,0 +1,12 @@
+﻿@if (Icon.EndsWith(".png"))
+{
+	<span aria-hidden="true"><img class="bi" src="@Icon" height="30"/></span>
+} else
+{
+	<span aria-hidden="true"><svg class="bi" fill="currentColor"><use xlink:href="bootstrap-icons.svg#@Icon" /></svg></span>
+}
+
+@code {
+	[Parameter, EditorRequired]
+	public required string Icon { get; set; }
+}
