@@ -10,17 +10,14 @@
 <h1>@tournament?.Name</h1>
 
 
-@if (tournament?.Groups.Count > 0)
-{
+@if (tournament?.Groups.Count > 0) {
 	<div class="mb-3">
 		<label for="groupSelector" class="form-label">Select Group:</label>
 		<select id="groupSelector" class="form-select" @onchange="OnGroupChanged" value="@GroupName">
-			@if (GroupName is null)
-			{
+			@if (GroupName is null) {
 				<option value=" " selected>Select a group</option>
 			}
-			@foreach (Group g in tournament.Groups)
-			{
+			@foreach (Group g in tournament.Groups) {
 				<option value="@g.Name" selected="@(g.Name == GroupName)">@g.Name</option>
 			}
 		</select>
@@ -37,7 +34,7 @@
 		<span class="badge bg-info">Round Robin</span>
 		<span class="badge bg-secondary">Size @group.Players.Count</span>
 		<button class="btn btn-sm btn-warning float-end" @onclick="ResetGroup">Reset</button>
-		<button class="btn btn-sm btn-warning float-end mx-3" @onclick="CompleteWithRandomScores">Random scores</button>
+		<button class="btn btn-sm btn-warning float-end mx-3" @onclick="CompleteWithRandomScores">Random</button>
 	</div>
 
 	<h3>Summary</h3>
@@ -72,14 +69,14 @@
 									} else {
 										<span class="badge bg-danger rounded-pill">L</span>
 									}
-								} 
+								}
 								@if (match.PlayerB == summary.PlayerId) {
 									@if (match.IsPlayerBWin) {
 										<span class="badge bg-success rounded-pill">W</span>
 									} else {
 										<span class="badge bg-danger rounded-pill">L</span>
 									}
-								} 
+								}
 							}
 						}
 					</td>
@@ -145,27 +142,16 @@
 	private void OnGroupChanged(ChangeEventArgs e)
 	{
 		string selectedGroup = e.Value?.ToString() ?? string.Empty;
-		if (!string.Equals(selectedGroup, GroupName, StringComparison.OrdinalIgnoreCase))
-		{
+		if (!string.Equals(selectedGroup, GroupName, StringComparison.OrdinalIgnoreCase)) {
 			// Navigate to the selected group page
 			NavigationManager.NavigateTo($"/group/{selectedGroup}");
 		}
 	}
 
-	private void CompleteWithRandomScores()
-	{
-		group = _tournamentService.CompleteGroupWithRandomResults(group!.Name);
-	}
+	private void CompleteWithRandomScores() => group = _tournamentService.CompleteGroupWithRandomResults(group!.Name);
+	private void CompleteMatchWithRandomScores(int matchNo) => group = _tournamentService.CompleteMatchWithRandomScores(group!.Name, matchNo);
+	private void ResetGroup() => group = _tournamentService.ResetGroup(group!.Name);
 
-	private void CompleteMatchWithRandomScores(int matchNo)
-	{
-		group = _tournamentService.CompleteMatchWithRandomScores(group!.Name, matchNo);
-	}
-
-	private void ResetGroup()
-	{
-		group = _tournamentService.ResetGroup(group!.Name);
-	}
 }
 
 @code {
