@@ -18,4 +18,12 @@ public readonly record struct MatchId(string StringId)
 public class MatchIdConverter : SingleValueConverter<MatchId, string>
 {
 	public MatchIdConverter() : base(creator => new MatchId(creator!), extractor => extractor.ToString()) { }
+
+	// Support dictionary key serialization
+	public override MatchId ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+		=> new(reader.GetString()!);
+
+	public override void WriteAsPropertyName(Utf8JsonWriter writer, MatchId value, JsonSerializerOptions options)
+		=> writer.WritePropertyName(value.StringId);
+
 }

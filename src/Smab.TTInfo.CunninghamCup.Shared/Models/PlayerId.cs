@@ -18,4 +18,11 @@ public readonly record struct PlayerId(string StringId)
 public class PlayerIdConverter : SingleValueConverter<PlayerId, string>
 {
 	public PlayerIdConverter() : base(creator => new PlayerId(creator!), extractor => extractor.ToString()) { }
+
+	// Support dictionary key serialization
+	public override PlayerId ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+		=> new(reader.GetString()!);
+
+	public override void WriteAsPropertyName(Utf8JsonWriter writer, PlayerId value, JsonSerializerOptions options)
+		=> writer.WritePropertyName(value.StringId);
 }
