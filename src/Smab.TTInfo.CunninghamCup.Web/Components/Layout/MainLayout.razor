@@ -1,5 +1,8 @@
 ﻿@inherits LayoutComponentBase
+@inject IWebHostEnvironment env
+@inject IHttpContextAccessor context
 
+<CascadingValue Value="EditMode">
 <div class="page">
     <main>
         <NavMenu />
@@ -7,11 +10,15 @@
             @Body
         </article>
     </main>
-
 </div>
+ </CascadingValue>
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
+
+@code {
+    private bool EditMode => context.HttpContext?.Request.Host.ToString().StartsWith("smab") ?? false;
+}

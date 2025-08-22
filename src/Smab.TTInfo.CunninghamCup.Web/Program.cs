@@ -10,11 +10,13 @@ builder.Services.AddRazorComponents()
 //builder.Services.AddLocalization();
 //builder.Services.AddHealthChecks();
 builder.Services.AddHttpClient();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
 
 builder.Services.AddTournamentService();
 builder.Services.AddTTClubsService();
+builder.Services.AddScoped<AppState>();
 
 var app = builder.Build();
 
@@ -33,8 +35,7 @@ app.UseAntiforgery();
 
 app.Services
 	.GetRequiredService<ITournamentService>()
-	.SeedRandomTournament(15).DrawGroups(5)
-	;
+	.SeedRandomTournament(22).DrawGroups(4);
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

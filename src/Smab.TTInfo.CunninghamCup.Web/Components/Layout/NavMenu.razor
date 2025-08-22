@@ -32,6 +32,9 @@
 				</NavLink>
 			</div>
 		</nav>
-		<nav class="nav"></nav>
+		<nav class="nav">@(EditMode ? "Edit mode" : "")</nav>
 	</div>
 </div>
+@code {
+	[CascadingParameter] public bool EditMode { get; set; }
+}
