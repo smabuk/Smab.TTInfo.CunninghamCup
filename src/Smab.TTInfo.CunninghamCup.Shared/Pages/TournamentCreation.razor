@@ -1,6 +1,5 @@
-@page "/tournament/create"
-@using Smab.TTInfo.CunninghamCup.Shared.Models
-@using System.ComponentModel.DataAnnotations
+@page "/create"
+@inject ITournamentService _tournamentService
 @rendermode InteractiveServer
 
 <PageTitle>Create Tournament</PageTitle>
@@ -8,80 +7,92 @@
 <h2>Create Tournament</h2>
 
 <EditForm Model="tournamentModel" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="mb-3">
-        <label>Tournament Name</label>
-        <InputText @bind-Value="tournamentModel.Name" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label>Date</label>
-        <InputDate @bind-Value="tournamentModel.Date" class="form-control" />
-    </div>
-    <h3>Players</h3>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Handicap</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var player in tournamentModel.Players)
-            {
-                <tr>
-                    <td><InputText @bind-Value="player.Name" class="form-control" /></td>
-                    <td><InputNumber @bind-Value="player.Handicap" class="form-control" /></td>
-                    <td>
-                        <button type="button" class="btn btn-danger" @onclick="() => RemovePlayer(player)">Remove</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <button type="button" class="btn btn-primary" @onclick="AddPlayer">Add Player</button>
-    <br /><br />
-    <button type="submit" class="btn btn-success">Confirm & Draw Groups</button>
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+	<div class="mb-3">
+		<label>Tournament Name</label>
+		<InputText @bind-Value="tournamentModel.Name" class="form-control" />
+	</div>
+	<div class="mb-3">
+		<label>Date</label>
+		<InputDate @bind-Value="tournamentModel.Date" class="form-control" />
+	</div>
+	<h3>Players</h3>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Handicap</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var player in tournamentModel.Players) {
+				<tr>
+					<td><InputText @bind-Value="player.Name" class="form-control" /></td>
+					<td><InputNumber @bind-Value="player.Handicap" class="form-control" /></td>
+					<td>
+						<button type="button" class="btn btn-danger" @onclick="() => RemovePlayer(player)">Remove</button>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+	<button type="button" class="btn btn-primary" @onclick="AddPlayer">Add Player</button>
+	<br /><br />
+	<button type="submit" class="btn btn-success">Confirm & Draw Groups</button>
 </EditForm>
 
 @code {
-    private TournamentEditModel tournamentModel = new() { Name = string.Empty, Date = DateOnly.FromDateTime(DateTime.Today) };
+	private TournamentEditModel tournamentModel = new() { Name = string.Empty, Date = DateOnly.FromDateTime(DateTime.Today) };
 
-    private void AddPlayer()
-    {
-        tournamentModel.Players.Add(new PlayerEditModel { Name = string.Empty, Handicap = 0 });
-        StateHasChanged();
-    }
+	[Parameter]
+	[PersistentState]
+	public Tournament? tournament { get; set; } = default;
 
-    private void RemovePlayer(PlayerEditModel player)
-    {
-        tournamentModel.Players.Remove(player);
-        StateHasChanged();
-    }
 
-    private void HandleValidSubmit()
-    {
-        // Convert TournamentEditModel to Tournament
-        var players = tournamentModel.Players
-            .Select(p => Player.Create(p.Name, p.Handicap))
-            .ToList();
-        var tournament = Tournament.Create(tournamentModel.Name, tournamentModel.Date, players);
-        // TODO: Draw groups and navigate to GroupDraw page
-    }
+	protected override void OnInitialized()
+	{
+		tournament ??= _tournamentService.GetTournament();
+		tournamentModel.Name = tournament.Name;
+		tournamentModel.Players = tournament.Players
+			.Select(p => new PlayerEditModel { Name = p.Value.Name, Handicap = p.Value.Handicap}).ToList();
+	}
 
-    public class TournamentEditModel
-    {
-        [Required]
-        public string Name { get; set; } = string.Empty;
-        [Required]
-        public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
-        public List<PlayerEditModel> Players { get; set; } = new();
-    }
-    public class PlayerEditModel
-    {
-        [Required]
-        public string Name { get; set; } = string.Empty;
-        public int Handicap { get; set; }
-    }
+	private void AddPlayer()
+	{
+		tournamentModel.Players.Add(new PlayerEditModel { Name = string.Empty, Handicap = 0 });
+		StateHasChanged();
+	}
+
+	private void RemovePlayer(PlayerEditModel player)
+	{
+		tournamentModel.Players.Remove(player);
+		StateHasChanged();
+	}
+
+	private void HandleValidSubmit()
+	{
+		// Convert TournamentEditModel to Tournament
+		List<Player> players = [..
+			tournamentModel.Players
+			.Select(p => Player.Create(p.Name, p.Handicap))];
+		var tournament = Tournament.Create(tournamentModel.Name, tournamentModel.Date, players);
+		// TODO: Draw groups and navigate to GroupDraw page
+	}
+
+	public class TournamentEditModel
+	{
+		[Required]
+		public string Name { get; set; } = string.Empty;
+		[Required]
+		public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+		public List<PlayerEditModel> Players { get; set; } = new();
+	}
+	public class PlayerEditModel
+	{
+		[Required]
+		public string Name { get; set; } = string.Empty;
+		public int? Handicap { get; set; }
+	}
 }
