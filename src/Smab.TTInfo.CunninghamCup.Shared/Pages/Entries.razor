@@ -1,6 +1,7 @@
 @page "/entries"
 @page "/entries/{MembershipId:int?}"
 @inject TTClubsReader _TTClubsReader
+@inject ITournamentService _tournamentService
 @rendermode InteractiveServer
 
 <PageTitle>@MembershipName</PageTitle>

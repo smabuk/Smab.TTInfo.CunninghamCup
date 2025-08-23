@@ -1,5 +1,7 @@
 @page "/tournament/create"
 @using Smab.TTInfo.CunninghamCup.Shared.Models
+@using System.ComponentModel.DataAnnotations
+@rendermode InteractiveServer
 
 <PageTitle>Create Tournament</PageTitle>
 
@@ -26,7 +28,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var player in players)
+            @foreach (var player in tournamentModel.Players)
             {
                 <tr>
                     <td><InputText @bind-Value="player.Name" class="form-control" /></td>
@@ -44,32 +46,41 @@
 </EditForm>
 
 @code {
-    private TournamentModel tournamentModel = new() { Name = string.Empty, Date = DateOnly.FromDateTime(DateTime.Today) };
-    private List<PlayerModel> players = new();
+    private TournamentEditModel tournamentModel = new() { Name = string.Empty, Date = DateOnly.FromDateTime(DateTime.Today) };
 
     private void AddPlayer()
     {
-        players.Add(new PlayerModel { Name = string.Empty, Handicap = 0 });
+        tournamentModel.Players.Add(new PlayerEditModel { Name = string.Empty, Handicap = 0 });
+        StateHasChanged();
     }
 
-    private void RemovePlayer(PlayerModel player)
+    private void RemovePlayer(PlayerEditModel player)
     {
-        players.Remove(player);
+        tournamentModel.Players.Remove(player);
+        StateHasChanged();
     }
 
     private void HandleValidSubmit()
     {
-        // TODO: Create Tournament instance and navigate to GroupDraw page
+        // Convert TournamentEditModel to Tournament
+        var players = tournamentModel.Players
+            .Select(p => Player.Create(p.Name, p.Handicap))
+            .ToList();
+        var tournament = Tournament.Create(tournamentModel.Name, tournamentModel.Date, players);
+        // TODO: Draw groups and navigate to GroupDraw page
     }
 
-    // Helper models for form binding
-    private class TournamentModel
+    public class TournamentEditModel
     {
+        [Required]
         public string Name { get; set; } = string.Empty;
+        [Required]
         public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+        public List<PlayerEditModel> Players { get; set; } = new();
     }
-    private class PlayerModel
+    public class PlayerEditModel
     {
+        [Required]
         public string Name { get; set; } = string.Empty;
         public int Handicap { get; set; }
     }

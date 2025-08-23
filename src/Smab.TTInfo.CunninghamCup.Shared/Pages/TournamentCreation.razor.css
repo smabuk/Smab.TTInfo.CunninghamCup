@@ -1,7 +1,3 @@
-.player-label {
-	width: 15rem;
-}
-
 ::deep input[type="number"] {
 	width: 5rem;
 }
