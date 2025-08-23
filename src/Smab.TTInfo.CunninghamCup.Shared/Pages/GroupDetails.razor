@@ -1,6 +1,7 @@
 @page "/group"
 @page "/group/{GroupName}"
 @using Smab.TTInfo.CunninghamCup.Shared.Services
+@using Smab.TTInfo.CunninghamCup.Shared.Components
 @inject ITournamentService _tournamentService
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
@@ -132,20 +133,26 @@
 					<td>@playerB.Name (@match.PlayerBStart)</td>
 					<td>@($"{match.PlayerASets}-{match.PlayerBSets}")</td>
 					<td>@score</td>
-					@* <td>@(match.ScheduledTime?.ToString("ddd dd/MM/yyyy HH:mm") ?? "-")</td> *@
-					@* <td>@(match.Notes ?? "-")</td> *@
 					<td>
 						@if (RendererInfo.IsInteractive) {
-						<button class="btn btn-primary btn-sm" @onclick="() => EditMatch(match)">Edit</button>
-						<button class="btn btn-sm btn-warning float-end" @onclick="() => CompleteMatchWithRandomScores(matchNo)">
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shuffle" viewBox="0 0 16 16">
-								<path fill-rule="evenodd" d="M0 3.5A.5.5 0 0 1 .5 3H1c2.202 0 3.827 1.24 4.874 2.418.49.552.865 1.102 1.126 1.532.26-.43.636-.98 1.126-1.532C9.173 4.24 10.798 3 13 3v1c-1.798 0-3.173 1.01-4.126 2.082A9.6 9.6 0 0 0 7.556 8a9.6 9.6 0 0 0 1.317 1.918C9.828 10.99 11.204 12 13 12v1c-2.202 0-3.827-1.24-4.874-2.418A10.6 10.6 0 0 1 7 9.05c-.26.43-.636.98-1.126 1.532C4.827 11.76 3.202 13 1 13H.5a.5.5 0 0 1 0-1H1c1.798 0 3.173-1.01 4.126-2.082A9.6 9.6 0 0 0 6.444 8a9.6 9.6 0 0 0-1.317-1.918C4.172 5.01 2.796 4 1 4H.5a.5.5 0 0 1-.5-.5" />
-								<path d="M13 5.466V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192m0 9v-3.932a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192" />
-							</svg>
-						</button>
+							<button class="btn btn-primary btn-sm" @onclick="() => EditMatch(matchNo)">Edit</button>
+							<button class="btn btn-sm btn-warning float-end" @onclick="() => CompleteMatchWithRandomScores(matchNo)">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shuffle" viewBox="0 0 16 16">
+									<path fill-rule="evenodd" d="M0 3.5A.5.5 0 0 1 .5 3H1c2.202 0 3.827 1.24 4.874 2.418.49.552.865 1.102 1.126 1.532.26-.43.636-.98 1.126-1.532C9.173 4.24 10.798 3 13 3v1c-1.798 0-3.173 1.01-4.126 2.082A9.6 9.6 0 0 0 7.556 8a9.6 9.6 0 0 0 1.317 1.918C9.828 10.99 11.204 12 13 12v1c-2.202 0-3.827-1.24-4.874-2.418A10.6 10.6 0 0 1 7 9.05c-.26.43-.636.98-1.126 1.532C4.827 11.76 3.202 13 1 13H.5a.5.5 0 0 1 0-1H1c1.798 0 3.173-1.01 4.126-2.082A9.6 9.6 0 0 0 6.444 8a9.6 9.6 0 0 0-1.317-1.918C4.172 5.01 2.796 4 1 4H.5a.5.5 0 0 1-.5-.5" />
+									<path d="M13 5.466V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192m0 9v-3.932a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192" />
+								</svg>
+							</button>
 						}
 					</td>
 				</tr>
+				@if (RendererInfo.IsInteractive && editingMatchNo == matchNo)
+				{
+					<tr>
+						<td colspan="6">
+							<MatchEditor Match="@match" OnSave="OnMatchSaveAsync" OnCancel="CancelEditMatch" />
+						</td>
+					</tr>
+				}
 			}
 		</tbody>
 	</table>
@@ -161,6 +168,8 @@
 
 	[PersistentState]
 	public Tournament? tournament { get; set; }
+
+	private int? editingMatchNo = null;
 
 	protected override void OnInitialized()
 	{
@@ -183,11 +192,27 @@
 	private void CompleteMatchWithRandomScores(int matchNo) => group = _tournamentService.CompleteMatchWithRandomScores(group!.Name, matchNo);
 	private void ResetGroup() => group = _tournamentService.ResetGroup(group!.Name);
 
-}
-
-@code {
-	private void EditMatch(Match match)
+	private void EditMatch(int matchNo)
 	{
-		// TODO: Show match editor dialog/modal
+		editingMatchNo = matchNo;
+	}
+
+	private void CancelEditMatch()
+	{
+		editingMatchNo = null;
+	}
+
+	private async Task OnMatchSaveAsync(Match updatedMatch)
+	{
+		if (group is not null && editingMatchNo is not null)
+		{
+			group.Matches[editingMatchNo.Value] = updatedMatch;
+		}
+		editingMatchNo = null;
+		await InvokeAsync(StateHasChanged);
+		if (tournament is not null)
+		{
+			_tournamentService.AddOrUpdateTournament(tournament);
+		}
 	}
 }

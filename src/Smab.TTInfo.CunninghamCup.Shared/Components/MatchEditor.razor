@@ -1,0 +1,71 @@
+@using Smab.TTInfo.CunninghamCup.Shared.Models
+@using Smab.TTInfo.CunninghamCup.Shared.Services
+<div class="card mt-2 mb-2">
+	<div class="card-body">
+		<h5 class="card-title">Edit Match: @Match.PlayerA vs @Match.PlayerB</h5>
+		<div>
+			<label>@Match.PlayerA:</label>
+			@for (int i = 0; i < setCount; i++) {
+				int setNo = i;
+				<input type="number" min="0" class="form-control d-inline w-auto" style="width:60px" @bind="playerAScores[setNo]" />
+			}
+		</div>
+		<div>
+			<label>@Match.PlayerB:</label>
+			@for (int i = 0; i < setCount; i++) {
+				int setNo = i;
+				<input type="number" min="0" class="form-control d-inline w-auto" style="width:60px" @bind="playerBScores[setNo]" />
+			}
+		</div>
+		<div>
+			<label>Notes:</label>
+			<input type="text" class="form-control" @bind="notes" />
+		</div>
+		<div class="mt-2">
+			<button class="btn btn-success me-2" @onclick="SaveMatchAsync">Save</button>
+			<button class="btn btn-secondary" @onclick="() => OnCancel.InvokeAsync()">Cancel</button>
+		</div>
+	</div>
+</div>
+
+@code {
+	// [Parameter] public string GroupName { get; set; } = string.Empty;
+	// [Parameter] public int MatchNo { get; set; }
+	[Parameter] public Match Match { get; set; } = default!;
+	[Parameter] public Func<Match, Task>? OnSave { get; set; }
+	[Parameter] public EventCallback OnCancel { get; set; }
+
+	private List<int> playerAScores = new();
+	private List<int> playerBScores = new();
+	private string? notes;
+	private int setCount = 3;
+
+	protected override void OnInitialized()
+	{
+		var sets = Match.Result?.Sets ?? new List<Set>();
+		setCount = sets.Count > 0 ? sets.Count : 3;
+		playerAScores = sets.Select(s => s.PlayerAScore).ToList();
+		playerBScores = sets.Select(s => s.PlayerBScore).ToList();
+		while (playerAScores.Count < setCount) playerAScores.Add(0);
+		while (playerBScores.Count < setCount) playerBScores.Add(0);
+		notes = Match.Result?.Notes;
+	}
+
+	private async Task SaveMatchAsync()
+	{
+		List<Set> sets = [];
+		for (int i = 0; i < setCount; i++) {
+			if (playerAScores[i] != 0 && playerBScores[i] != 0)
+			{
+				sets.Add(new Set(playerAScores[i], playerBScores[i]));
+			}
+		}
+
+		Result result = new(sets, notes);
+		Match updatedMatch = Match with { Result = result };
+		if (OnSave is not null) {
+			await OnSave.Invoke(updatedMatch);
+		}
+	}
+}
+
