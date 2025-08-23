@@ -4,17 +4,17 @@
 	<div class="card-body">
 		<h5 class="card-title">Edit Match: @Match.PlayerA vs @Match.PlayerB</h5>
 		<div>
-			<label>@Match.PlayerA:</label>
+			<label class="player-label">@Match.PlayerA:</label>
 			@for (int i = 0; i < setCount; i++) {
 				int setNo = i;
-				<input type="number" min="0" class="form-control d-inline w-auto" style="width:60px" @bind="playerAScores[setNo]" />
+				<input type="number" min="0" max="30" class="form-control d-inline w-auto score" @bind="playerAScores[setNo]" />
 			}
 		</div>
 		<div>
-			<label>@Match.PlayerB:</label>
+			<label class="player-label">@Match.PlayerB:</label>
 			@for (int i = 0; i < setCount; i++) {
 				int setNo = i;
-				<input type="number" min="0" class="form-control d-inline w-auto" style="width:60px" @bind="playerBScores[setNo]" />
+				<input type="number" min="0" max="30" class="form-control d-inline w-auto score" @bind="playerBScores[setNo]" />
 			}
 		</div>
 		<div>
