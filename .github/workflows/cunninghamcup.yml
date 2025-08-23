@@ -3,6 +3,8 @@ on:
   push:
     branches:
     - main
+  workflow_dispatch:
+
 env:
   AZURE_WEBAPP_NAME: cunninghamcup
   AZURE_WEBAPP_PACKAGE_PATH: src\Smab.TTInfo.CunninghamCup.Web\published
