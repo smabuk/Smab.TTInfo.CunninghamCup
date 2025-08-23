@@ -2,6 +2,6 @@
 	width: 15rem;
 }
 
-.score {
-	width: 2rem;
+::deep input.score {
+	width: 5rem;
 }
