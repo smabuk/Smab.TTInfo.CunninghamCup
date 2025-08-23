@@ -10,23 +10,38 @@
 @if (tournament is null) {
 	<p>No knockout stage available.</p>
 } else if (tournament.KnockoutStage is null) {
+	<dl>
 	@foreach(Group group in tournament.Groups) {
 		if (group.IsCompleted) {
-			<h4>Group @group.Name Qualifiers</h4>
-			<ul>
-				<li>@group.GroupPositions[0].PlayerId.DisplayName</li>
-				<li>@group.GroupPositions[1].PlayerId.DisplayName</li>
-			</ul>
+				<dt>@group.Name Winner</dt>
+				<dd>@group.GroupPositions[0].PlayerId.DisplayName</dd>
+				<dt>@group.Name Runner-up</dt>
+				<dd>@group.GroupPositions[1].PlayerId.DisplayName</dd>
+		} else {
+				<dt>@group.Name</dt>
+				<dd>Group not completed yet.</dd>
 		}
 	}
-	<p>No knockout stage available.</p>
+	</dl>
 	<button class="btn btn-success" @onclick="ConfirmKnockoutDraw">Confirm & Generate Bracket</button>
 } else {
 	<h4>Knockout Players</h4>
 	<ul>
-		@foreach (PlayerId playerId in tournament.KnockoutStage.Rounds[0].Matches.SelectMany(m => new[] { m.PlayerA, m.PlayerB }).Distinct()) {
-			string playerName = playerId.DisplayName;
-			<li>@playerName</li>
+		@foreach (Match match in tournament.KnockoutStage.Rounds[0].Matches) {
+			Player? playerA = match.PlayerA.IsPlayer ? tournament.GetPlayer(match.PlayerA) : null;
+			Player? playerB = match.PlayerB.IsPlayer ? tournament.GetPlayer(match.PlayerB) : null;
+			if (playerA is not null)
+			{
+				<li>@playerA.Id.DisplayName (@playerA.Handicap)</li>
+			} else {
+				<li>@match.PlayerA.DisplayName</li>
+			}
+			if (playerB is not null)
+			{
+				<li>@playerB.Id.DisplayName (@playerB.Handicap)</li>
+			} else {
+				<li>@match.PlayerB.DisplayName</li>
+			}
 		}
 	</ul>
 	<button class="btn btn-success" @onclick="UpdateBracket">Update Bracket</button>
