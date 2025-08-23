@@ -1,71 +1,95 @@
 @using Smab.TTInfo.CunninghamCup.Shared.Models
-@using Smab.TTInfo.CunninghamCup.Shared.Services
-<div class="card mt-2 mb-2">
-	<div class="card-body">
-		<h5 class="card-title">Edit Match: @Match.PlayerA vs @Match.PlayerB</h5>
-		<div>
-			<label class="player-label">@Match.PlayerA:</label>
-			@for (int i = 0; i < setCount; i++) {
-				int setNo = i;
-				<input type="number" min="0" max="30" class="form-control d-inline w-auto score" @bind="playerAScores[setNo]" />
-			}
-		</div>
-		<div>
-			<label class="player-label">@Match.PlayerB:</label>
-			@for (int i = 0; i < setCount; i++) {
-				int setNo = i;
-				<input type="number" min="0" max="30" class="form-control d-inline w-auto score" @bind="playerBScores[setNo]" />
-			}
-		</div>
-		<div>
-			<label>Notes:</label>
-			<input type="text" class="form-control" @bind="notes" />
-		</div>
-		<div class="mt-2">
-			<button class="btn btn-success me-2" @onclick="SaveMatchAsync">Save</button>
-			<button class="btn btn-secondary" @onclick="() => OnCancel.InvokeAsync()">Cancel</button>
+@using System.ComponentModel.DataAnnotations
+
+<EditForm Model="editModel" OnValidSubmit="HandleValidSubmit">
+	<DataAnnotationsValidator />
+	<div class="card mt-2 mb-2">
+		<div class="card-body">
+			<h5 class="card-title">Edit Match: @Match.PlayerA vs @Match.PlayerB</h5>
+			<div>
+				<label class="player-label">@Match.PlayerA:</label>
+				@for (int i = 0; i < MAX_SETS; i++) {
+					int setNo = i;
+					<InputNumber @bind-Value="editModel.PlayerAScores[setNo]" min="0" max="30" class="form-control d-inline w-auto score" />
+				}
+			</div>
+			<div>
+				<label class="player-label">@Match.PlayerB:</label>
+				@for (int i = 0; i < MAX_SETS; i++) {
+					int setNo = i;
+					<InputNumber @bind-Value="editModel.PlayerBScores[setNo]" min="0" max="30" class="form-control d-inline w-auto score" />
+				}
+			</div>
+			<div>
+				<label>Notes:</label>
+				<InputText @bind-Value="editModel.Notes" class="form-control" />
+			</div>
+			<CustomValidation @ref="customValidation" />
+			<ValidationSummary />
+			<div class="mt-2">
+				<button type="submit" class="btn btn-success me-2">Save</button>
+				<button type="button" class="btn btn-secondary" @onclick="() => OnCancel.InvokeAsync()">Cancel</button>
+			</div>
 		</div>
 	</div>
-</div>
+</EditForm>
 
 @code {
-	// [Parameter] public string GroupName { get; set; } = string.Empty;
-	// [Parameter] public int MatchNo { get; set; }
+	private const int MAX_SETS = 3;
 	[Parameter] public Match Match { get; set; } = default!;
 	[Parameter] public Func<Match, Task>? OnSave { get; set; }
 	[Parameter] public EventCallback OnCancel { get; set; }
 
-	private List<int> playerAScores = new();
-	private List<int> playerBScores = new();
-	private string? notes;
-	private int setCount = 3;
+	private CustomValidation? customValidation;
+	private MatchEditModel editModel = new();
 
 	protected override void OnInitialized()
 	{
-		var sets = Match.Result?.Sets ?? new List<Set>();
-		setCount = sets.Count > 0 ? sets.Count : 3;
-		playerAScores = sets.Select(s => s.PlayerAScore).ToList();
-		playerBScores = sets.Select(s => s.PlayerBScore).ToList();
-		while (playerAScores.Count < setCount) playerAScores.Add(0);
-		while (playerBScores.Count < setCount) playerBScores.Add(0);
-		notes = Match.Result?.Notes;
+		List<Set> sets = Match.Result?.Sets ?? [];
+		editModel.PlayerAScores = [.. sets.Select(s => s.PlayerAScore)];
+		editModel.PlayerBScores = [.. sets.Select(s => s.PlayerBScore)];
+		while (editModel.PlayerAScores.Count < MAX_SETS) editModel.PlayerAScores.Add(0);
+		while (editModel.PlayerBScores.Count < MAX_SETS) editModel.PlayerBScores.Add(0);
+		editModel.Notes = Match.Result?.Notes;
 	}
 
-	private async Task SaveMatchAsync()
+	private async Task HandleValidSubmit()
 	{
+		customValidation?.ClearErrors();
+
+		Dictionary<string, List<string>> errors = [];
+
 		List<Set> sets = [];
-		for (int i = 0; i < setCount; i++) {
-			if (playerAScores[i] != 0 && playerBScores[i] != 0)
-			{
-				sets.Add(new Set(playerAScores[i], playerBScores[i]));
+		for (int i = 0; i < MAX_SETS; i++) {
+			if (editModel.PlayerAScores[i] != 0 && editModel.PlayerBScores[i] != 0) {
+				sets.Add(new Set(editModel.PlayerAScores[i], editModel.PlayerBScores[i]));
 			}
 		}
 
-		Result result = new(sets, notes);
-		Match updatedMatch = Match with { Result = result };
-		if (OnSave is not null) {
-			await OnSave.Invoke(updatedMatch);
+		if (sets.Count < 2) {
+			errors.Add("Sets", [ "There must be at least 2 sets entered"]);
+		}	
+
+		if (errors.Any()) {
+			customValidation?.DisplayErrors(errors);
+		} else {
+			//Logger.LogInformation("Submit called: Processing the form");
+			Result result = new(sets, editModel.Notes);
+			Match updatedMatch = Match with { Result = result };
+			if (OnSave is not null) {
+				await OnSave.Invoke(updatedMatch);
+			}
 		}
+
+	}
+
+	public class MatchEditModel
+	{
+		[Required]
+		public List<int> PlayerAScores { get; set; } = [];
+		[Required]
+		public List<int> PlayerBScores { get; set; } = [];
+		public string? Notes { get; set; }
 	}
 }
 
