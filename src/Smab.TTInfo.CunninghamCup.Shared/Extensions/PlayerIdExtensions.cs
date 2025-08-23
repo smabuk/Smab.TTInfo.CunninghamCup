@@ -15,5 +15,8 @@ public static class PlayerIdExtensions
 		public bool IsPlaceHolder => playerId.StringId.StartsWith(PlayerId.PlaceHolderSymbol);
 		public bool IsPlayer => !(playerId.IsBye || playerId.IsPlaceHolder);
 		public bool IsWithdrawn => playerId.StringId.StartsWith("-|");
+		public string DisplayName => playerId.IsBye || playerId.IsPlaceHolder
+			? playerId.StringId[1..]
+			: playerId.StringId;
 	}
 }
