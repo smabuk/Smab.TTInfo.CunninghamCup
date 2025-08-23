@@ -35,6 +35,7 @@ public static partial class TournamentServiceExtensions
 			if (!success) {
 				throw new InvalidOperationException("Failed to update knockout phases.");
 			}
+
 			tournamentService.AddOrUpdateTournament(tournament);
 			return tournament;
 		}

@@ -29,6 +29,7 @@
 			<li>@playerName</li>
 		}
 	</ul>
+	<button class="btn btn-success" @onclick="UpdateBracket">Update Bracket</button>
 }
 
 @code {
@@ -44,7 +45,12 @@
 	{
 		tournament = _tournamentService.DrawKnockoutStage();
 		tournament = _tournamentService.UpdateKnockoutPhases();
-		tournament ??= _tournamentService.GetTournament();
+		StateHasChanged();
+	}
+
+	private void UpdateBracket()
+	{
+		tournament = _tournamentService.UpdateKnockoutPhases();
 		StateHasChanged();
 	}
 }

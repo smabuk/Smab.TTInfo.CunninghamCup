@@ -108,11 +108,10 @@ public static partial class TournamentExtensions
 			int noOfRounds = (tournament.GroupsCount, tournament.ActivePlayers.Count) switch
 			{
 				(4, _) => 3,
-				(5, _) => 4,
+				(> 4 and <= 8, _) => 4,
 				(_, > 23) => 4,
 				(_, > 12) => 3,
 				(_, > 8) => 2,
-				(8, _) => 4,
 				_ => 0
 			};
 
