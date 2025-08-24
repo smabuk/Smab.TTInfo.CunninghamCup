@@ -7,29 +7,35 @@ public interface ITournamentService
 	Tournament GetTournament();
 	void AddOrUpdateTournament(Tournament tournament);
 
-	Task<Tournament> LoadTournamentFromJsonAsync(string filePath);
-	public Task<bool> SaveTournamentToJsonAsync(string filePath);
+	Task<Tournament> LoadTournamentFromJsonAsync();
+	public Task<bool> SaveTournamentToJsonAsync();
 }
 
-public class TournamentService : ITournamentService
+public class TournamentService(TTInfoOptions ttinfoOptions) : ITournamentService
 {
 	private Tournament? _tournament;
+	private string CacheFolder { get; set; } = ttinfoOptions.CacheFolder;
 
 	public Tournament GetTournament()
 		=> _tournament ?? throw new InvalidOperationException("Tournament not initialised.");
 
 	public void AddOrUpdateTournament(Tournament tournament) => _tournament = tournament;
 
-	public Task<Tournament> LoadTournamentFromJsonAsync(string filePath)
+	public Task<Tournament> LoadTournamentFromJsonAsync()
 	{
 		// Implementation for loading a tournament from a JSON file
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> SaveTournamentToJsonAsync(string filePath)
+	public async Task<bool> SaveTournamentToJsonAsync()
 	{
-		// Implementation for saving a tournament to a JSON file
-		throw new NotImplementedException();
+		if (_tournament == null) {
+			return false;
+		}
+
+		// Use Task.Run to ensure the method is truly asynchronous
+		_ =    await Task.Run(() => _tournament.Save($"tournament_{_tournament.Id}_{_tournament.Name}.json"));
+		return await Task.Run(() => _tournament.Save($"tournament_{DateTime.UtcNow.Year}.json"));
 	}
 }
 

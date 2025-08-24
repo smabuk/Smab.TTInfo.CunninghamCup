@@ -1,6 +1,5 @@
-﻿using Smab.TTInfo.CunninghamCup.Shared.Services;
+﻿namespace Smab.TTInfo.CunninghamCup.Shared.Extensions;
 
-namespace Smab.TTInfo.CunninghamCup.Shared.Extensions;
 public static partial class TournamentServiceExtensions
 {
 	extension(ITournamentService tournamentService)

@@ -1,5 +1,6 @@
 using Smab.TTInfo.CunninghamCup.Shared.Services;
 using Smab.TTInfo.CunninghamCup.Web.Components;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,9 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
 
 builder.Services.AddTournamentService();
+builder.Services.Configure<TTInfoOptions>(builder.Configuration.GetSection("TTInfoOptions"));
+builder.Services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<TTInfoOptions>>().Value);
+
 builder.Services.AddTTClubsService();
 builder.Services.AddScoped<AppState>();
 
