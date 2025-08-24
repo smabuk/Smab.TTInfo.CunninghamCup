@@ -37,9 +37,10 @@ app.UseHttpsRedirection();
 
 app.UseAntiforgery();
 
-app.Services
+_ = app.Services
 	.GetRequiredService<ITournamentService>()
-	.SeedRandomTournament(22).DrawGroups(4);
+	.LoadTournamentFromJsonAsync();
+	//.SeedRandomTournament(22).DrawGroups(4);
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

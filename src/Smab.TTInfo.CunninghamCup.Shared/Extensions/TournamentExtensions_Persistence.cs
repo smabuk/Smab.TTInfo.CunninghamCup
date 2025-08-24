@@ -4,28 +4,20 @@ public static partial class TournamentExtensions
 {
 	extension(Tournament tournament)
 	{
-		public Tournament? Load(string filePath)
+		public Tournament? Load(string filePath, string cacheFolder)
 		{
-			string? json = File.Exists(filePath) ? File.ReadAllText(filePath) : null;
+			string? json = CacheHelper.LoadFileFromCache($"{filePath}", cacheFolder);
 			return JsonSerializer.Deserialize<Tournament>(json ?? "");
 		}
 	}
 
 	extension(Tournament tournament)
 	{
-		public bool Save(string filePath)
+		public bool Save(string filePath, string cacheFolder)
 		{
-			string json = JsonSerializer.Serialize(tournament);
+			string contents = JsonSerializer.Serialize(tournament);
 
-			try {
-				File.WriteAllText(filePath, json);
-			}
-			catch (Exception) {
-				//return false;
-				throw;
-			}
-
-			return true;
+			return CacheHelper.SaveFileToCache(contents, $"{filePath}", cacheFolder);
 		}
 	}
 }

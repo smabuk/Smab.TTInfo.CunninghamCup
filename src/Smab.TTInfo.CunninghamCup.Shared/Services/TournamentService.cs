@@ -21,21 +21,27 @@ public class TournamentService(TTInfoOptions ttinfoOptions) : ITournamentService
 
 	public void AddOrUpdateTournament(Tournament tournament) => _tournament = tournament;
 
-	public Task<Tournament> LoadTournamentFromJsonAsync()
+	public async Task<Tournament> LoadTournamentFromJsonAsync()
 	{
-		// Implementation for loading a tournament from a JSON file
-		throw new NotImplementedException();
+		_tournament ??= Tournament.Create(
+				name: "Placeholder",
+				date: DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
+				players: []
+			);
+
+		_tournament = await Task.Run(() => _tournament.Load( $"tournament_{DateTime.UtcNow.Year}.json", CacheFolder) ?? _tournament);
+		return _tournament ?? throw new InvalidOperationException("Tournament not initialised.");
 	}
 
 	public async Task<bool> SaveTournamentToJsonAsync()
 	{
-		if (_tournament == null) {
+		if (_tournament is null) {
 			return false;
 		}
 
 		// Use Task.Run to ensure the method is truly asynchronous
-		_ =    await Task.Run(() => _tournament.Save($"tournament_{_tournament.Id}_{_tournament.Name}.json"));
-		return await Task.Run(() => _tournament.Save($"tournament_{DateTime.UtcNow.Year}.json"));
+		_ =    await Task.Run(() => _tournament.Save($"tournament_{_tournament.Id}_{_tournament.Name}_{DateTime.Now:yyyyMMdd_hhmmss}.json", CacheFolder));
+		return await Task.Run(() => _tournament.Save($"tournament_{DateTime.UtcNow.Year}.json", CacheFolder));
 	}
 }
 
