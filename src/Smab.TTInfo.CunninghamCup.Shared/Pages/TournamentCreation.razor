@@ -46,15 +46,17 @@
 	<br /><br />
 </EditForm>
 
-<EditForm FormName="seedForm" Model="seedEditModel">
-<table>
-	<tr>
-		<td><InputNumber title="No of players" @bind-Value="seedEditModel.NumPlayers" class="form-control d-inline m-1" /></td>
-		<td><InputNumber title="No of groups" @bind-Value="seedEditModel.NumGroups" class="form-control d-inline m-1" /></td>
-		<td><button type="submit" class="btn btn-warning mx-2" @onclick="RandomTournament">Seed random tournament</button></td>
-	</tr>
-</table>
+<br />
 
+<EditForm FormName="seedForm" Model="seedEditModel">
+	<table>
+		<tr>
+			<td><InputNumber title="No of players" @bind-Value="seedEditModel.NumPlayers" class="form-control d-inline m-1" /></td>
+			<td><InputNumber title="No of groups" @bind-Value="seedEditModel.NumGroups" class="form-control d-inline m-1" /></td>
+			<td><button type="button" class="btn btn-success mx-1" @onclick="ReDrawGroups">Draw Groups</button></td>
+			<td><button type="submit" class="btn btn-warning mx-2" @onclick="RandomTournament">Seed random tournament</button></td>
+		</tr>
+	</table>
 </EditForm>
 
 @code {
@@ -112,8 +114,9 @@
 
 		// Convert TournamentEditModel to Tournament
 		List<Player> players = [..
-	tournamentModel.Players
-	.Select(p => Player.Create(p.Name, p.Handicap, p.TTEId, p.Withdrawn))];
+		tournamentModel.Players
+		.Select(p => Player.Create(p.Name, p.Handicap, p.TTEId, p.Withdrawn))];
+
 		tournament = tournament!.AddOrUpdatePlayers([.. players]);
 		tournament = tournament with
 			{
@@ -131,6 +134,7 @@
 		public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
 		public List<PlayerEditModel> Players { get; set; } = [];
 	}
+
 	public class PlayerEditModel
 	{
 		[Required]
@@ -139,6 +143,19 @@
 		public int? TTEId { get; set; }
 		public bool Withdrawn { get; set; }
 	}
+
+	private void ReDrawGroups(MouseEventArgs args)
+	{
+		tournament = Tournament.Create(tournamentModel.Name, tournamentModel.Date);
+		tournament = tournament.AddOrUpdatePlayers(
+			[.. tournamentModel.Players
+			.Select(p => Player.Create(p.Name, p.Handicap, p.TTEId, p.Withdrawn))]);
+		_tournamentService.AddOrUpdateTournament(tournament);
+		_tournamentService.DrawGroups(seedEditModel.NumGroups);
+		tournament = _tournamentService.GetTournament();
+		OnInitialized();
+	}
+
 	private void RandomTournament(MouseEventArgs args)
 	{
 		_tournamentService
