@@ -1,70 +1,118 @@
-@page "/tournament/knockoutphase"
+@page "/knockoutphase"
 @using Smab.TTInfo.CunninghamCup.Shared.Models
+@inject ITournamentService _tournamentService
+@rendermode InteractiveServer
 
 <PageTitle>Knockout Phase</PageTitle>
 
 <h2>Knockout Phase</h2>
 
-@if (tournament is null || tournament.KnockoutStage is null)
-{
-    <p>No knockout rounds available.</p>
-}
-else
-{
-    @foreach (KnockoutRound round in tournament.KnockoutStage.Rounds)
-    {
-        <div class="card mb-4">
-            <div class="card-header">
-                <strong>@round.Type.ToString()</strong>
-            </div>
-            <div class="card-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Player A</th>
-                            <th>Player B</th>
-                            <th>Score</th>
-                            <th>Edit</th>
-                            <th>Advance</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (Match match in round.Matches)
-                        {
-                            string playerAName = tournament.Players.ContainsKey(match.PlayerA) ? tournament.Players[match.PlayerA].Name : match.PlayerA.ToString();
-                            string playerBName = tournament.Players.ContainsKey(match.PlayerB) ? tournament.Players[match.PlayerB].Name : match.PlayerB.ToString();
-                            string score = match.Result is not null
-                                ? $"{match.Result.PlayerASets}-{match.Result.PlayerBSets} ({string.Join(", ", match.Result.Sets.Select(set => $"{set.PlayerAScore}-{set.PlayerBScore}"))})"
-                                : "-";
-                            <tr>
-                                <td>@playerAName</td>
-                                <td>@playerBName</td>
-                                <td>@score</td>
-                                <td>
-                                    <button class="btn btn-primary" @onclick="() => EditMatch(match)">Edit</button>
-                                </td>
-                                <td>
-                                    <button class="btn btn-success" @onclick="() => AdvanceWinner(match)">Advance</button>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    }
+@if (tournament is null || tournament.KnockoutStage is null) {
+	<p>No knockout rounds available.</p>
+} else {
+	@for (int roundIdx = 0; roundIdx < tournament.KnockoutStage.Rounds.Count; roundIdx++) {
+		int roundNo = roundIdx;
+		KnockoutRound round = tournament.KnockoutStage.Rounds[roundNo];
+		<div class="card mb-4">
+			<div class="card-header">
+				<strong>@round.Type.ToFriendlyString()</strong>
+			</div>
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Player A</th>
+							<th>Player B</th>
+							<th>Score</th>
+							<th>Edit</th>
+							<th>Advance</th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (int i = 0; i < round.Matches.Count; i++) {
+							int matchNo = i;
+							Match match = round.Matches[i];
+							Player? playerA = match.PlayerA.IsPlayer ? tournament.GetPlayer(match.PlayerA) : null;
+							Player? playerB = match.PlayerB.IsPlayer ? tournament.GetPlayer(match.PlayerB) : null;
+							string score = match.Result is not null
+							? $"{string.Join(", ", match.Result.Sets.Select(set => $"{set.PlayerAScore}-{set.PlayerBScore}"))}"
+							: "";
+							<tr>
+								<td>@(i + 1)</td>
+								<td>
+									@(match.PlayerA.IsPlaceHolder && char.IsAsciiDigit($"{match.PlayerA}"[1]) ? "" : match.PlayerA.DisplayName)
+									@(playerA is not null ? $"({@match.PlayerAStart})" : "")
+								</td>
+								<td>
+									@(match.PlayerB.IsPlaceHolder && char.IsAsciiDigit($"{match.PlayerB}"[1]) ? "" : match.PlayerB.DisplayName)
+									@(playerB is not null ? $"({@match.PlayerBStart})" : "")
+								</td>
+								<td>@(match.IsCompleted ? $"{match.PlayerASets}-{match.PlayerBSets}" : "")</td>
+								<td>@score</td>
+								<td>
+									@if (RendererInfo.IsInteractive && (match.PlayerA.IsPlayer && match.PlayerB.IsPlayer)) {
+										<button class="btn btn-primary btn-sm" @onclick="() => EditMatch(roundNo, matchNo)">Edit</button>
+										<button class="btn btn-sm btn-warning float-end" @onclick="() => CompleteMatchWithRandomScores(matchNo)">
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shuffle" viewBox="0 0 16 16">
+												<path fill-rule="evenodd" d="M0 3.5A.5.5 0 0 1 .5 3H1c2.202 0 3.827 1.24 4.874 2.418.49.552.865 1.102 1.126 1.532.26-.43.636-.98 1.126-1.532C9.173 4.24 10.798 3 13 3v1c-1.798 0-3.173 1.01-4.126 2.082A9.6 9.6 0 0 0 7.556 8a9.6 9.6 0 0 0 1.317 1.918C9.828 10.99 11.204 12 13 12v1c-2.202 0-3.827-1.24-4.874-2.418A10.6 10.6 0 0 1 7 9.05c-.26.43-.636.98-1.126 1.532C4.827 11.76 3.202 13 1 13H.5a.5.5 0 0 1 0-1H1c1.798 0 3.173-1.01 4.126-2.082A9.6 9.6 0 0 0 6.444 8a9.6 9.6 0 0 0-1.317-1.918C4.172 5.01 2.796 4 1 4H.5a.5.5 0 0 1-.5-.5" />
+												<path d="M13 5.466V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192m0 9v-3.932a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192" />
+											</svg>
+										</button>
+									}
+								</td>
+							</tr>
+							@if (RendererInfo.IsInteractive && editingMatchNo == (roundNo, matchNo)) {
+								<tr>
+									<td colspan="6">
+										<MatchEditor Match="@match" OnSave="OnMatchSaveAsync" OnCancel="CancelEditMatch" />
+									</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	}
 }
 
 @code {
-    [Parameter] public Tournament? tournament { get; set; }
+	[PersistentState]
+	[Parameter] public Tournament? tournament { get; set; }
+	private Dictionary<PlayerId, Player>? players;
+	private (int RoundNo, int MatchNo)? editingMatchNo = null;
 
-    private void EditMatch(Match match)
-    {
-        // TODO: Show match editor dialog
-    }
+	protected override void OnInitialized()
+	{
+		tournament ??= _tournamentService.GetTournament();
+		players = tournament.Players;
+	}
 
-    private void AdvanceWinner(Match match)
-    {
-        // TODO: Advance winner to next round
-    }
+
+	private void EditMatch(int roundNo, int matchNo)
+	{
+		editingMatchNo = (roundNo, matchNo);
+	}
+
+	private void CancelEditMatch()
+	{
+		editingMatchNo = null;
+	}
+
+	private async Task OnMatchSaveAsync(Match updatedMatch)
+	{
+		// if (group is not null && editingMatchNo is not null) {
+		// 	group.Matches[editingMatchNo.Value] = updatedMatch;
+		// }
+		await InvokeAsync(StateHasChanged);
+		if (tournament is not null) {
+			_tournamentService.AddOrUpdateTournament(tournament);
+		}
+		editingMatchNo = null;
+	}
+
+	// private void CompleteMatchWithRandomScores(int matchNo) => group = _tournamentService.CompleteMatchWithRandomScores(group!.Name, matchNo);
+	private void CompleteMatchWithRandomScores(int matchNo) { }
+
 }

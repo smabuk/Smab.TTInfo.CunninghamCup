@@ -214,11 +214,11 @@
 		{
 			group.Matches[editingMatchNo.Value] = updatedMatch;
 		}
-		editingMatchNo = null;
 		await InvokeAsync(StateHasChanged);
 		if (tournament is not null)
 		{
 			_tournamentService.AddOrUpdateTournament(tournament);
 		}
+		editingMatchNo = null;
 	}
 }

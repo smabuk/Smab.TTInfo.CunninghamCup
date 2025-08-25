@@ -5,16 +5,16 @@
 	<DataAnnotationsValidator />
 	<div class="card mt-2 mb-2">
 		<div class="card-body">
-			<h5 class="card-title">Edit Match: @Match.PlayerA vs @Match.PlayerB</h5>
+			<h5 class="card-title">Edit Match: @Match.PlayerA.DisplayName vs @Match.PlayerB.DisplayName</h5>
 			<div>
-				<label class="player-label">@Match.PlayerA:</label>
+				<label class="player-label">@Match.PlayerA.DisplayName:</label>
 				@for (int i = 0; i < MAX_SETS; i++) {
 					int setNo = i;
 					<InputNumber @bind-Value="editModel.PlayerAScores[setNo]" min="0" max="30" class="form-control d-inline score" />
 				}
 			</div>
 			<div>
-				<label class="player-label">@Match.PlayerB:</label>
+				<label class="player-label">@Match.PlayerB.DisplayName:</label>
 				@for (int i = 0; i < MAX_SETS; i++) {
 					int setNo = i;
 					<InputNumber @bind-Value="editModel.PlayerBScores[setNo]" min="0" max="30" class="form-control d-inline score" />
