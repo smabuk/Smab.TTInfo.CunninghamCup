@@ -38,21 +38,29 @@ public static partial class TournamentExtensions
 		/// <param name="tteId">The player's TTE (Table Tennis England) ID. If null, the existing TTE ID is retained when updating an existing
 		/// player.</param>
 		/// <param name="ranking">The player's ranking. If null, the existing ranking value is retained when updating an existing player.</param>
-		public void AddOrUpdatePlayer(PlayerId playerId, int? handicap = null, int? tteId = null, int? ranking = null)
+		public void AddOrUpdatePlayer(PlayerId playerId, int? handicap = null, int? tteId = null, bool withdrawn = false)
 		{
 			if (tournament.Players.TryGetValue(playerId, out Player? existingPlayer)) {
 				handicap ??= existingPlayer.Handicap;
 				tteId    ??= existingPlayer.TTEId;
-				ranking  ??= existingPlayer.Ranking;
-				tournament.Players[playerId] = existingPlayer with { Handicap = handicap, TTEId = tteId, Ranking = ranking };
+				withdrawn = existingPlayer.WithDrawn;
+				tournament.Players[playerId] = existingPlayer with { Handicap = handicap, TTEId = tteId, WithDrawn = withdrawn };
 			} else {
-				tournament.Players.Add(playerId, Player.Create(playerId, handicap, tteId, ranking));
+				tournament.Players.Add(playerId, Player.Create(playerId, handicap, tteId, withdrawn));
 			}
 		}
 
-		public void AddOrUpdatePlayer(string name, int? handicap = null, int? tteId = null, int? ranking = null)
-			=> tournament.AddOrUpdatePlayer((PlayerId)name, handicap, tteId, ranking);
+		public void AddOrUpdatePlayer(string name, int? handicap = null, int? tteId = null, bool withdrawn = false)
+			=> tournament.AddOrUpdatePlayer((PlayerId)name, handicap, tteId, withdrawn);
 
 		public void AddOrUpdatePlayer(Player player) => tournament.Players[player.Id] = player;
+
+		public Tournament AddOrUpdatePlayers(IEnumerable<Player> players) {
+			foreach (Player player in players) {
+				tournament.Players[player.Id] = player;
+			}
+
+			return tournament;
+		}
 	}
 }

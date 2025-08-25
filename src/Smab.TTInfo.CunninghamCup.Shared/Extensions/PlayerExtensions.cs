@@ -7,7 +7,7 @@ public static class PlayerExtensions
 		public static Player Create(string name) => new((PlayerId)name, name);
 		public static Player Create(string name, int? handicap) => new((PlayerId)name, name, handicap);
 		public static Player Create(string name, int? handicap, int? tteId) => new((PlayerId)name, name, handicap, tteId);
-		public static Player Create(string name, int? handicap, int? tteId, int? ranking) => new((PlayerId)name, name, handicap, tteId, ranking);
+		public static Player Create(string name, int? handicap, int? tteId, bool withdrawn) => new((PlayerId)name, name, handicap, tteId, WithDrawn: withdrawn);
 	}
 
 	extension(Player player)

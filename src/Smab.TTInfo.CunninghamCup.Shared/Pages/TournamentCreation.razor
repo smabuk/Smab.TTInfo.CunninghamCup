@@ -22,15 +22,19 @@
 		<thead>
 			<tr>
 				<th>Name</th>
+				<th>TTE #</th>
 				<th>Handicap</th>
+				<th>Withdrawn</th>
 				<th></th>
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var player in tournamentModel.Players) {
+			@foreach (PlayerEditModel player in tournamentModel.Players) {
 				<tr>
 					<td><InputText @bind-Value="player.Name" class="form-control" /></td>
+					<td><InputNumber @bind-Value="player.TTEId" class="form-control" /></td>
 					<td><InputNumber @bind-Value="player.Handicap" class="form-control" /></td>
+					<td><InputCheckbox @bind-Value="player.Withdrawn" class="form-control" /></td>
 					<td>
 						<button type="button" class="btn btn-danger" @onclick="() => RemovePlayer(player)">Remove</button>
 					</td>
@@ -40,11 +44,15 @@
 	</table>
 	<button type="button" class="btn btn-primary" @onclick="AddPlayer">Add Player</button>
 	<br /><br />
-	<button type="submit" class="btn btn-success">Confirm & Draw Groups</button>
+	<button type="submit" class="btn btn-success">Update tournament</button>
 </EditForm>
 
 @code {
-	private TournamentEditModel tournamentModel = new() { Name = string.Empty, Date = DateOnly.FromDateTime(DateTime.Today) };
+	private TournamentEditModel tournamentModel = new()
+		{
+			Name = string.Empty,
+			Date = DateOnly.FromDateTime(DateTime.Today)
+		};
 
 	[Parameter]
 	[PersistentState]
@@ -55,8 +63,14 @@
 	{
 		tournament ??= _tournamentService.GetTournament();
 		tournamentModel.Name = tournament.Name;
+		tournamentModel.Date = tournament.Date;
 		tournamentModel.Players = tournament.Players
-			.Select(p => new PlayerEditModel { Name = p.Value.Name, Handicap = p.Value.Handicap}).ToList();
+			.Select(p => new PlayerEditModel {
+				Name = p.Value.Name,
+				Handicap = p.Value.Handicap,
+				Withdrawn = p.Value.WithDrawn,
+				TTEId = p.Value.TTEId
+			}).ToList();
 	}
 
 	private void AddPlayer()
@@ -73,12 +87,26 @@
 
 	private void HandleValidSubmit()
 	{
+		if (tournament is null)
+		{
+			tournament = Tournament.Create(tournamentModel.Name, tournamentModel.Date);
+		}
+		else
+		{
+			tournament = tournament with { Name = tournamentModel.Name, Date = tournamentModel.Date };
+		}
+
 		// Convert TournamentEditModel to Tournament
 		List<Player> players = [..
-			tournamentModel.Players
-			.Select(p => Player.Create(p.Name, p.Handicap))];
-		var tournament = Tournament.Create(tournamentModel.Name, tournamentModel.Date, players);
-		// TODO: Draw groups and navigate to GroupDraw page
+	tournamentModel.Players
+	.Select(p => Player.Create(p.Name, p.Handicap, p.TTEId, p.Withdrawn))];
+		tournament = tournament!.AddOrUpdatePlayers([.. players]);
+		tournament = tournament with
+			{
+				Name = tournamentModel.Name,
+				Date = tournamentModel.Date
+			};
+		_tournamentService.AddOrUpdateTournament(tournament);
 	}
 
 	public class TournamentEditModel
@@ -87,12 +115,14 @@
 		public string Name { get; set; } = string.Empty;
 		[Required]
 		public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
-		public List<PlayerEditModel> Players { get; set; } = new();
+		public List<PlayerEditModel> Players { get; set; } = [];
 	}
 	public class PlayerEditModel
 	{
 		[Required]
 		public string Name { get; set; } = string.Empty;
 		public int? Handicap { get; set; }
+		public int? TTEId { get; set; }
+		public bool Withdrawn { get; set; }
 	}
 }
