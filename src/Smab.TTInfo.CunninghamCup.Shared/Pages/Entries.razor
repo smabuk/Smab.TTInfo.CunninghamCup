@@ -18,6 +18,11 @@
 		Property="@(m => m.Contact.User.Gender == 1 ? "Male" : "Female")" Sortable="true" />
 </QuickGrid>
 
+<p>
+	<span><strong>Total Members: @FilteredItems?.Count()</strong></span>
+</p>
+
+
 <p></p>
 <button title="Import" class="btn btn-warning" @onclick="ImportToTournament">
 	<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people" viewBox="0 0 16 16">
@@ -32,10 +37,10 @@
 	[Parameter]
 	public int? MembershipId { get; set; } = null;
 
-	[PersistentState]
+	// [PersistentState]
 	public Memberships? Memberships { get; set; }
 
-	[PersistentState]
+	// [PersistentState]
 	public Membership? Membership { get; set; }
 
 	private string MembershipName => Memberships?.Items.SingleOrDefault(m => m.Id == MembershipId)?.Name ?? "No Entries";
@@ -78,6 +83,7 @@
 
 		return newString;
 	}
+
 	string PrettyPhone(string input)
 	{
 		string newString = $"{input}";
@@ -100,6 +106,7 @@
 
 		return newString;
 	}
+
 	private void ImportToTournament(MouseEventArgs args)
 	{
 		Tournament tournament = _tournamentService.GetTournament();
