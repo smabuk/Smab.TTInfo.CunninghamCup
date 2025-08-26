@@ -23,7 +23,9 @@
 		}
 	}
 	</dl>
-	<button class="btn btn-success" @onclick="ConfirmKnockoutDraw">Confirm & Generate Bracket</button>
+	<CanEdit>
+		<button class="btn btn-success" @onclick="ConfirmKnockoutDraw">Confirm & Generate Bracket</button>
+	</CanEdit>
 } else {
 	<h4>Knockout Players</h4>
 	<ul>
@@ -44,7 +46,9 @@
 			}
 		}
 	</ul>
-	<button class="btn btn-success" @onclick="UpdateBracket">Update Bracket</button>
+	<CanEdit>
+		<button class="btn btn-success" @onclick="UpdateBracket">Update Bracket</button>
+	</CanEdit>
 }
 
 @code {

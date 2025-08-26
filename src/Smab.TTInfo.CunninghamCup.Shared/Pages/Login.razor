@@ -1,0 +1,24 @@
+@page "/login"
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+@rendermode InteractiveServer
+
+<h3>Login</h3>
+<p>
+    <label>
+        <input type="checkbox" @bind="canEdit" />
+        Grant edit permission
+    </label>
+</p>
+<button class="btn btn-primary" @onclick="OnLogin">Login</button>
+
+@code {
+    private bool canEdit = false;
+
+    private async Task OnLogin()
+    {
+        // Store edit permission in a cookie
+        await JS.InvokeVoidAsync("eval", $"document.cookie = 'canEdit={canEdit}; path=/'");
+        Navigation.NavigateTo("/create");
+    }
+}

@@ -1,52 +1,67 @@
-﻿<div class="top-row ps-3 navbar sticky-top">
+﻿@inject IHttpContextAccessor context
+@rendermode InteractiveServer
+<div class="top-row ps-3 navbar sticky-top">
 	<div class="container-fluid">
 		<a class="navbar-brand" href=""><img src="/41265.png" height="48" /></a>
 		<nav class="nav">
-			<div class="nav-item">
-				<NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-					<Bi Icon="favicon.png" /> Home
-				</NavLink>
-			</div>
+			<CanEdit>
+				<CantEdit>
+					<div class="nav-item">
+						<NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+							<Bi Icon="favicon.png" /> Home
+						</NavLink>
+					</div>
+				</CantEdit>
+			</CanEdit>
 
-			<div class="nav-item">
-				<NavLink class="nav-link" href="create">
-					<Bi Icon="pencil" /> Create
-				</NavLink>
-			</div>
+			<CanEdit>
+				<div class="nav-item">
+					<NavLink class="nav-link" href="create">
+						<span aria-hidden="true"><svg class="bi" fill="currentColor"><use xlink:href="bootstrap-icons.svg#pencil" /></svg></span>
+						Create
+					</NavLink>
+				</div>
 
-			<div class="nav-item">
-				<NavLink class="nav-link" href="entries">
-					<Bi Icon="person-lines-fill" /> Entries
-				</NavLink>
-			</div>
+				<div class="nav-item">
+					<NavLink class="nav-link" href="entries">
+						<span aria-hidden="true"><svg class="bi" fill="currentColor"><use xlink:href="bootstrap-icons.svg#person-lines-fill" /></svg></span>
+						Entries
+					</NavLink>
+				</div>
+			</CanEdit>
 
 			<div class="nav-item">
 				<NavLink class="nav-link" href="group">
-					<Bi Icon="collection" /> Groups
+					<span aria-hidden="true"><svg class="bi" fill="currentColor"><use xlink:href="bootstrap-icons.svg#collection" /></svg></span>
+					Groups
 				</NavLink>
 			</div>
 
 			<div class="nav-item">
 				<NavLink class="nav-link" href="knockout">
-					<Bi Icon="collection" /> KO Draw
+					<span aria-hidden="true"><svg class="bi" fill="currentColor"><use xlink:href="bootstrap-icons.svg#collection" /></svg></span>
+					KO Draw
 				</NavLink>
 			</div>
 
 			<div class="nav-item">
 				<NavLink class="nav-link" href="knockoutphase">
-					<Bi Icon="collection" /> KO Matches
+					<span aria-hidden="true"><svg class="bi" fill="currentColor"><use xlink:href="bootstrap-icons.svg#collection" /></svg></span>
+					KO Matches
 				</NavLink>
 			</div>
 
 			<div class="nav-item">
 				<NavLink class="nav-link" href="summary">
-					<Bi Icon="trophy-fill" /> Summary
+					<span aria-hidden="true"><svg class="bi" fill="currentColor"><use xlink:href="bootstrap-icons.svg#trophy-fill" /></svg></span>
+					Summary
 				</NavLink>
 			</div>
 		</nav>
-		<nav class="nav">@(EditMode ? "Edit mode" : "")</nav>
+		<nav class="nav">
+			<CanEdit>
+				<span class="badge text-bg-warning">Edit</span>
+			</CanEdit>
+		</nav>
 	</div>
 </div>
-@code {
-	[CascadingParameter] public bool EditMode { get; set; }
-}

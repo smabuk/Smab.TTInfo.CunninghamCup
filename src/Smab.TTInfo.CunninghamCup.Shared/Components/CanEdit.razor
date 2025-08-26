@@ -1,0 +1,26 @@
+@inject IJSRuntime JS
+@rendermode InteractiveServer
+@if (canEdit)
+{
+	@ChildContent
+} else
+{
+	@CantEdit
+}
+@code {
+	bool canEdit = false;
+
+	[Parameter] public RenderFragment ChildContent { get; set; } = default!;
+	[Parameter] public RenderFragment CantEdit { get; set; } = default!;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		// Check cookie for edit permission
+		string cookie = await JS.InvokeAsync<string>("eval", "document.cookie");
+		// canEdit = cookie.Contains("canEdit=True");
+		canEdit = cookie.Contains("canEdit");
+		StateHasChanged();
+		await base.OnAfterRenderAsync(firstRender);
+	}
+
+}

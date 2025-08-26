@@ -6,7 +6,8 @@
 
 <h2>Create Tournament</h2>
 
-<EditForm Model="tournamentModel" OnValidSubmit="HandleValidSubmit" FormName="tForm">
+<CanEdit>
+<EditForm Model="tournamentModel" OnValidSubmit="UpdateTournament" FormName="tForm">
 	<DataAnnotationsValidator />
 	<ValidationSummary />
 	<div class="mb-3">
@@ -42,7 +43,9 @@
 	</table>
 	<button type="button" class="btn btn-primary" @onclick="AddPlayer">Add Player</button>
 	<br /><br />
+	<button type="button" class="btn btn-primary" @onclick="CreateTournament">Create tournament</button>
 	<button type="submit" class="btn btn-success">Update tournament</button>
+	<button type="button" class="btn btn-warning" @onclick="SaveTournament">Save tournament</button>
 	<br /><br />
 </EditForm>
 
@@ -58,6 +61,12 @@
 		</tr>
 	</table>
 </EditForm>
+</CanEdit>
+<CanEdit>
+	<CantEdit>
+		<div class="alert alert-danger">Permission denied</div>
+	</CantEdit>
+</CanEdit>
 
 @code {
 	private TournamentEditModel tournamentModel = new()
@@ -92,16 +101,23 @@
 	private void AddPlayer()
 	{
 		tournamentModel.Players.Add(new PlayerEditModel { Name = string.Empty, Handicap = 0 });
+		seedEditModel.NumPlayers = tournamentModel.Players.Count;
 		StateHasChanged();
 	}
 
 	private void RemovePlayer(PlayerEditModel player)
 	{
 		tournamentModel.Players.Remove(player);
+		seedEditModel.NumPlayers = tournamentModel.Players.Count;
 		StateHasChanged();
 	}
 
-	private void HandleValidSubmit()
+	private async Task SaveTournament()
+	{
+		await _tournamentService.SaveTournamentToJsonAsync();	
+	}
+
+	private void UpdateTournament()
 	{
 		if (tournament is null)
 		{
@@ -126,22 +142,15 @@
 		_tournamentService.AddOrUpdateTournament(tournament);
 	}
 
-	public class TournamentEditModel
+	private void CreateTournament(MouseEventArgs args)
 	{
-		[Required]
-		public string Name { get; set; } = string.Empty;
-		[Required]
-		public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
-		public List<PlayerEditModel> Players { get; set; } = [];
-	}
-
-	public class PlayerEditModel
-	{
-		[Required]
-		public string Name { get; set; } = string.Empty;
-		public int? Handicap { get; set; }
-		public int? TTEId { get; set; }
-		public bool Withdrawn { get; set; }
+		tournament = Tournament.Create(tournamentModel.Name, tournamentModel.Date);
+		tournament = tournament.AddOrUpdatePlayers(
+			[.. tournamentModel.Players
+			.Select(p => Player.Create(p.Name, p.Handicap, p.TTEId, p.Withdrawn))]);
+		_tournamentService.AddOrUpdateTournament(tournament);
+		tournament = _tournamentService.GetTournament();
+		OnInitialized();
 	}
 
 	private void ReDrawGroups(MouseEventArgs args)
@@ -163,6 +172,24 @@
 		.DrawGroups(seedEditModel.NumGroups);
 		tournament = _tournamentService.GetTournament();
 		OnInitialized();
+	}
+
+	public class TournamentEditModel
+	{
+		[Required]
+		public string Name { get; set; } = string.Empty;
+		[Required]
+		public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+		public List<PlayerEditModel> Players { get; set; } = [];
+	}
+
+	public class PlayerEditModel
+	{
+		[Required]
+		public string Name { get; set; } = string.Empty;
+		public int? Handicap { get; set; }
+		public int? TTEId { get; set; }
+		public bool Withdrawn { get; set; }
 	}
 
 	public class SeedEditModel

@@ -25,8 +25,10 @@
 							<th>Player A</th>
 							<th>Player B</th>
 							<th>Score</th>
-							<th>Edit</th>
-							<th>Advance</th>
+							<CanEdit>
+								<th>Edit</th>
+							</CanEdit>
+							@* <th>Advance</th> *@
 						</tr>
 					</thead>
 					<tbody>
@@ -62,13 +64,15 @@
 									}
 								</td>
 							</tr>
-							@if (RendererInfo.IsInteractive && editingMatchNo == (roundNo, matchNo)) {
+							<CanEdit>
+							@if (editingMatchNo == (roundNo, matchNo)) {
 								<tr>
 									<td colspan="6">
 										<MatchEditor Match="@match" OnSave="OnMatchSaveAsync" OnCancel="CancelEditMatch" />
 									</td>
 								</tr>
 							}
+							</CanEdit>
 						}
 					</tbody>
 				</table>
