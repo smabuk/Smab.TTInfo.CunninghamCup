@@ -4,25 +4,36 @@
 @inject ITournamentService _tournamentService
 @rendermode InteractiveServer
 
-<PageTitle>@MembershipName</PageTitle>
+<PageTitle>Entries - Cunningham Cup</PageTitle>
 
-<h2>@MembershipName</h2>
+<h2>Entries</h2>
 
-<QuickGrid ref="membershipGrid" Items="@FilteredItems?.AsQueryable()">
-	<PropertyColumn Title="Name" Property="@(m => m.Contact.FullName)" Sortable="true" />
-	<PropertyColumn Title="TTE #" Property="@(m => m.Contact.User.MembershipNo)" Sortable="true" />
-	<PropertyColumn Title="Membership Type" Property="@(m => Pretty(m.Contact.User.MembershipType))" Sortable="true" />
-	<CanEdit>
-		<PropertyColumn Title="Phone #" Property="@(m => PrettyPhone(m.Contact.User.PhoneNumber))" Sortable="false" />
-	</CanEdit>
-	<PropertyColumn Title="Gender" Property="@(m => m.Contact.User.Gender == 1 ? "Male" : "Female")" Sortable="true" />
+<QuickGrid Items="@tournament?.ActivePlayers.OrderBy(p => p.Name).AsQueryable()">
+	<PropertyColumn Title="Name" Property="@(p => p.Name)" Sortable="true" />
+	@* <PropertyColumn Title="TTE #" Property="@(p => p.TTEId)" Sortable="true" /> *@
+	<PropertyColumn Align="Align.End" Title="Handicap" Property="@(p => p.Handicap)" Sortable="true" />
 </QuickGrid>
 
 <p>
-	<span><strong>Total Members: @FilteredItems?.Count()</strong></span>
+	<span><strong>Total Players: @tournament?.ActivePlayers.Count()</strong></span>
 </p>
 
+
 <CanEdit>
+	<h2>OLOP Membership - @MembershipName</h2>
+
+	<QuickGrid ref="membershipGrid" Items="@FilteredItems?.AsQueryable()">
+		<PropertyColumn Title="Name" Property="@(m => m.Contact.FullName)" Sortable="true" />
+		<PropertyColumn Title="TTE #" Property="@(m => m.Contact.User.MembershipNo)" Sortable="true" />
+		<PropertyColumn Title="Gender" Property="@(m => m.Contact.User.Gender == 1 ? "Male" : "Female")" Sortable="true" />
+		<PropertyColumn Title="Membership Type" Property="@(m => Pretty(m.Contact.User.MembershipType))" Sortable="true" />
+		<PropertyColumn Title="Phone #" Property="@(m => PrettyPhone(m.Contact.User.PhoneNumber))" Sortable="false" />
+	</QuickGrid>
+
+	<p>
+		<span><strong>Total Members: @FilteredItems?.Count()</strong></span>
+	</p>
+
 	<p></p>
 	<button title="Import" class="btn btn-warning" @onclick="ImportToTournament">
 		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people" viewBox="0 0 16 16">
@@ -46,9 +57,13 @@
 
 	private IEnumerable<MembershipItem>? FilteredItems => Membership?.Items;
 
+	public Tournament? tournament { get; set; }
+
 	protected override async Task OnInitializedAsync()
 	{
 		string ttinfoId = "olop";
+
+		tournament ??= _tournamentService.GetTournament();
 		Memberships ??= await _TTClubsReader.GetMemberships(ttinfoId);
 		if (MembershipId is null) {
 			if (Memberships is not null) {

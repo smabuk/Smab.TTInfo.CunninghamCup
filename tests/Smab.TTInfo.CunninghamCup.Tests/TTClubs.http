@@ -1,0 +1,22 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+
+@tenant=olop.ttclubs.co.uk
+
+###
+
+### 2025 Cunningham Cup memberships
+GET https://TTClubs-api.azurewebsites.net/api/memberships/members?count&membershipId=533&page=1
+Tenant: {{tenant}}
+###
+
+### Memberships (public)
+https://TTClubs-api.azurewebsites.net/api/memberships?public=true
+Tenant: {{tenant}}
+###
+
+### Memberships (all)
+https://TTClubs-api.azurewebsites.net/api/memberships?public=false
+Tenant: {{tenant}}
+###
+
+###
