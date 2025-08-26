@@ -5,8 +5,7 @@
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
-
-<PageTitle>Group Details</PageTitle>
+<PageTitle>@(GroupName is not null ? GroupName : "Groups") - @tournament?.Name</PageTitle>
 <h1>@tournament?.Name</h1>
 
 
