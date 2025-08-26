@@ -13,7 +13,7 @@ h3 {
 }
 
 nav {
-	justify-content: space-between;
+	justify-content: space-evenly;
 	display: flex;
 	text-align: center;
 }
