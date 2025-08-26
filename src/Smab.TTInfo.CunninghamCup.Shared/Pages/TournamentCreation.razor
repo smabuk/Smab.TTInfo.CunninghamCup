@@ -7,6 +7,12 @@
 <h2>Create Tournament</h2>
 
 <CanEdit>
+	<CantEdit>
+		<div class="alert alert-danger">Permission denied</div>
+	</CantEdit>
+</CanEdit>
+
+<CanEdit>
 <EditForm Model="tournamentModel" OnValidSubmit="UpdateTournament" FormName="tForm">
 	<DataAnnotationsValidator />
 	<ValidationSummary />
@@ -61,11 +67,6 @@
 		</tr>
 	</table>
 </EditForm>
-</CanEdit>
-<CanEdit>
-	<CantEdit>
-		<div class="alert alert-danger">Permission denied</div>
-	</CantEdit>
 </CanEdit>
 
 @code {

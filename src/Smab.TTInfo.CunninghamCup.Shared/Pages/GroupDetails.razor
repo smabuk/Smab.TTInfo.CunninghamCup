@@ -34,8 +34,10 @@
 	</nav>
 }
 @if (tournament?.Groups.Count == 0) {
+	<div class="alert alert-info">
 	<h3>No Groups Available</h3>
 	<p>Groups have not been drawn yet.</p>
+	</div>
 } else if (GroupName is null) {
 	<p></p>
 } else if ((group is null || players is null)) {

@@ -15,9 +15,9 @@
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
+		if (!firstRender) return;
 		// Check cookie for edit permission
 		string cookie = await JS.InvokeAsync<string>("eval", "document.cookie");
-		// canEdit = cookie.Contains("canEdit=True");
 		canEdit = cookie.Contains("canEdit");
 		StateHasChanged();
 		await base.OnAfterRenderAsync(firstRender);
