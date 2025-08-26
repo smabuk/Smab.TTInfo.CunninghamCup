@@ -8,7 +8,10 @@
 <h2>Knockout Draw</h2>
 
 @if (tournament is null) {
-	<p>No knockout stage available.</p>
+	<div class="alert alert-info">
+		<h3>No Groups Available</h3>
+		<p>Groups have not been drawn yet, so it's too early to prepare the <em>Knockout Draw</em>.</p>
+	</div>
 } else if (tournament.KnockoutStage is null) {
 	<dl>
 	@foreach(Group group in tournament.Groups) {

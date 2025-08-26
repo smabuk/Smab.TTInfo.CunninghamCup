@@ -8,7 +8,10 @@
 <h2>Knockout Phase</h2>
 
 @if (tournament is null || tournament.KnockoutStage is null) {
-	<p>No knockout rounds available.</p>
+	<div class="alert alert-info">
+		<h3>Not drawn yet</h3>
+		<p>The knockout phase hasn't been drawn yet.</p>
+	</div>
 } else {
 	@for (int roundIdx = 0; roundIdx < tournament.KnockoutStage.Rounds.Count; roundIdx++) {
 		int roundNo = roundIdx;
