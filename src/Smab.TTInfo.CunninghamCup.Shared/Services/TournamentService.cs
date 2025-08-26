@@ -40,7 +40,7 @@ public class TournamentService(TTInfoOptions ttinfoOptions) : ITournamentService
 		}
 
 		// Use Task.Run to ensure the method is truly asynchronous
-		_ =    await Task.Run(() => _tournament.Save($"tournament_{_tournament.Id}_{_tournament.Name}_{DateTime.Now:yyyyMMdd_hhmmss}.json", CacheFolder));
+		_ =    await Task.Run(() => _tournament.Save($"tournament_{_tournament.Id}_{_tournament.Name}_{DateTime.Now:yyyyMMdd-HHmmss}.json", CacheFolder));
 		return await Task.Run(() => _tournament.Save($"tournament_{DateTime.UtcNow.Year}.json", CacheFolder));
 	}
 }
