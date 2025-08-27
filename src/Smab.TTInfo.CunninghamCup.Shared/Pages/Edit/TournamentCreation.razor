@@ -38,10 +38,10 @@
 		<tbody>
 			@foreach (PlayerEditModel player in tournamentModel.Players) {
 				<tr>
-					<td><InputText @bind-Value="player.Name" class="form-control" /></td>
-					<td><InputNumber @bind-Value="player.TTEId" class="form-control" /></td>
-					<td><InputNumber @bind-Value="player.Handicap" class="form-control" /></td>
-					<td><InputCheckbox @bind-Value="player.Withdrawn" class="" /></td>
+					<td><InputText placeholder="Name" @bind-Value="player.Name" class="form-control" autocomplete="off" /></td>
+					<td><InputNumber @bind-Value="player.TTEId" class="form-control" autocomplete="off" /></td>
+					<td><InputNumber @bind-Value="player.Handicap" class="form-control" autocomplete="off" /></td>
+					<td><InputCheckbox @bind-Value="player.Withdrawn" class="" autocomplete="off" /></td>
 					<td><button type="button" class="btn btn-danger" @onclick="() => RemovePlayer(player)">Remove</button></td>
 				</tr>
 			}
