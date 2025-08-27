@@ -28,6 +28,14 @@ th {
 	text-wrap: nowrap;
 }
 
+[data-withdrawn],
+[data-withdrawn] td
+{
+	-webkit-text-decoration: line-through;
+	text-decoration: line-through;
+	color: var(--bs-danger, red);
+}
+
 [data-winner] {
 	display: flex;
 	align-items: center;

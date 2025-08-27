@@ -42,7 +42,8 @@
 					</h3>
 
 					@foreach (PlayerId playerId in group.Players) {
-						<div>@playerId.DisplayName (@tournament.GetPlayer(playerId).Handicap)</div>
+						Player player = tournament.GetPlayer(playerId);
+						<div data-withdrawn="@player.WithDrawn">@playerId.DisplayName (@tournament.GetPlayer(playerId).Handicap)</div>
 					}
 				}
 			</div>
@@ -114,7 +115,7 @@
 		<tbody>
 			@foreach ((int i, GroupPlayerSummary summary) in group.GroupPositions.Index()) {
 				Player player = players.ContainsKey(summary.PlayerId) ? players[summary.PlayerId] : new Player(summary.PlayerId, "Unknown");
-				<tr>
+				<tr data-withdrawn="@player.WithDrawn">
 					<td>@(i + 1)</td>
 					<td>@player.Name (@player.Handicap)</td>
 					<td>@summary.Played</td>
