@@ -1,0 +1,127 @@
+@page "/edit/entries"
+@page "/edit/entries/{MembershipId:int?}"
+@rendermode InteractiveServer
+@inject TTClubsReader _TTClubsReader
+@inject ITournamentService _tournamentService
+
+<PageTitle>Edit Entries - Cunningham Cup</PageTitle>
+
+
+<CanEdit>
+	<CantEdit>
+		<div class="alert alert-danger">Permission denied</div>
+	</CantEdit>
+</CanEdit>
+
+
+<CanEdit>
+	<Entries />
+	
+	<h2>OLOP Membership - @MembershipName</h2>
+
+	<QuickGrid ref="membershipGrid" Items="@FilteredItems?.AsQueryable()">
+		<PropertyColumn Title="Name" Property="@(m => m.Contact.FullName)" Sortable="true" />
+		<PropertyColumn Title="TTE #" Property="@(m => m.Contact.User.MembershipNo)" Sortable="true" />
+		<PropertyColumn Title="Gender" Property="@(m => m.Contact.User.Gender == 1 ? "Male" : "Female")" Sortable="true" />
+		<PropertyColumn Title="Membership Type" Property="@(m => Pretty(m.Contact.User.MembershipType))" Sortable="true" />
+		<PropertyColumn Title="Phone #" Property="@(m => PrettyPhone(m.Contact.User.PhoneNumber))" Sortable="false" />
+	</QuickGrid>
+
+	<p>
+		<span><strong>Total Members: @FilteredItems?.Count()</strong></span>
+	</p>
+
+	<p></p>
+	<button title="Import" class="btn btn-warning" @onclick="ImportToTournament">
+		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people" viewBox="0 0 16 16">
+			<path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4" />
+		</svg>
+		Import to Tournament
+	</button>
+</CanEdit>
+
+@code {
+	[Parameter]
+	public int? MembershipId { get; set; } = null;
+
+	// [PersistentState]
+	public Memberships? Memberships { get; set; }
+
+	// [PersistentState]
+	public Membership? Membership { get; set; }
+
+	private string MembershipName => Memberships?.Items.SingleOrDefault(m => m.Id == MembershipId)?.Name ?? "No Entries";
+
+	private IEnumerable<MembershipItem>? FilteredItems => Membership?.Items;
+
+	public Tournament? tournament { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		string ttinfoId = "olop";
+
+		tournament ??= _tournamentService.GetTournament();
+		Memberships ??= await _TTClubsReader.GetMemberships(ttinfoId);
+		if (MembershipId is null) {
+			if (Memberships is not null) {
+				MembershipId = Memberships.Items.Single(m => m.Name.Contains("Cunningham")).Id;
+			}
+		}
+
+		if (MembershipId is not null) {
+			Membership ??= await _TTClubsReader.GetMembership(ttinfoId, (int)MembershipId);
+		}
+
+	}
+
+	string Pretty(string input)
+	{
+		string newString = $"{input[0]}";
+
+		for (int i = 1; i < input.Length; i++) {
+			if (char.IsUpper(input[i])) {
+				newString = $"{newString} {input[i]}";
+			} else {
+				newString = $"{newString}{input[i]}";
+			}
+		}
+
+		return newString;
+	}
+
+	string PrettyPhone(string input)
+	{
+		string newString = $"{input}";
+
+		newString = newString
+		.Replace("+44 0", "+44")
+		.Replace("+44 ", "+44")
+		.Replace("+44", "+44 ")
+		.Trim();
+
+		if (newString[0] == '0') {
+			newString = $"+44 {newString[1..]}";
+		}
+
+		if (newString[8] != ' ') {
+			newString = $"{newString[..8]} {newString[8..]}";
+		}
+
+		return newString;
+	}
+
+	private void ImportToTournament(MouseEventArgs args)
+	{
+		Tournament tournament = _tournamentService.GetTournament();
+		List<Player> players = [.. FilteredItems!
+			.Select(i => Player.Create(i.Contact.FullName, null, i.Contact.User.MembershipNo, false))
+			];
+
+		if (players.Count == 0) {
+			return;
+		}
+
+		tournament = tournament.AddOrUpdatePlayers(players);
+		_tournamentService.AddOrUpdateTournament(tournament);
+	}
+}

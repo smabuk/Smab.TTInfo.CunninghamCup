@@ -11,6 +11,7 @@ namespace Smab.TTInfo.CunninghamCup.Shared.Models;
 /// <param name="Matches">The list of matches played within the group.</param>
 public record Group(
 	string Name,
+	DateTime? ScheduledTime,
 	List<PlayerId> Players,
 	List<Match> Matches
 )

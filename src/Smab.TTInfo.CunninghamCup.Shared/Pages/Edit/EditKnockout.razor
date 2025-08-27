@@ -1,0 +1,14 @@
+@page "/edit/knockout"
+@rendermode InteractiveServer
+
+<PageTitle>Edit Knockout - Cunningham Cup</PageTitle>
+
+<CanEdit>
+	<CantEdit>
+		<div class="alert alert-danger">Permission denied</div>
+	</CantEdit>
+</CanEdit>
+
+<CanEdit>
+	<KnockoutPhase @rendermode="InteractiveServer"/>
+</CanEdit>

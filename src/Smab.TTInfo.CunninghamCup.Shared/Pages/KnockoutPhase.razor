@@ -1,7 +1,7 @@
+@page "/knockout"
 @page "/knockoutphase"
 @using Smab.TTInfo.CunninghamCup.Shared.Models
 @inject ITournamentService _tournamentService
-@rendermode InteractiveServer
 
 <PageTitle>Knockout Phase - @tournament?.Name</PageTitle>
 
@@ -12,6 +12,7 @@
 		<h3>Not drawn yet</h3>
 		<p>The knockout phase hasn't been drawn yet.</p>
 	</div>
+	<KnockoutDraw />
 } else {
 	@for (int roundIdx = 0; roundIdx < tournament.KnockoutStage.Rounds.Count; roundIdx++) {
 		int roundNo = roundIdx;

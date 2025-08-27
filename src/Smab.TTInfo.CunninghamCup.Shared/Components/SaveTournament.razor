@@ -1,0 +1,11 @@
+@inject ITournamentService _tournamentService
+@rendermode InteractiveServer
+<CanEdit>
+	<button title="Save" class="btn btn-sm btn-warning" @onclick="OnSaveTournament">
+		<span aria-hidden="true"><svg height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#floppy" /></svg></span>
+	</button>
+	@* <div class="badge text-bg-warning ms-1 wrap">Edit</div> *@
+</CanEdit>
+@code {
+	private void OnSaveTournament() => _ = _tournamentService.SaveTournamentToJsonAsync();
+}

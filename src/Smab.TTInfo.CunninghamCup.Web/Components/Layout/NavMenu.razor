@@ -1,6 +1,6 @@
 ﻿@using Smab.TTInfo.CunninghamCup.Shared.Services
-@inject ITournamentService _tournamentService
-@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+
 <div class="top-row ps-3 navbar sticky-top">
 	<div class="container-fluid">
 		<a class="navbar-brand" title="Home" href=""><img src="/olop-square-motif.svg" height="48" /></a>
@@ -15,33 +15,95 @@
 				</CantEdit>
 			</CanEdit> *@
 
-			<CanEdit>
+			@if (navigationManager.Uri.Contains("edit", StringComparison.InvariantCultureIgnoreCase))
+			{
 				<div class="nav-item">
-					<NavLink title="Create" class="nav-link" href="create">
+					<NavLink title="Create" class="nav-link" href="edit/create">
 						<span aria-hidden="true"><svg class="bi" fill="currentColor"><use xlink:href="bootstrap-icons.svg#pencil" /></svg></span>
 						<span class="d-none d-md-inline">Create</span>
 					</NavLink>
 				</div>
-			</CanEdit>
+				<div class="nav-item">
+					<NavLink title="Entries" class="nav-link" href="edit/entries">
+						<span aria-hidden="true"><svg class="bi" fill="currentColor"><use xlink:href="bootstrap-icons.svg#person-lines-fill" /></svg></span>
+						<span class="d-none d-md-inline">Entries</span>
+					</NavLink>
+				</div>
 
-			<div class="nav-item">
-				<NavLink title="Entries" class="nav-link" href="entries">
-					<span aria-hidden="true"><svg class="bi" fill="currentColor"><use xlink:href="bootstrap-icons.svg#person-lines-fill" /></svg></span>
-					<span class="d-none d-md-inline">Entries</span>
-				</NavLink>
-			</div>
+				<div class="nav-item">
+					<NavLink title="Groups" class="nav-link" href="edit/group">
+						<span aria-hidden="true">
+							<svg class="bi" fill="currentColor"><use xlink:href="bootstrap-icons.svg#collection" /></svg>
+						</span>
+						<span class="d-none d-md-inline">Groups</span>
+					</NavLink>
+				</div>
 
-			<div class="nav-item">
-				<NavLink title="Groups" class="nav-link" href="group">
-					<span aria-hidden="true">
-						<svg class="bi" fill="currentColor"><use xlink:href="bootstrap-icons.svg#collection" /></svg>
-					</span>
-					<span class="d-none d-md-inline">Groups</span>
-				</NavLink>
-			</div>
+				<div class="nav-item">
+					<NavLink title="Knockout" class="nav-link" href="edit/knockout">
+						<span aria-hidden="true">
+							<svg class="bi" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+								<!-- Left match boxes -->
+								<rect x="1" y="3" width="3" height="3" rx="0.5" />
+								<rect x="1" y="10" width="3" height="3" rx="0.5" />
+								<!-- Lines from matches to final -->
+								<line x1="4" y1="4.5" x2="8" y2="4.5" stroke="currentColor" stroke-width="0.7" />
+								<line x1="4" y1="11.5" x2="8" y2="11.5" stroke="currentColor" stroke-width="0.7" />
+								<!-- Vertical connector to final -->
+								<line x1="8" y1="4.5" x2="8" y2="11.5" stroke="currentColor" stroke-width="0.7" />
+								<!-- Final box -->
+								<rect x="11" y="6.5" width="4" height="3" rx="0.5" />
+								<!-- Line from connector to final -->
+								<line x1="8" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="0.7" />
+							</svg>
 
-			<div class="nav-item">
-				<NavLink title="KO Draw" class="nav-link" href="knockout">
+						</span>
+						<span class="d-none d-md-inline">Knockout</span>
+					</NavLink>
+				</div>
+			} else {
+				<div class="nav-item">
+					<NavLink title="Entries" class="nav-link" href="entries">
+						<span aria-hidden="true"><svg class="bi" fill="currentColor"><use xlink:href="bootstrap-icons.svg#person-lines-fill" /></svg></span>
+						<span class="d-none d-md-inline">Entries</span>
+					</NavLink>
+				</div>
+
+				<div class="nav-item">
+					<NavLink title="Groups" class="nav-link" href="group">
+						<span aria-hidden="true">
+							<svg class="bi" fill="currentColor"><use xlink:href="bootstrap-icons.svg#collection" /></svg>
+						</span>
+						<span class="d-none d-md-inline">Groups</span>
+					</NavLink>
+				</div>
+
+				<div class="nav-item">
+					<NavLink title="Knockout" class="nav-link" href="knockout">
+						<span aria-hidden="true">
+							<svg class="bi" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+								<!-- Left match boxes -->
+								<rect x="1" y="3" width="3" height="3" rx="0.5" />
+								<rect x="1" y="10" width="3" height="3" rx="0.5" />
+								<!-- Lines from matches to final -->
+								<line x1="4" y1="4.5" x2="8" y2="4.5" stroke="currentColor" stroke-width="0.7" />
+								<line x1="4" y1="11.5" x2="8" y2="11.5" stroke="currentColor" stroke-width="0.7" />
+								<!-- Vertical connector to final -->
+								<line x1="8" y1="4.5" x2="8" y2="11.5" stroke="currentColor" stroke-width="0.7" />
+								<!-- Final box -->
+								<rect x="11" y="6.5" width="4" height="3" rx="0.5" />
+								<!-- Line from connector to final -->
+								<line x1="8" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="0.7" />
+							</svg>
+
+						</span>
+						<span class="d-none d-md-inline">Knockout</span>
+					</NavLink>
+				</div>
+			}
+
+	@* 		<div class="nav-item">
+				<NavLink title="KO Draw" class="nav-link" href="knockoutdraw">
 					<span aria-hidden="true">
 						<span aria-hidden="true">
 							<svg class="bi" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
@@ -61,30 +123,7 @@
 					</span>
 					<span class="d-none d-md-inline">KO Draw</span>
 				</NavLink>
-			</div>
-
-			<div class="nav-item">
-				<NavLink title="KO Matches" class="nav-link" href="knockoutphase">
-					<span aria-hidden="true">
-						<svg class="bi" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
-							<!-- Left match boxes -->
-							<rect x="1" y="3" width="3" height="3" rx="0.5" />
-							<rect x="1" y="10" width="3" height="3" rx="0.5" />
-							<!-- Lines from matches to final -->
-							<line x1="4" y1="4.5" x2="8" y2="4.5" stroke="currentColor" stroke-width="0.7" />
-							<line x1="4" y1="11.5" x2="8" y2="11.5" stroke="currentColor" stroke-width="0.7" />
-							<!-- Vertical connector to final -->
-							<line x1="8" y1="4.5" x2="8" y2="11.5" stroke="currentColor" stroke-width="0.7" />
-							<!-- Final box -->
-							<rect x="11" y="6.5" width="4" height="3" rx="0.5" />
-							<!-- Line from connector to final -->
-							<line x1="8" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="0.7" />
-						</svg>
-
-					</span>
-					<span class="d-none d-md-inline">KO Matches</span>
-				</NavLink>
-			</div>
+			</div> *@
 
 			<div class="nav-item">
 				<NavLink title="Summary" class="nav-link" href="summary">
@@ -94,15 +133,11 @@
 			</div>
 		</nav>
 		<nav class="nav">
-			<CanEdit>
-				<button title="Save" class="btn btn-sm btn-warning" @onclick="SaveTournament">
-				<span aria-hidden="true"><svg height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#floppy" /></svg></span>
-				</button>
-				@* <div class="badge text-bg-warning ms-1 wrap">Edit</div> *@
-			</CanEdit>
+			@if (navigationManager.Uri.Contains("edit", StringComparison.InvariantCultureIgnoreCase))
+			{
+				<SaveTournament />
+			}
+			@* <div class="badge text-bg-warning ms-1 wrap">@RendererInfo.Name</div> *@
 		</nav>
 	</div>
 </div>
-@code {
-	private void SaveTournament() => _ = _tournamentService.SaveTournamentToJsonAsync();
-}

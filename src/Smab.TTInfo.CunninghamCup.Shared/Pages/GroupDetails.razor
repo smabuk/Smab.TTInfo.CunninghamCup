@@ -3,15 +3,13 @@
 
 @inject ITournamentService _tournamentService
 @inject NavigationManager NavigationManager
-@rendermode InteractiveServer
 
 <PageTitle>@(GroupName is not null ? GroupName : "Groups") - @tournament?.Name</PageTitle>
 <h1>@tournament?.Name</h1>
 
-
 @if (tournament?.Groups.Count > 0) {
 	<nav class="mb-3 container-fluid">
-	@* @if (RendererInfo.IsInteractive) {
+	@if (RendererInfo.IsInteractive) {
 		<label for="groupSelector" class="form-label">Select Group:</label>
 		<select id="groupSelector" class="form-select" @onchange="OnGroupChanged" value="@GroupName">
 			@if (GroupName is null) {
@@ -21,7 +19,7 @@
 				<option value="@g.Name" selected="@(g.Name == GroupName)">@g.Name</option>
 			}
 		</select>
-	} else { *@
+	} else {
 		@foreach (Group g in tournament.Groups) {
 			<a class="btn btn-primary @((g.Name == GroupName) ? "disabled" : null)"
 				role="button"
@@ -29,7 +27,7 @@
 				aria-disabled="@((g.Name == GroupName) ? "true" : null)"
 			>@g.Name</a>
 		}
-	@* } *@
+	}
 	</nav>
 }
 @if (tournament?.Groups.Count == 0) {
@@ -175,7 +173,7 @@
 		string selectedGroup = e.Value?.ToString() ?? string.Empty;
 		if (!string.Equals(selectedGroup, GroupName, StringComparison.OrdinalIgnoreCase)) {
 			// Navigate to the selected group page
-			NavigationManager.NavigateTo($"/group/{selectedGroup}");
+			NavigationManager.NavigateTo($"/edit/group/{selectedGroup}");
 		}
 	}
 

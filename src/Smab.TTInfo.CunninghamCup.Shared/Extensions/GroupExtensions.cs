@@ -4,7 +4,7 @@ public static class GroupExtensions
 {
 	extension(Group)
 	{
-		public static Group Create(string name) => new(name, [], []);
+		public static Group Create(string name) => new(Name: name, ScheduledTime: null, [], []);
 		public static Group Create(string name, List<Player> players)
 		{
 			List<Match> matches = [];
@@ -47,7 +47,7 @@ public static class GroupExtensions
 				}
 			}
 
-			return new(name, [.. players.Select(p => p.Id)], [.. matches]);
+			return new(Name: name, ScheduledTime: null, [.. players.Select(p => p.Id)], [.. matches]);
 		}
 	}
 
