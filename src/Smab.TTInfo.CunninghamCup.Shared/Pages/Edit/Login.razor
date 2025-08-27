@@ -1,24 +1,35 @@
 @page "/login"
+@using Microsoft.Extensions.Options
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
+@inject IOptions<TTInfoOptions> _options
 @rendermode InteractiveServer
 
-<h3>Login</h3>
+<h2>Login</h2>
 <p>
-    <label>
-        <input type="checkbox" @bind="canEdit" />
-        Grant edit permission
-    </label>
+	<label>
+		Magic Word: 
+		<input type="password" @bind="magicWord" />
+	</label>
 </p>
 <button class="btn btn-primary" @onclick="OnLogin">Login</button>
 
 @code {
-    private bool canEdit = false;
+	//private bool canEdit = false;
+	private string magicWord = "";
 
-    private async Task OnLogin()
-    {
-        // Store edit permission in a cookie
-        await JS.InvokeVoidAsync("eval", $"document.cookie = 'canEdit={canEdit}; path=/'");
-        Navigation.NavigateTo("/create");
-    }
+	private async Task OnLogin()
+	{
+		string expectedMagicWord = _options.Value.MagicWord;
+		if (magicWord == expectedMagicWord)
+		{
+			// Store edit permission in a cookie
+			await JS.InvokeVoidAsync("eval", $"document.cookie = 'canEdit={magicWord}; path=/'");
+			Navigation.NavigateTo("/edit/entries");
+		}
+		else
+		{
+			// Optionally show error or handle failed login
+		}
+	}
 }

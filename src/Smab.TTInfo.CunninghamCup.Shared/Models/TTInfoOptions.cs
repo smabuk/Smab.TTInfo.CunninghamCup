@@ -19,4 +19,6 @@ public class TTInfoOptions
 	/// Indicates whether to use test files instead of live data.
 	/// </summary>
 	public bool   UseTestFiles { get; set; } = false;
+
+	public string MagicWord { get; set; } = "please";
 }
