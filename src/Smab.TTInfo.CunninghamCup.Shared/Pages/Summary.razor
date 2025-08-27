@@ -3,10 +3,18 @@
 
 <PageTitle>Summary - Cunningham Cup</PageTitle>
 
+
 @if (tournament is not null)
 {
 	<h2>@tournament.Name</h2>
-	
+	@if (tournament?.KnockoutStage is null)
+	{
+		<div class="alert alert-info">
+			<h3>Come back soon</h3>
+			<p>The tournament has not yet begun, come back on or after @tournament!.Date.ToLongDateString() to see more information.</p>
+		</div>
+
+	}	
 }
 
 @code {
