@@ -31,8 +31,8 @@ public class CustomValidation : ComponentBase
 	public void DisplayErrors(Dictionary<string, List<string>> errors)
 	{
 		if (CurrentEditContext is not null) {
-			foreach (var err in errors) {
-				messageStore?.Add(CurrentEditContext.Field(err.Key), err.Value);
+			foreach ((string key, List<string> value) in errors) {
+				messageStore?.Add(CurrentEditContext.Field(key), value);
 			}
 
 			CurrentEditContext.NotifyValidationStateChanged();

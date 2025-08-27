@@ -8,7 +8,7 @@
 <h2>@tournament?.Name</h2>
 
 @if (tournament?.Groups.Count > 0) {
-	@if (RendererInfo.IsInteractive) {
+	@if (false && RendererInfo.IsInteractive) {
 		<nav class="mb-3 container-fluid">
 			<label for="groupSelector" class="form-label">Select Group:</label>
 			<select id="groupSelector" class="form-select" @onchange="OnGroupChanged" value="@GroupName">
@@ -29,7 +29,16 @@
 					<h3>
 						<a class="btn btn-primary " role="button" href="group/@group.Name">@group.Name</a>
 						<span class="fs-6">@group.ScheduledTime?.ToShortTimeString()</span>
-						@* <CanEdit><input type="time" /><button type="button" class="btn btn-sm btn-success ms-3" @onclick="SetGroupTime(groupNo)">Set time</button></CanEdit> *@
+						<CanEdit>
+							<button class="btn btn-primary btn-sm" @onclick="() => EditTimeOfGroup(groupNo)"><svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#pencil" /></svg></button>
+							@if (groupNo == editingScheduledTimeNo)
+							{
+								<span>
+									<input type="time" class="form-control d-inline ms-2" @bind-value="editScheduledTime" />
+									<button type="button" class="btn btn-sm btn-success ms-2" @onclick="() => SaveScheduledTime(groupNo)">Set Time</button>
+								</span>
+							}
+						</CanEdit>
 					</h3>
 
 					@foreach (PlayerId playerId in group.Players) {
@@ -205,6 +214,8 @@
 
 	private int groupSize = 4;
 	private int? editingMatchNo = null;
+	private int? editingScheduledTimeNo = null;
+	private DateTime? editScheduledTime;
 
 	protected override void OnInitialized()
 	{
@@ -233,6 +244,12 @@
 	private void CompleteMatchWithRandomScores(int matchNo) => group = _tournamentService.CompleteMatchWithRandomScores(group!.Name, matchNo);
 	private void ResetGroup() => group = _tournamentService.ResetGroup(group!.Name);
 
+	private void EditTimeOfGroup(int groupNo)
+	{
+		editScheduledTime = tournament!.Groups[groupNo].ScheduledTime;
+		editingScheduledTimeNo = groupNo;
+	}
+
 	private void EditMatch(int matchNo)
 	{
 		editingMatchNo = matchNo;
@@ -253,5 +270,18 @@
 			_tournamentService.AddOrUpdateTournament(tournament);
 		}
 		editingMatchNo = null;
+	}
+
+	private void SaveScheduledTime(int groupNo)
+	{
+		Group group = tournament!.Groups[groupNo];
+		if (editScheduledTime is not null)
+		{
+			group = group with { ScheduledTime = new DateTime( tournament.Date, TimeOnly.FromDateTime((DateTime)editScheduledTime)) };
+			tournament.Groups[groupNo] = group;
+			StateHasChanged();
+		}
+
+		editingScheduledTimeNo = null;
 	}
 }
