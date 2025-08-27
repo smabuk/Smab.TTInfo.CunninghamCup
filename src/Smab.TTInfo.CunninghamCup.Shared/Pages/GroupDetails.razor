@@ -138,8 +138,8 @@
 				: "";
 				<tr>
 					<td>@(i + 1)</td>
-					<td>@playerA.Name (@match.PlayerAStart)</td>
-					<td>@playerB.Name (@match.PlayerBStart)</td>
+					<td data-winner="@match.IsPlayerAWin">@playerA.Name (@match.PlayerAStart)</td>
+					<td data-winner="@match.IsPlayerBWin">@playerB.Name (@match.PlayerBStart)</td>
 					@if (group.Matches.Any(m => m.IsCompleted)) {
 						<td>@($"{match.PlayerASets}-{match.PlayerBSets}")</td>
 						<td>@score</td>

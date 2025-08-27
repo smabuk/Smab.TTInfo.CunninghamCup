@@ -28,6 +28,12 @@ th {
 	text-wrap: nowrap;
 }
 
+[data-winner] {
+	display: flex;
+	align-items: center;
+	font-weight: bold;
+}
+
 .rounded-pill {
 	margin: 0.1em;
 	display: inline-flex;
@@ -41,6 +47,19 @@ input[type='number'] {
 	width: 4rem;
 }
 
+
+@media (min-width: 641px) {
+	[data-winner]::before {
+		content: "";
+		display: inline-block;
+		aspect-ratio: 1/1;
+		width: 0.75em;
+		height: 0.75em;
+		border-radius: 50%;
+		background-color: var(--bs-success, #28a745);
+		margin-right: 0.5em;
+	}
+}
 
 @media (max-width: 640px) {
 	table {
