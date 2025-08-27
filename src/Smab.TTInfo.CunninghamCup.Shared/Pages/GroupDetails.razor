@@ -33,7 +33,7 @@
 					</h3>
 
 					@foreach (PlayerId playerId in group.Players) {
-						<div>@playerId.DisplayName</div>
+						<div>@playerId.DisplayName (@tournament.GetPlayer(playerId).Handicap)</div>
 					}
 				}
 			</div>
