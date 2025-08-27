@@ -1,25 +1,19 @@
 @page "/entries"
 @inject ITournamentService _tournamentService
-@rendermode InteractiveServer
 
 <PageTitle>Entries - Cunningham Cup</PageTitle>
 
-<h2>Entries</h2>
+<h2>@tournament?.ActivePlayers.Count() Entries</h2>
 
 <div class="d-flex justify-content-center">
 	<QuickGrid Items="@playerEntries?.AsQueryable()">
 		<PropertyColumn Title="Name" Property="@(p => p.Name)" Sortable="true" />
 		@* <PropertyColumn Title="TTE #" Property="@(p => p.TTEId)" Sortable="true" /> *@
-		<PropertyColumn Align="Align.End" Title="Handicap" Property="@(p => p.Handicap)" Sortable="true" />
+		<PropertyColumn Align="Align.End" Title="Hcap" Property="@(p => p.Handicap)" Sortable="true" />
 		<PropertyColumn Title="Group" Property="@(p => p.GroupName)" Sortable="true" />
 		@* <PropertyColumn Title="Start time" Property="@(p => p.StartTime)" Sortable="true" /> *@
 	</QuickGrid>
 </div>
-
-<br />
-<p class="d-flex justify-content-center">
-	<span><strong>Total Players: @tournament?.ActivePlayers.Count()</strong></span>
-</p>
 @code {
 	public Tournament? tournament { get; set; }
 	List<PlayerEntry>? playerEntries;

@@ -1,7 +1,7 @@
 @page "/group"
 @page "/group/{GroupName}"
-
 @inject ITournamentService _tournamentService
+@inject IHostEnvironment env
 @inject NavigationManager navigationManager
 
 <PageTitle>@(GroupName is not null ? GroupName : "Groups") - @tournament?.Name</PageTitle>
@@ -36,13 +36,13 @@
 		<p>Groups have not been drawn yet.</p>
 	</div>
 	<CanEdit>
-			<table>
-				<tr>
-					<td class="pe-3">No of players: @tournament.ActivePlayers.Count</td>
-					<td><input type="number" title="No of groups" @bind-value="noOfGroupsToDraw" class="form-control d-inline m-1" /></td>
-					<td><button type="button" class="btn btn-success ms-3" @onclick="DrawGroups">Draw Groups</button></td>
-				</tr>
-			</table>
+		<table>
+			<tr>
+				<td class="pe-3">No of players: <strong>@tournament.ActivePlayers.Count</strong></td>
+				<td>Group size<input type="number" title="Group size" @bind-value="groupSize" class="form-control d-inline m-1" /></td>
+				<td><button type="button" class="btn btn-success ms-3" @onclick="DrawGroups">Draw Groups</button></td>
+			</tr>
+		</table>
 	</CanEdit>
 } else if (GroupName is null) {
 	<p></p>
@@ -53,12 +53,15 @@
 		<h2>@group.Name</h2>
 		<span class="badge text-bg-info">Round Robin</span>
 		<span class="badge bg-secondary">Size @group.Players.Count</span>
-		<CanEdit>
-			<button title="Reset all match scores" class="btn btn-sm btn-warning float-end" @onclick="ResetGroup">Reset</button>
-			<button title="Random match scores" class="btn btn-sm btn-warning float-end mx-3" @onclick="CompleteWithRandomScores">
-				<svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#shuffle" /></svg>
-			</button>
-		</CanEdit>
+		@if (env.IsDevelopment())
+		{
+			<CanEdit>
+					<button title="Reset all match scores" class="btn btn-sm btn-warning float-end" @onclick="ResetGroup">Reset</button>
+					<button title="Random match scores" class="btn btn-sm btn-warning float-end mx-3" @onclick="CompleteWithRandomScores">
+						<svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#shuffle" /></svg>
+					</button>
+			</CanEdit>
+		}
 	</div>
 
 	<h3>Summary</h3>
@@ -71,7 +74,7 @@
 				<th>M</th>
 				<th>S</th>
 				<th>GM</th>
-				<th>History</th>
+				<th>H</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -116,8 +119,11 @@
 				<th>#</th>
 				<th>Player A</th>
 				<th>Player B</th>
-				<th>Sets</th>
-				<th>Score</th>
+				@if (group.Matches.Any(m => m.IsCompleted))
+				{
+					<th>Sets</th>
+					<th>Score</th>
+				}
 			</tr>
 		</thead>
 		<tbody>
@@ -133,15 +139,19 @@
 					<td>@(i + 1)</td>
 					<td>@playerA.Name (@match.PlayerAStart)</td>
 					<td>@playerB.Name (@match.PlayerBStart)</td>
-					<td>@($"{match.PlayerASets}-{match.PlayerBSets}")</td>
-					<td>@score
-					<CanEdit>
-						<button class="btn btn-primary btn-sm float-end" @onclick="() => EditMatch(matchNo)">Edit</button>
-						<button class="btn btn-sm btn-warning float-end" @onclick="() => CompleteMatchWithRandomScores(matchNo)">
-							<svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#shuffle" /></svg>
-						</button>
-					</CanEdit>
-					</td>
+					@if (match.IsCompleted) {
+						<td>@($"{match.PlayerASets}-{match.PlayerBSets}")</td>
+						<td>@score
+						<CanEdit>
+							<button class="btn btn-primary btn-sm float-end" @onclick="() => EditMatch(matchNo)">Edit</button>
+							@if (env.IsDevelopment()) {
+								<button class="btn btn-sm btn-warning float-end" @onclick="() => CompleteMatchWithRandomScores(matchNo)">
+									<svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#shuffle" /></svg>
+								</button>
+							}
+						</CanEdit>
+						</td>
+					}
 				</tr>
 				<CanEdit>
 					@if (editingMatchNo == matchNo) {
@@ -167,7 +177,7 @@
 	[PersistentState]
 	public Tournament? tournament { get; set; }
 
-	private int noOfGroupsToDraw = 4;
+	private int groupSize = 4;
 	private int? editingMatchNo = null;
 
 	protected override void OnInitialized()
@@ -179,7 +189,8 @@
 
 	private void DrawGroups(MouseEventArgs args)
 	{
-		_tournamentService.DrawGroups(noOfGroupsToDraw);
+		_tournamentService.DrawGroups(groupSize);
+		_tournamentService.SaveTournamentToJsonAsync();
 		navigationManager.NavigateTo($"/edit/group", true);
 	}
 
