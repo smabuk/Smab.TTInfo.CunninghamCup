@@ -1,11 +1,34 @@
 @inject ITournamentService _tournamentService
 @rendermode InteractiveServer
 <CanEdit>
-	<button title="Save" class="btn btn-sm btn-warning" @onclick="OnSaveTournament">
+	<button title="Save" class="btn btn-sm btn-warning" @onclick="OnSaveTournamentAsync">
 		<span aria-hidden="true"><svg height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#floppy" /></svg></span>
 	</button>
-	@* <div class="badge text-bg-warning ms-1 wrap">Edit</div> *@
 </CanEdit>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+	<div id="liveToast" class="toast @(displayToast ? "show" : null)" role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="toast-header">
+			@* <img class="rounded me-2" alt="..."> *@
+			<strong class="me-auto">Saved tournament</strong>
+			@* <small>11 mins ago</small> *@
+			<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+		</div>
+		<div class="toast-body">
+			Saved at @DateTime.Now.ToShortTimeString()
+		</div>
+	</div>
+</div>
+
 @code {
-	private void OnSaveTournament() => _ = _tournamentService.SaveTournamentToJsonAsync();
+	bool displayToast = false;
+
+	private async Task OnSaveTournamentAsync()
+	{
+		await _tournamentService.SaveTournamentToJsonAsync();
+
+		displayToast = true;
+		await Task.Delay(3000);
+		displayToast = false;
+	}
 }
