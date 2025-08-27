@@ -23,8 +23,15 @@
 	} else if (GroupName is null) {
 		<div class="container-fluid d-flex justify-content-center">
 			<div>
-				@foreach (Group group in tournament?.Groups ?? []) {
-					<h3><a class="btn btn-primary " role="button" href="group/@group.Name">@group.Name</a></h3>
+				@for (int i = 0; i < tournament.Groups.Count; i++) {
+					int groupNo = i;
+					Group group = tournament.Groups[i];
+					<h3>
+						<a class="btn btn-primary " role="button" href="group/@group.Name">@group.Name</a>
+						<span class="fs-6">@group.ScheduledTime?.ToShortTimeString()</span>
+						@* <CanEdit><input type="time" /><button type="button" class="btn btn-sm btn-success ms-3" @onclick="SetGroupTime(groupNo)">Set time</button></CanEdit> *@
+					</h3>
+
 					@foreach (PlayerId playerId in group.Players) {
 						<div>@playerId.DisplayName</div>
 					}

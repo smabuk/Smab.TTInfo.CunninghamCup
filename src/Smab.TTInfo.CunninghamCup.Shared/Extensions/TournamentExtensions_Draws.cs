@@ -35,8 +35,16 @@ public static partial class TournamentExtensions
 
 			List<Group> groups = [.. Enumerable
 				.Range(0, groupCount)
-				.Select(i => Group.Create($"Group {(char)(i + 'A')}", [.. playerGroupings[i]]))
+				.Select(i => Group.Create($"Group {(char)(i + 'A')}",  [.. playerGroupings[i]]))
 				];
+
+			for (int i = 0; i < groups.Count; i++)
+			{
+				Group group = groups[i];
+				groups[i] = i < 2
+					? (group with { ScheduledTime = tournament.Date.ToDateTime(new TimeOnly(09, 30)) })
+					: (group with { ScheduledTime = tournament.Date.ToDateTime(new TimeOnly(11, 00)) });
+			}
 
 			return tournament with { Groups = groups };
 		}
