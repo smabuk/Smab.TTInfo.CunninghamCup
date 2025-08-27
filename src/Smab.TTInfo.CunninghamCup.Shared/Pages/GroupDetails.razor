@@ -5,7 +5,7 @@
 @inject NavigationManager navigationManager
 
 <PageTitle>@(GroupName is not null ? GroupName : "Groups") - @tournament?.Name</PageTitle>
-<h1>@tournament?.Name</h1>
+<h2>@tournament?.Name</h2>
 
 @if (tournament?.Groups.Count > 0) {
 	<nav class="mb-3 container-fluid">
@@ -21,7 +21,7 @@
 		</select>
 	} else {
 		@foreach (Group g in tournament.Groups) {
-			<a class="btn btn-primary @((g.Name == GroupName) ? "disabled" : null)"
+			<a class="btn btn-primary m-1 @((g.Name == GroupName) ? "disabled" : null)"
 				role="button"
 				href="group/@g.Name"
 				aria-disabled="@((g.Name == GroupName) ? "true" : null)"
@@ -38,7 +38,7 @@
 	<CanEdit>
 		<table>
 			<tr>
-				<td class="pe-3">No of players: <strong>@tournament.ActivePlayers.Count</strong></td>
+				<td class="pe-3">No of players <input type="number" title="Group size" value="@tournament.ActivePlayers.Count" class="form-control d-inline m-1" disabled /></td>
 				<td>Group size<input type="number" title="Group size" @bind-value="groupSize" class="form-control d-inline m-1" /></td>
 				<td><button type="button" class="btn btn-success ms-3" @onclick="DrawGroups">Draw Groups</button></td>
 			</tr>
@@ -65,7 +65,7 @@
 	</div>
 
 	<h3>Summary</h3>
-	<table class="table table-dark table-striped">
+	<table id="summary" class="table table-dark table-striped">
 		<thead>
 			<tr>
 				<th>#</th>
@@ -113,7 +113,7 @@
 	</table>
 
 	<h3>Matches</h3>
-	<table class="table table-dark table-bordered">
+	<table id="matches" class="table table-dark table-bordered">
 		<thead>
 			<tr>
 				<th>#</th>
@@ -124,6 +124,7 @@
 					<th>Sets</th>
 					<th>Score</th>
 				}
+				<CanEdit><th></th></CanEdit>
 			</tr>
 		</thead>
 		<tbody>
@@ -139,19 +140,20 @@
 					<td>@(i + 1)</td>
 					<td>@playerA.Name (@match.PlayerAStart)</td>
 					<td>@playerB.Name (@match.PlayerBStart)</td>
-					@if (match.IsCompleted) {
+					@if (group.Matches.Any(m => m.IsCompleted)) {
 						<td>@($"{match.PlayerASets}-{match.PlayerBSets}")</td>
-						<td>@score
-						<CanEdit>
-							<button class="btn btn-primary btn-sm float-end" @onclick="() => EditMatch(matchNo)">Edit</button>
+						<td>@score</td>
+					}
+					<CanEdit>
+						<td class="edit">
+							<button class="btn btn-primary btn-sm" @onclick="() => EditMatch(matchNo)"><svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#pencil" /></svg></button>
 							@if (env.IsDevelopment()) {
-								<button class="btn btn-sm btn-warning float-end" @onclick="() => CompleteMatchWithRandomScores(matchNo)">
+								<button class="btn btn-sm btn-warning" @onclick="() => CompleteMatchWithRandomScores(matchNo)">
 									<svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#shuffle" /></svg>
 								</button>
 							}
-						</CanEdit>
 						</td>
-					}
+					</CanEdit>
 				</tr>
 				<CanEdit>
 					@if (editingMatchNo == matchNo) {

@@ -24,6 +24,10 @@ table {
 	overflow-y: hidden;
 }
 
+th {
+	text-wrap: nowrap;
+}
+
 .rounded-pill {
 	margin: 0.1em;
 	display: inline-flex;
@@ -36,3 +40,45 @@ table {
 input[type='number'] {
 	width: 4rem;
 }
+
+
+@media (max-width: 640px) {
+	table {
+		font-size: small;
+	}
+
+	#summary td {
+		text-wrap: nowrap;
+	}
+
+	#summary td:nth-child(2) {
+		text-wrap: auto;
+	}
+
+	#matches td {
+		text-wrap: nowrap;
+	}
+
+	#matches td.edit {
+		text-wrap: auto;
+	}
+
+	#matches th:nth-child(1),
+	#matches td:nth-child(1)
+	{
+		display: none;
+	}
+
+	#matches td:nth-child(2),
+	#matches td:nth-child(3)
+	{
+		text-wrap: auto;
+	}
+
+	#matches td:nth-child(2),
+	#matches td:nth-child(3)
+	{
+		text-wrap: auto;
+	}
+}
+
