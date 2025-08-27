@@ -22,6 +22,7 @@
 
 .navbar-brand {
     font-size: 1.1rem;
+    margin-right: 0;
 }
 
 ::deep .bi {
@@ -60,8 +61,8 @@
 .nav-item {
     font-size: 0.9rem;
     padding-bottom: 0.5rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
 }
 
 /*
@@ -108,7 +109,12 @@
         padding-left: 0.1rem;
         padding-right: 0.1rem;
     }
+
+    ::deep .bi {
+        margin-right: 0;
+    }
 }
+
 
 @media (min-width: 641px) {
     .navbar-toggler {
