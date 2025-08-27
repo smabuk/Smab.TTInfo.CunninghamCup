@@ -42,8 +42,8 @@ public class TournamentSetupTests
 	public void GroupsCount_Should_Return_Number_Of_Groups()
 	{
 		Tournament tournament = Tournament.Create("Test", DateOnly.FromDateTime(DateTime.Now));
-		tournament.Groups.Add(new Group("A", [], []));
-		tournament.Groups.Add(new Group("B", [], []));
+		tournament.Groups.Add(new Group("A", null, [], []));
+		tournament.Groups.Add(new Group("B", null, [], []));
 
 		tournament.GroupsCount.ShouldBe(2);
 	}
@@ -62,7 +62,7 @@ public class TournamentSetupTests
 	public void HasGroups_Should_Return_True_If_Groups_Exist()
 	{
 		Tournament tournament = Tournament.Create("Test", DateOnly.FromDateTime(DateTime.Now));
-		tournament.Groups.Add(new Group("A", [], []));
+		tournament.Groups.Add(new Group("A", null, [], []));
 
 		tournament.HasGroups.ShouldBeTrue();
 	}

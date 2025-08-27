@@ -2,7 +2,7 @@
 @page "/group/{GroupName}"
 
 @inject ITournamentService _tournamentService
-@inject NavigationManager NavigationManager
+@inject NavigationManager navigationManager
 
 <PageTitle>@(GroupName is not null ? GroupName : "Groups") - @tournament?.Name</PageTitle>
 <h1>@tournament?.Name</h1>
@@ -32,9 +32,18 @@
 }
 @if (tournament?.Groups.Count == 0) {
 	<div class="alert alert-info">
-	<h3>No Groups Available</h3>
-	<p>Groups have not been drawn yet.</p>
+		<h3>No Groups Available</h3>
+		<p>Groups have not been drawn yet.</p>
 	</div>
+	<CanEdit>
+			<table>
+				<tr>
+					<td class="pe-3">No of players: @tournament.ActivePlayers.Count</td>
+					<td><input type="number" title="No of groups" @bind-value="noOfGroupsToDraw" class="form-control d-inline m-1" /></td>
+					<td><button type="button" class="btn btn-success ms-3" @onclick="DrawGroups">Draw Groups</button></td>
+				</tr>
+			</table>
+	</CanEdit>
 } else if (GroupName is null) {
 	<p></p>
 } else if ((group is null || players is null)) {
@@ -158,6 +167,7 @@
 	[PersistentState]
 	public Tournament? tournament { get; set; }
 
+	private int noOfGroupsToDraw = 4;
 	private int? editingMatchNo = null;
 
 	protected override void OnInitialized()
@@ -167,13 +177,18 @@
 		players = tournament.Players;
 	}
 
+	private void DrawGroups(MouseEventArgs args)
+	{
+		_tournamentService.DrawGroups(noOfGroupsToDraw);
+		navigationManager.NavigateTo($"/edit/group", true);
+	}
 
 	private void OnGroupChanged(ChangeEventArgs e)
 	{
 		string selectedGroup = e.Value?.ToString() ?? string.Empty;
 		if (!string.Equals(selectedGroup, GroupName, StringComparison.OrdinalIgnoreCase)) {
 			// Navigate to the selected group page
-			NavigationManager.NavigateTo($"/edit/group/{selectedGroup}");
+			navigationManager.NavigateTo($"/edit/group/{selectedGroup}");
 		}
 	}
 

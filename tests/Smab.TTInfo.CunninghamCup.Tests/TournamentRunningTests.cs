@@ -33,7 +33,7 @@ public class TournamentRunningTests(ITestOutputHelper testOutputHelper)
 	public void DrawGroups_Should_Throw_If_Groups_Already_Exist()
 	{
 		Tournament tournament = CreateTestTournamentWithPlayers(5);
-		tournament.Groups.Add(new Group("Group1", [], []));
+		tournament.Groups.Add(new Group("Group1", null, [], []));
 
 		_ = Should.Throw<InvalidOperationException>(() => tournament.DrawGroups(2));
 	}

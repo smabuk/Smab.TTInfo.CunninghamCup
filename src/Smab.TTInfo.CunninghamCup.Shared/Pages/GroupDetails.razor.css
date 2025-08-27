@@ -32,3 +32,7 @@ table {
 	height: 1.8em;
 	border-radius: 50%;
 }
+
+input[type='number'] {
+	width: 4rem;
+}
