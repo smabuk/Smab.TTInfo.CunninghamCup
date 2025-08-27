@@ -105,6 +105,10 @@
 }
 
 @media (max-width: 640px) {
+    .navbar-brand-title {
+        display: none;
+    }
+
     .nav-item {
         padding-left: 0.1rem;
         padding-right: 0.1rem;

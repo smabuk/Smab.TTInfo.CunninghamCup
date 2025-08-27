@@ -8,14 +8,12 @@
 <h2>Login</h2>
 <p>
 	<label>
-		Magic Word: 
-		<input type="password" @bind="magicWord" />
+		Magic Word: <input type="password" @bind="magicWord" />
 	</label>
+	<button class="btn btn-primary" @onclick="OnLogin">Login</button>
 </p>
-<button class="btn btn-primary" @onclick="OnLogin">Login</button>
 
 @code {
-	//private bool canEdit = false;
 	private string magicWord = "";
 
 	private async Task OnLogin()
