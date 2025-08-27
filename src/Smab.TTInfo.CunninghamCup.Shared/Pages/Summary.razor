@@ -1,0 +1,19 @@
+@page "/summary"
+@inject ITournamentService _tournamentService
+
+<PageTitle>Summary - Cunningham Cup</PageTitle>
+
+@if (tournament is not null)
+{
+	<h2>@tournament.Name</h2>
+	
+}
+
+@code {
+	public Tournament? tournament { get; set; }
+
+	protected override void OnInitialized()
+	{
+		tournament ??= _tournamentService.GetTournament();
+	}
+}
