@@ -6,11 +6,11 @@
 <h2>@tournament?.ActivePlayers.Count() Entries</h2>
 
 <div class="d-flex justify-content-center">
-	<QuickGrid Items="@playerEntries?.AsQueryable()">
-		<PropertyColumn Title="Name" Property="@(p => p.Name)" Sortable="true" />
+	<QuickGrid Items="@playerEntries?.AsQueryable()" RowClass="GetRowClass">
+		<PropertyColumn Title="Name" Property="@(p => p.Name)" Sortable="false" />
 		@* <PropertyColumn Title="TTE #" Property="@(p => p.TTEId)" Sortable="true" /> *@
-		<PropertyColumn Align="Align.End" Title="Hcap" Property="@(p => p.Handicap)" Sortable="true" />
-		<PropertyColumn Title="Group" Property="@(p => p.GroupName)" Sortable="true" />
+		<PropertyColumn Align="Align.End" Title="Hcap" Property="@(p => p.Handicap)" Sortable="false" />
+		<PropertyColumn Title="Group" Property="@(p => p.GroupName)" Sortable="false" />
 		@* <PropertyColumn Title="Start time" Property="@(p => p.StartTime)" Sortable="true" /> *@
 	</QuickGrid>
 </div>
@@ -21,14 +21,15 @@
 	protected override void OnInitialized()
 	{
 		tournament ??= _tournamentService.GetTournament();
-		playerEntries ??= [.. tournament.ActivePlayers
-		.Select(p => new PlayerEntry(
-			p.Name,
-			p.Handicap,
-			GetGroupNameForPlayer(p.Id),
-			GetStartTimeForPlayer(p.Id)
-		))
-		.OrderBy(pe => pe.Name)
+		playerEntries ??= [.. tournament.Players.Values
+	.Select(p => new PlayerEntry(
+		p.Name,
+		p.Handicap,
+		p.WithDrawn,
+		GetGroupNameForPlayer(p.Id),
+		GetStartTimeForPlayer(p.Id)
+	))
+	.OrderBy(pe => pe.Name)
 		];
 	}
 
@@ -46,5 +47,10 @@
 		return group?.ScheduledTime;
 	}
 
-	private record PlayerEntry(string Name, int? Handicap, string GroupName, DateTime? StartTime);
+	private string GetRowClass(PlayerEntry playerEntry)
+	{
+		return playerEntry.Withdrawn ? "withdrawn" : string.Empty;
+	}
+
+	private record PlayerEntry(string Name, int? Handicap, bool Withdrawn, string GroupName, DateTime? StartTime);
 }

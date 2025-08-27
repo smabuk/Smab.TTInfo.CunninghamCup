@@ -70,6 +70,10 @@ input[type='number'] {
 }
 
 @media (max-width: 640px) {
+	h2 {
+		display: none;
+	}
+
 	table {
 		font-size: small;
 	}

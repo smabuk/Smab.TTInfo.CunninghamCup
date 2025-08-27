@@ -7,3 +7,9 @@ h1, h2 {
 	padding-top: 1.5rem;
 	padding-bottom: 1.5rem;
 }
+
+::deep .withdrawn {
+	-webkit-text-decoration: line-through;
+	text-decoration: line-through;
+	color: var(--bs-danger, red);
+}
