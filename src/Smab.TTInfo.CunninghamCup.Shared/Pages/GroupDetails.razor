@@ -191,7 +191,7 @@
 	{
 		_tournamentService.DrawGroups(groupSize);
 		_tournamentService.SaveTournamentToJsonAsync();
-		navigationManager.NavigateTo($"/edit/group", true);
+		navigationManager.NavigateTo($"/group", true);
 	}
 
 	private void OnGroupChanged(ChangeEventArgs e)

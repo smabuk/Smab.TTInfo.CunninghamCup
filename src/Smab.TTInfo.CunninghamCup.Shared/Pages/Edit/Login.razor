@@ -25,7 +25,7 @@
 		{
 			// Store edit permission in a cookie
 			await JS.InvokeVoidAsync("eval", $"document.cookie = 'canEdit={magicWord}; path=/'");
-			Navigation.NavigateTo("/edit/entries");
+			Navigation.NavigateTo("/edit/group");
 		}
 		else
 		{
