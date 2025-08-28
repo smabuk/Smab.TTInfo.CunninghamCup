@@ -1,0 +1,17 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+
+@MagicWord=please
+
+###
+
+### Dev request
+GET https://localhost:7000/api/tournament/download
+MagicWord: {{MagicWord}}
+###
+
+### Live request
+GET https://cunninghamcup2025.azurewebsites.net/api/tournament/download
+MagicWord: {{MagicWord}}
+###
+
+###

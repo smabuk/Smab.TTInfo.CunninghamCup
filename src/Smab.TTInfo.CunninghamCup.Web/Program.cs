@@ -1,6 +1,7 @@
 using Smab.TTInfo.CunninghamCup.Shared.Services;
 using Smab.TTInfo.CunninghamCup.Web.Components;
 using Microsoft.Extensions.Options;
+using Smab.TTInfo.CunninghamCup.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,5 +47,7 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
 	.AddInteractiveServerRenderMode()
 	.AddAdditionalAssemblies(typeof(Smab.TTInfo.CunninghamCup.Shared._Imports).Assembly);
+
+app.MapTournamentApiEndpoints();
 
 app.Run();
