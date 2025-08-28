@@ -1,0 +1,90 @@
+h2 {
+	display: flex;
+	justify-content: center;
+}
+
+.print-group-page {
+	page-break-before: always;
+	padding-bottom: 2rem;
+}
+
+ul {
+	list-style: none;
+}
+
+.match-card {
+	border: 2px solid #333;
+	margin-bottom: 2rem;
+	padding: 1rem;
+	background: #fff;
+}
+
+.match-header {
+	font-weight: bold;
+	margin-bottom: 0.5rem;
+	display: flex;
+	justify-content: space-between;
+	border-bottom: 2px solid #333;
+	padding-bottom: 0.5rem;
+}
+
+.tournament-title {
+	font-size: 1.2rem;
+}
+
+.match-info {
+	font-size: 1rem;
+}
+
+.match-table.full-width {
+	width: 100%;
+	table-layout: fixed;
+	border-collapse: collapse;
+	margin-bottom: 0.5rem;
+}
+
+.match-table th,
+.match-table td {
+	border: 1px solid #333;
+	text-align: left;
+	padding: 0.3rem 0.5rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.match-table .player-col {
+	width: 30%;
+}
+
+.match-table .set-col {
+	width: 5%;
+}
+
+.match-table .winner {
+	width: 17%;
+}
+
+.match-footer {
+	margin-bottom: 1rem;
+	font-size: 1rem;
+}
+
+@media print {
+	::deep .navbar,
+	.btn,
+	.mb-3,
+	.m-3,
+	::deep nav
+	{
+		display: none !important;
+	}
+
+	.print-group-page {
+		page-break-after: always;
+	}
+
+	.match-card {
+		page-break-inside: avoid;
+	}
+}

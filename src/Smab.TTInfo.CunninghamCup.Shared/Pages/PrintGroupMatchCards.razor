@@ -1,0 +1,91 @@
+@page "/printgroups"
+@using Smab.TTInfo.CunninghamCup.Shared.Models
+@inject ITournamentService TournamentService
+@rendermode InteractiveServer
+
+<PageTitle>Print Group Match Cards</PageTitle>
+
+<button class="btn btn-primary m-3" @onclick="PrintPage">Print All Match Cards</button>
+
+@if (tournament == null) {
+	<div>Loading tournament...</div>
+} else {
+	<div class="text-black bg-light">
+		@foreach (Group group in tournament.Groups) {
+			<div class="print-group-page">
+				<h2>@tournament.Name</h2>
+				<h3>@group.Name</h3>
+				<p>Scheduled: @group.ScheduledTime?.ToString("g")</p>
+				<ul>
+					@foreach (PlayerId playerId in group.Players) {
+						Player? player = tournament.Players.ContainsKey(playerId) ? tournament.Players[playerId] : null;
+						<li>@(player != null ? $"{player.Name} ({player.Handicap})" : playerId.ToString())</li>
+					}
+				</ul>
+				@foreach (Match match in group.Matches) {
+					Player? playerA = tournament.Players.ContainsKey(match.PlayerA) ? tournament.Players[match.PlayerA] : null;
+					Player? playerB = tournament.Players.ContainsKey(match.PlayerB) ? tournament.Players[match.PlayerB] : null;
+					@* <div class="match-card text-black"> *@
+					@* <div class="match-header">
+							<span class="tournament-title">@tournament.Name</span>
+							<span class="match-info">Match: @match.Id | Time: @match.ScheduledTime?.ToString("g")</span>
+						</div> *@
+					<table class="match-table full-width">
+						<colgroup>
+							<col class="player-col" />
+							<col class="set-col" />
+							<col class="set-col" />
+							<col class="set-col" />
+							<col class="winner" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th>Player</th>
+								<th>Set 1</th>
+								<th>Set 2</th>
+								<th>Set 3</th>
+								<th>Winner</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>@(playerA?.Name ?? match.PlayerA.DisplayName) (@match.PlayerAStart)</td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td rowspan="2"></td>
+							</tr>
+							<tr>
+								<td>@(playerB?.Name ?? match.PlayerB.DisplayName) (@match.PlayerBStart)</td>
+								<td></td>
+								<td></td>
+								<td></td>
+								@* <td></td> *@
+							</tr>
+						</tbody>
+					</table>
+					@* 
+					<div class="match-footer">
+						<div>UMPIRE ....................................................................................</div>
+					</div>
+					*@
+
+					@* </div> *@
+				}
+			</div>
+		}
+	</div>
+}
+
+@code {
+	private Tournament? tournament;
+
+	protected override void OnInitialized()
+	{
+		tournament ??= TournamentService.GetTournament();
+	}
+
+	private void PrintPage() => JS.InvokeVoidAsync("window.print");
+
+	[Inject] private IJSRuntime JS { get; set; } = default!;
+}
