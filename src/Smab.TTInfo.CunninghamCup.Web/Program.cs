@@ -10,7 +10,7 @@ builder.Services.AddRazorComponents()
 	.AddInteractiveServerComponents();
 
 //builder.Services.AddLocalization();
-//builder.Services.AddHealthChecks();
+builder.Services.AddHealthChecks();
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
 
@@ -47,6 +47,8 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
 	.AddInteractiveServerRenderMode()
 	.AddAdditionalAssemblies(typeof(Smab.TTInfo.CunninghamCup.Shared._Imports).Assembly);
+
+app.MapHealthChecks("/health");
 
 app.MapTournamentApiEndpoints();
 
