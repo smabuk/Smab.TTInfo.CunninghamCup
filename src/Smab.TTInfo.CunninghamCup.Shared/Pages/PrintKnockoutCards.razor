@@ -1,0 +1,145 @@
+@page "/printknockout/{NoOfRounds:int}/{Name}"
+@using Smab.TTInfo.CunninghamCup.Shared.Models
+@inject ITournamentService _tournamentService
+@inject IJSRuntime JS
+@rendermode InteractiveServer
+
+<PageTitle>Print Knockout Match Cards</PageTitle>
+
+<button class="btn btn-primary m-3" @onclick="PrintPage">Print All Match Cards</button>
+
+@if (tournament == null) {
+	<div>Loading tournament...</div>
+} else {
+		<div class="print-page text-black">
+			@foreach (KnockoutRound round in knockoutStage!.Rounds) {
+				@foreach (Match match in round.Matches) {
+					<div class="match-card text-black">
+						<div class="header"><img src="olop-logo-on-black.png"> @tournament.Name <img src="olop-logo-on-black.png"></div>
+						<div class="match-header">
+							<span class="round-title">@round.Type.ToFriendlyString()</span>
+							<span class="">@knockoutStage.Name</span>
+						</div>
+						<table class="match-table full-width">
+							<colgroup>
+								<col class="player-col" />
+								<col class="set-col" />
+								<col class="set-col" />
+								<col class="set-col" />
+								<col class="winner" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th>Player</th>
+									<th>Set 1</th>
+									<th>Set 2</th>
+									<th>Set 3</th>
+									<th>Winner</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td rowspan="2"></td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									@* <td></td> *@
+								</tr>
+							</tbody>
+						</table>
+						
+					<div class="match-footer">
+						<div>UMPIRE .........................................................................................................................................</div>
+					</div>
+					
+
+					</div>
+				}
+			}
+		</div>
+}
+
+@code {
+	[Parameter]
+	public int NoOfRounds { get; set; }
+
+	[Parameter]
+	public string Name { get; set; } = "";
+
+	private Tournament? tournament;
+	private KnockoutStage? knockoutStage;
+
+	protected override void OnInitialized()
+	{
+		tournament ??= _tournamentService.GetTournament();
+		knockoutStage ??= DrawKnockoutStage(Name, NoOfRounds);
+	}
+
+	public KnockoutStage DrawKnockoutStage(string name, int noOfRounds)
+	{
+
+		List<KnockoutRound> knockoutRounds = [];
+		int matchNo = 0;
+		for (int round = 0; round < noOfRounds; round++) {
+			int matchesPerRound = (int)Math.Pow(2, noOfRounds - round) / 2;
+			List<Match> matches = [];
+			RoundType roundType = (RoundType)(noOfRounds - round);
+
+			for (int i = 0; i < matchesPerRound; i++) {
+				matchNo++;
+				matches.Add(new Match(
+					(MatchId)$"{roundType} {matchNo:D2}",
+					(PlayerId)$"{PlayerId.PlaceHolderSymbol}{matchNo - (matchesPerRound * 2) + i:D2}",
+					(PlayerId)$"{PlayerId.PlaceHolderSymbol}{matchNo - (matchesPerRound * 2) + i + 1:D2}",
+					0,
+					0,
+					null,
+					null));
+			}
+
+			knockoutRounds.Add(new KnockoutRound(roundType, [.. matches]));
+		}
+
+		List<Match> otherMatches = [];
+		Match thirdFourthPlayoff = new Match(
+			(MatchId)$"3rd/4th",
+			(PlayerId)$"{PlayerId.PlaceHolderSymbol}L1",
+			(PlayerId)$"{PlayerId.PlaceHolderSymbol}L2",
+			0,
+			0,
+			null,
+			null);
+
+		otherMatches.Add(thirdFourthPlayoff);
+		knockoutRounds.Add(new KnockoutRound(RoundType.ThirdPlacePlayoff, [.. otherMatches]));
+
+		otherMatches = [];
+		Match blank = new Match(
+			(MatchId)$"Blank",
+			(PlayerId)$"{PlayerId.PlaceHolderSymbol}W1",
+			(PlayerId)$"{PlayerId.PlaceHolderSymbol}W2",
+			0,
+			0,
+			null,
+			null);
+
+		otherMatches.Add(blank);
+		otherMatches.Add(blank);
+		otherMatches.Add(blank);
+		otherMatches.Add(blank);
+		knockoutRounds.Add(new KnockoutRound(RoundType.Unknown, [.. otherMatches]));
+
+
+		return new KnockoutStage(name, knockoutRounds);
+	}
+
+
+	private void PrintPage() => JS.InvokeVoidAsync("window.print");
+}

@@ -18,7 +18,8 @@ public static class RoundTypeExtension
 				RoundType.RoundOf32    => "Round of 32",
 				RoundType.RoundOf64    => "Round of 64",
 				RoundType.RoundOf128   => "Round of 128",
-				_ => "Unknown"
+				RoundType.ThirdPlacePlayoff => "Third Place Playoff",
+				_ => ""
 			};
 		}
 	}

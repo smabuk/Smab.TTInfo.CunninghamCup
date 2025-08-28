@@ -3,8 +3,8 @@
 	text-transform: uppercase;
 	display: flex;
 	justify-content: center;
-	margin-top: 1rem;
-	margin-bottom: 2rem;
+	margin-bottom: 1rem;
+	margin-bottom: 1rem;
 	padding-left: 3rem;
 	padding-right: 3rem;
 	color: red;
@@ -20,18 +20,15 @@
 		height: 46px;
 	}
 
-.print-group-page {
+.print-page {
 	page-break-before: always;
 	padding-bottom: 2rem;
 }
 
-ul {
-	list-style: none;
-}
-
 .match-card {
 	border: 2px solid #333;
-	margin-bottom: 2rem;
+	margin-top: 0;
+	margin-bottom: 3rem;
 	padding: 1rem;
 	background: #fff;
 }
@@ -46,6 +43,10 @@ ul {
 }
 
 .tournament-title {
+	font-size: 1.2rem;
+}
+
+.round-title {
 	font-size: 1.2rem;
 }
 
@@ -83,7 +84,7 @@ ul {
 }
 
 .match-footer {
-	margin-bottom: 1rem;
+	margin-top: 2rem;
 	font-size: 1rem;
 }
 
@@ -94,7 +95,7 @@ ul {
 		display: none !important;
 	}
 
-	.print-group-page {
+	.print-page {
 		page-break-after: always;
 	}
 

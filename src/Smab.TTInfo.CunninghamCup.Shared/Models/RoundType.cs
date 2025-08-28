@@ -9,4 +9,6 @@ public enum RoundType
 	RoundOf32    = 5,
 	RoundOf64    = 6,
 	RoundOf128   = 7,
+
+	ThirdPlacePlayoff = 98,
 }

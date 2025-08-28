@@ -27,6 +27,16 @@
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://smab_ttinfo_cunninghamcup_web.dev.localhost:7000;http://smab_ttinfo_cunninghamcup_web.dev.localhost:5147"
+    },
+    "Printing": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "printknockout/3/Main Knockout",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://smab_ttinfo_cunninghamcup_web.dev.localhost:7000;http://smab_ttinfo_cunninghamcup_web.dev.localhost:5147"
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json"
