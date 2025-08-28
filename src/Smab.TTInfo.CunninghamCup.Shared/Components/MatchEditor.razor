@@ -10,25 +10,25 @@
 				<label class="player-label">@Match.PlayerA.DisplayName</label>
 				@for (int i = 0; i < MAX_SETS; i++) {
 					int setNo = i;
-					<InputNumber @bind-Value="editModel.PlayerAScores[setNo]" min="0" max="30" class="form-control d-inline score" />
+					<InputNumber @bind-Value="editModel.PlayerAScores[setNo]" min="0" max="30" class="form-control d-inline score" tabindex="@((i * 2) + 1)" />
 				}
 			</div>
 			<div>
 				<label class="player-label">@Match.PlayerB.DisplayName</label>
 				@for (int i = 0; i < MAX_SETS; i++) {
 					int setNo = i;
-					<InputNumber @bind-Value="editModel.PlayerBScores[setNo]" min="0" max="30" class="form-control d-inline score" />
+					<InputNumber @bind-Value="editModel.PlayerBScores[setNo]" min="0" max="30" class="form-control d-inline score" tabindex="@((i * 2) + 1)" />
 				}
 			</div>
 			<div>
 				<label>Notes:</label>
-				<InputText @bind-Value="editModel.Notes" class="form-control" />
+				<InputText @bind-Value="editModel.Notes" class="form-control" tabindex="7"  />
 			</div>
 			<CustomValidation @ref="customValidation" />
 			<ValidationSummary />
 			<div class="mt-2">
-				<button type="submit" class="btn btn-success me-2">Save</button>
-				<button type="button" class="btn btn-secondary" @onclick="() => OnCancel.InvokeAsync()">Cancel</button>
+				<button type="submit" class="btn btn-success me-2" tabindex="8">Save</button>
+				<button type="button" class="btn btn-secondary" tabindex="9" @onclick="() => OnCancel.InvokeAsync()">Cancel</button>
 			</div>
 		</div>
 	</div>
