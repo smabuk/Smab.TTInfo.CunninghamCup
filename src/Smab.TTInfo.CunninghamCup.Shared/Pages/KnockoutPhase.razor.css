@@ -7,3 +7,54 @@ h1, h2 {
 	padding-top: 1.5rem;
 	padding-bottom: 1.5rem;
 }
+
+[data-winner] {
+	font-weight: bold;
+}
+
+
+@media (min-width: 641px) {
+	[data-winner]::before {
+		content: "";
+		display: inline-block;
+		aspect-ratio: 1/1;
+		width: 0.75em;
+		height: 0.75em;
+		border-radius: 50%;
+		background-color: var(--bs-success, #28a745);
+		margin-right: 0.5em;
+	}
+}
+
+@media (max-width: 640px) {
+	h2 {
+		display: none;
+	}
+
+	table {
+		font-size: small;
+	}
+
+	#matches td {
+		text-wrap: nowrap;
+	}
+
+		#matches td.edit {
+			text-wrap: auto;
+		}
+
+		#matches th:nth-child(1),
+		#matches td:nth-child(1) {
+			display: none;
+		}
+
+		#matches td:nth-child(2),
+		#matches td:nth-child(3) {
+			text-wrap: auto;
+		}
+
+		#matches td:nth-child(2),
+		#matches td:nth-child(3) {
+			text-wrap: auto;
+		}
+}

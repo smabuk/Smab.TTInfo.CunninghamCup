@@ -1,0 +1,35 @@
+@using Smab.TTInfo.CunninghamCup.Shared.Models
+@inject ITournamentService _tournamentService
+
+<h2>Qualifiers</h2>
+
+@if (tournament?.Groups is null || tournament?.Groups.Count == 0) {
+	<div class="alert alert-info">
+		<h3>No Groups Available</h3>
+		<p>Groups have not been drawn yet, so it's too early to show the <em>Qualifiers</em>.</p>
+	</div>
+} else {
+	<dl>
+		@foreach (Group group in tournament!.Groups) {
+			if (group.IsCompleted) {
+				<dt>@group.Name Winner</dt>
+				<dd>@group.GroupPositions[0].PlayerId.DisplayName</dd>
+				<dt>@group.Name Runner-up</dt>
+				<dd>@group.GroupPositions[1].PlayerId.DisplayName</dd>
+			} else {
+				<dt>@group.Name</dt>
+				<dd>Not completed yet.</dd>
+			}
+		}
+	</dl>
+}
+
+@code {
+	[PersistentState]
+	public Tournament? tournament { get; set; }
+
+	protected override void OnInitialized()
+	{
+		tournament ??= _tournamentService.GetTournament();
+	}
+}

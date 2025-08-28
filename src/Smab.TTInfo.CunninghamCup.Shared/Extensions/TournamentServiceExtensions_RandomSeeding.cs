@@ -67,23 +67,23 @@ public static partial class TournamentServiceExtensions
 
 			return tournament.Groups[groupIndex];
 		}
-	}
 
-	public static Match SetRandomResult(Match match)
-	{
-		bool[] playerAWins = [
-			Random.Shared.Next(2) == 0,
-				Random.Shared.Next(2) == 0,
-				Random.Shared.Next(2) == 0];
-
-		List<Set> sets = playerAWins switch
+		public static Match SetRandomResult(Match match)
 		{
-			[true, true, _] => [new Set(21, Random.Shared.Next(match.PlayerBStart, 20)), new Set(21, Random.Shared.Next(match.PlayerBStart, 20))],
-			[false, false, _] => [new Set(Random.Shared.Next(match.PlayerAStart, 20), 21), new Set(Random.Shared.Next(match.PlayerAStart, 20), 21)],
-			[_, _, true] => [new Set(21, Random.Shared.Next(match.PlayerBStart, 20)), new Set(Random.Shared.Next(match.PlayerAStart, 20), 21), new Set(21, Random.Shared.Next(match.PlayerBStart, 20))],
-			_ => [new Set(21, Random.Shared.Next(match.PlayerBStart, 20)), new Set(Random.Shared.Next(match.PlayerAStart, 20), 21), new Set(Random.Shared.Next(match.PlayerAStart, 20), 21)],
-		};
+			bool[] playerAWins = [
+				Random.Shared.Next(2) == 0,
+					Random.Shared.Next(2) == 0,
+					Random.Shared.Next(2) == 0];
 
-		return match.SetResult(sets);
+			List<Set> sets = playerAWins switch
+			{
+				[true, true, _] => [new Set(21, Random.Shared.Next(match.PlayerBStart, 20)), new Set(21, Random.Shared.Next(match.PlayerBStart, 20))],
+				[false, false, _] => [new Set(Random.Shared.Next(match.PlayerAStart, 20), 21), new Set(Random.Shared.Next(match.PlayerAStart, 20), 21)],
+				[_, _, true] => [new Set(21, Random.Shared.Next(match.PlayerBStart, 20)), new Set(Random.Shared.Next(match.PlayerAStart, 20), 21), new Set(21, Random.Shared.Next(match.PlayerBStart, 20))],
+				_ => [new Set(21, Random.Shared.Next(match.PlayerBStart, 20)), new Set(Random.Shared.Next(match.PlayerAStart, 20), 21), new Set(Random.Shared.Next(match.PlayerAStart, 20), 21)],
+			};
+
+			return match.SetResult(sets);
+		}
 	}
 }

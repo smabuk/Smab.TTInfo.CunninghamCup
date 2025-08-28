@@ -7,6 +7,11 @@
 @if (tournament is not null)
 {
 	<h2>@tournament.Name</h2>
+	@if (tournament?.Groups is not null)
+	{
+		<Qualifiers />
+	}	
+
 	@if (tournament?.KnockoutStage is null)
 	{
 		<div class="alert alert-info">
