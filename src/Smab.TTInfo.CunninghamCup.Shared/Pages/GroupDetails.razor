@@ -57,12 +57,24 @@
 
 	} else {
 		<nav class="mb-3 container-fluid">
-			@foreach (Group g in tournament.Groups) {
-				<a class="btn btn-primary m-1 @((g.Name == GroupName) ? "disabled" : null)"
-				   role="button"
-				   href="group/@g.Name"
-				   aria-disabled="@((g.Name == GroupName) ? "true" : null)">@g.Name</a>
-			}
+			<CanEdit>
+				<CantEdit>
+					@foreach (Group g in tournament.Groups) {
+						<a class="btn btn-primary m-1 @((g.Name == GroupName) ? "disabled" : null)"
+						   role="button"
+						   href="group/@g.Name"
+						   aria-disabled="@((g.Name == GroupName) ? "true" : null)">@g.Name</a>
+					}
+				</CantEdit>
+			</CanEdit>
+			<CanEdit>
+				@foreach (Group g in tournament.Groups) {
+					<a class="btn btn-primary m-1 @((g.Name == GroupName) ? "disabled" : null)"
+						role="button"
+						href="edit/group/@g.Name"
+						aria-disabled="@((g.Name == GroupName) ? "true" : null)">@g.Name</a>
+				}
+			</CanEdit>
 		</nav>
 	}
 }
