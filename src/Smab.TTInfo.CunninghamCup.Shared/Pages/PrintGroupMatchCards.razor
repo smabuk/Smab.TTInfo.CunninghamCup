@@ -11,7 +11,7 @@
 @if (tournament == null) {
 	<div>Loading tournament...</div>
 } else {
-	<div class="text-black bg-light">
+	<div class="text-black" data-bs-theme="light">
 		@foreach (Group group in tournament.Groups) {
 			<div class="print-group-page">
 				<div class="header"><img src="olop-logo-on-black.png"> @tournament.Name <img src="olop-logo-on-black.png"></div>
