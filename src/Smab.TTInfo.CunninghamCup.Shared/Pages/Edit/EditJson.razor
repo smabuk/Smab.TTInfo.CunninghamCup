@@ -1,0 +1,68 @@
+@page "/edit/json"
+@using Microsoft.JSInterop
+@using System.Text.Json
+@inject NavigationManager Navigation
+@inject ITournamentService _tournamentService
+@rendermode InteractiveServer
+
+<CanEdit>
+	<CantEdit>
+		<div class="alert alert-danger">Permission denied</div>
+	</CantEdit>
+</CanEdit>
+
+<CanEdit>
+	<PageTitle>Edit Tournament JSON</PageTitle>
+
+	@* <h2>Edit Current Tournament as JSON</h2> *@
+
+	<EditForm Model="@this" OnValidSubmit="HandleValidSubmit">
+		<button type="submit" class="btn btn-success">Save</button>
+		
+		<div class="mt-2">
+			@* <label for="tournamentJson" class="form-label">Tournament JSON</label> *@
+			<InputTextArea @onchange="e => Test(e.Value?.ToString() ?? string.Empty)"
+				class="form-control"
+				@bind-Value="tournamentJson"
+				rows="33"
+				style="font-family: monospace; font-size: 1rem;" />
+		</div>
+	</EditForm>
+
+	@* <button class="btn btn-primary" @onclick="DownloadJsonFile">Download JSON</button> *@
+</CanEdit>
+
+@code {
+	public Tournament? tournament { get; set; }
+
+	public string? tournamentJson { get; set; }
+
+	JsonSerializerOptions prettyOptions = new(JsonSerializerOptions.Web) {
+		WriteIndented = true,
+		AllowTrailingCommas = true,
+		ReadCommentHandling = JsonCommentHandling.Skip
+	};
+
+	protected override void OnInitialized()
+	{
+		tournament ??= _tournamentService.GetTournament();
+		tournamentJson ??= JsonSerializer.Serialize(tournament, prettyOptions);
+	}
+
+	private void HandleValidSubmit()
+	{
+		if (!string.IsNullOrWhiteSpace(tournamentJson)) {
+			try {
+				Tournament? newTournament = JsonSerializer.Deserialize<Tournament>(tournamentJson, prettyOptions);
+				// Optionally, persist the updated tournament here
+			}
+			catch {
+				// Handle invalid JSON (could show a message to the user)
+			}
+		}
+	}
+	private void Test(string args)
+	{
+		Console.WriteLine("Changed");
+	}
+}
