@@ -1,5 +1,5 @@
 @page "/knockout"
-@page "/knockoutphase"
+@page "/edit/knockout/{KnockoutName}"
 @using Smab.TTInfo.CunninghamCup.Shared.Models
 @inject ITournamentService _tournamentService
 
@@ -83,8 +83,12 @@
 }
 
 @code {
+	[Parameter]
+	public string? KnockoutName { get; set; } = null;
+
 	[PersistentState]
-	[Parameter] public Tournament? tournament { get; set; }
+	public Tournament? tournament { get; set; }
+
 	private Dictionary<PlayerId, Player>? players;
 	private (int RoundNo, int MatchNo)? editingMatchNo = null;
 

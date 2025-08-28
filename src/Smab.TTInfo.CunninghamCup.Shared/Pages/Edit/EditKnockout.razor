@@ -1,4 +1,5 @@
 @page "/edit/knockout"
+@page "/edit/knockout/{KnockoutName}"
 @rendermode InteractiveServer
 
 <PageTitle>Edit Knockout - Cunningham Cup</PageTitle>
@@ -12,3 +13,8 @@
 <CanEdit>
 	<KnockoutPhase @rendermode="InteractiveServer"/>
 </CanEdit>
+
+@code {
+	[Parameter]
+	public string? KnockoutName { get; set; } = null;
+}
