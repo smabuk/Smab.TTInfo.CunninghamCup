@@ -1,23 +1,33 @@
 {
-  "$schema": "https://json.schemastore.org/launchsettings.json",
-    "profiles": {
-      "http": {
-        "commandName": "Project",
-        "dotnetRunMessages": true,
-        "launchBrowser": true,
-        "applicationUrl": "http://smab_ttinfo_cunninghamcup_web.dev.localhost:5147",
-        "environmentVariables": {
-          "ASPNETCORE_ENVIRONMENT": "Development"
-        }
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "https": {
-        "commandName": "Project",
-        "dotnetRunMessages": true,
-        "launchBrowser": true,
-        "applicationUrl": "https://smab_ttinfo_cunninghamcup_web.dev.localhost:7000;http://smab_ttinfo_cunninghamcup_web.dev.localhost:5147",
-        "environmentVariables": {
-          "ASPNETCORE_ENVIRONMENT": "Development"
-        }
-      }
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://smab_ttinfo_cunninghamcup_web.dev.localhost:5147"
+    },
+    "https": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://smab_ttinfo_cunninghamcup_web.dev.localhost:7000;http://smab_ttinfo_cunninghamcup_web.dev.localhost:5147"
+    },
+    "Editing": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "edit/group",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://smab_ttinfo_cunninghamcup_web.dev.localhost:7000;http://smab_ttinfo_cunninghamcup_web.dev.localhost:5147"
     }
-  }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json"
+}

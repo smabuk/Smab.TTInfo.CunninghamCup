@@ -13,11 +13,13 @@ namespace Smab.TTInfo.CunninghamCup.Shared.Models;
 /// <param name="Groups">The list of groups participating in the tournament.</param>
 /// <param name="Players">A dictionary mapping player identifiers to their corresponding player details.</param>
 /// <param name="KnockoutStage">The optional knockout stage of the tournament. If null, the tournament does not include a knockout stage.</param>
+/// <param name="ConsolationStage">The optional consolation knockout stage of the tournament. If null, the tournament does not include a consolation stage.</param>
 public record Tournament(
 	Guid Id,
 	string Name,
 	DateOnly Date,
 	List<Group> Groups,
 	Dictionary<PlayerId, Player> Players,
-	KnockoutStage? KnockoutStage = null
+	KnockoutStage? KnockoutStage = null,
+	KnockoutStage? ConsolationStage = null
 );

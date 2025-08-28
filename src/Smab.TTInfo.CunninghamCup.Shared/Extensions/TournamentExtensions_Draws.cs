@@ -56,7 +56,7 @@ public static partial class TournamentExtensions
 		)
 		{
 			int noOfByes = (matchesPerRound * 2) - (noOfGroups * 2);
-			// Assuming 2 players from each group qualify for the knockout stage
+			// Assuming first 2 players from each group qualify for the knockout stage
 			List<int> winnerPositions = [.. Enumerable.Range(0, matchesPerRound).Select(i => i * 2).Shuffle().Take(noOfGroups)];
 			List<int> byePositions = [.. winnerPositions.Take(noOfByes).Select(i => i + 1)];
 			if (byePositions.Count < noOfByes) {
