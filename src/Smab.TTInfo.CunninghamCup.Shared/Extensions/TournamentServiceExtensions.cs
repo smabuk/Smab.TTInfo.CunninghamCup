@@ -19,7 +19,9 @@ public static partial class TournamentServiceExtensions
 		{
 			Tournament tournament = tournamentService.GetTournament();
 			tournament = tournament 
-				with { KnockoutStage = tournament.DrawKnockoutStage("Knockout", redraw) };
+				with { KnockoutStage = tournament.DrawKnockoutStage("Main Knockout", redraw) };
+			tournament = tournament 
+				with { ConsolationStage = tournament.DrawKnockoutStage("Consolation", redraw) };
 			tournamentService.AddOrUpdateTournament(tournament);
 			return tournament;
 		}
@@ -30,7 +32,7 @@ public static partial class TournamentServiceExtensions
 		public Tournament UpdateKnockoutPhases()
 		{
 			Tournament tournament = tournamentService.GetTournament();
-			bool success = tournament.TryDrawKnockoutStage(out tournament, out string? _);
+			bool success = tournament.TryDrawKnockoutStage(tournament.KnockoutStage!, out tournament, out string? _);
 			if (!success) {
 				throw new InvalidOperationException("Failed to update knockout phases.");
 			}

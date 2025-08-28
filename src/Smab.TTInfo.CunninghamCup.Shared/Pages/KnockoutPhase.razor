@@ -6,12 +6,17 @@
 <PageTitle>Knockout Phase - @tournament?.Name</PageTitle>
 
 <h2>
-	Knockout Phase
+	@(tournament?.KnockoutStage?.Name ?? "Knockout Phase" )
 	<CanEdit>
 		@if (tournament?.KnockoutStage is null) {
-			<button class="btn btn-success ms-4" @onclick="ConfirmKnockoutDraw">Draw knockout phase</button>
+			<button class="btn btn-success ms-4" @onclick="DrawMainKnockout">Draw Main Knockout</button>
 		} else {
-			<button class="btn btn-success ms-4" @onclick="UpdateBrackets">Update brackets</button>
+			<button class="btn btn-success ms-4" @onclick="UpdateMainKnockout">Update Main Knockout</button>
+		}
+		@if (tournament?.ConsolationStage is null) {
+			<button class="btn btn-success ms-4" @onclick="DrawConsolation">Draw Consolation</button>
+		} else {
+			<button class="btn btn-success ms-4" @onclick="UpdateConsolation">Update consolation</button>
 		}
 	</CanEdit>
 </h2>
@@ -137,16 +142,29 @@
 		StateHasChanged();
 	}
 
-	private void UpdateBrackets()
+	private void UpdateMainKnockout()
 	{
 		tournament = _tournamentService.UpdateKnockoutPhases();
 		StateHasChanged();
 	}
 
-	private void ConfirmKnockoutDraw()
+	private void DrawMainKnockout()
 	{
 		tournament = _tournamentService.DrawKnockoutStage();
 		tournament = _tournamentService.UpdateKnockoutPhases();
 		StateHasChanged();
+	}
+
+	private void UpdateConsolation()
+	{
+		// tournament = _tournamentService.UpdateKnockoutPhases();
+		// StateHasChanged();
+	}
+
+	private void DrawConsolation()
+	{
+		// tournament = _tournamentService.DrawKnockoutStage();
+		// tournament = _tournamentService.UpdateKnockoutPhases();
+		// StateHasChanged();
 	}
 }

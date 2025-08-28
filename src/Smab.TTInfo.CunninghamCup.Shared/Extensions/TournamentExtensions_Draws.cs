@@ -109,9 +109,9 @@ public static partial class TournamentExtensions
 
 		public KnockoutStage DrawKnockoutStage(string name, bool redraw = false)
 		{
-			if (tournament.KnockoutStage is not null && redraw is false) {
-				return tournament.KnockoutStage;
-			}
+			//if (knockoutStage is not null && redraw is false) {
+			//	return knockoutStage;
+			//}
 
 			int noOfRounds = (tournament.GroupsCount, tournament.ActivePlayers.Count) switch
 			{
@@ -155,18 +155,18 @@ public static partial class TournamentExtensions
 		}
 
 
-		public bool TryDrawKnockoutStage(out Tournament newTournament, [NotNullWhen(false)] out string? message)
+		public bool TryDrawKnockoutStage(KnockoutStage knockoutStage, out Tournament newTournament, [NotNullWhen(false)] out string? message)
 		{
 			newTournament = tournament;
 			message = "";
 
-			if (newTournament.KnockoutStage is null) { 
+			if (knockoutStage is null) { 
 				message = "Cannot draw knockout stage for a tournament with no knockout stage defined.";
 				return false;
 			}
 
-			for (int roundIdx = 0; roundIdx < newTournament.KnockoutStage.Rounds.Count; roundIdx++) {
-				KnockoutRound knockoutRound = newTournament.KnockoutStage.Rounds[roundIdx];
+			for (int roundIdx = 0; roundIdx < knockoutStage.Rounds.Count; roundIdx++) {
+				KnockoutRound knockoutRound = knockoutStage.Rounds[roundIdx];
 				if (roundIdx is 0 && knockoutRound.IsNotPopulated)
 				{
 					// take top 2 players from each group
@@ -226,7 +226,7 @@ public static partial class TournamentExtensions
 
 				if (roundIdx > 0)
 				{
-					KnockoutRound previousRound = newTournament.KnockoutStage.Rounds[roundIdx - 1];
+					KnockoutRound previousRound = knockoutStage.Rounds[roundIdx - 1];
 					for (int matchIdx = 0; matchIdx < knockoutRound.Matches.Count; matchIdx++) {
 						Match match = knockoutRound.Matches[matchIdx];
 						if (match.PlayerA.IsPlaceHolder) {
