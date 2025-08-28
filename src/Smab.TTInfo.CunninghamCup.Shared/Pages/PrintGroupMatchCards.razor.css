@@ -1,7 +1,24 @@
-h2 {
+.header {
+	font-size: xx-large;
+	text-transform: uppercase;
 	display: flex;
 	justify-content: center;
+	margin-bottom: 1rem;
+	margin-bottom: 2rem;
+	padding-left: 3rem;
+	padding-right: 3rem;
+	color: red;
+	background-color: black;
 }
+	.header img:nth-child(1) {
+		margin-right: auto;
+		height: 46px;
+	}
+
+	.header img:nth-child(2) {
+		margin-left: auto;
+		height: 46px;
+	}
 
 .print-group-page {
 	page-break-before: always;
@@ -58,11 +75,11 @@ ul {
 }
 
 .match-table .set-col {
-	width: 5%;
+	width: 8%;
 }
 
 .match-table .winner {
-	width: 17%;
+	width: 18%;
 }
 
 .match-footer {
@@ -71,12 +88,9 @@ ul {
 }
 
 @media print {
-	::deep .navbar,
 	.btn,
 	.mb-3,
-	.m-3,
-	::deep nav
-	{
+	.m-3 {
 		display: none !important;
 	}
 
