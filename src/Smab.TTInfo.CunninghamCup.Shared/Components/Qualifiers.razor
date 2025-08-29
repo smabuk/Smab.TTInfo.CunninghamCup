@@ -1,7 +1,7 @@
 @using Smab.TTInfo.CunninghamCup.Shared.Models
 @inject ITournamentService _tournamentService
 
-<h2>Qualifiers</h2>
+<h2>@Title</h2>
 
 @if (tournament?.Groups is null || tournament?.Groups.Count == 0) {
 	<div class="alert alert-info">
@@ -12,10 +12,10 @@
 	<dl>
 		@foreach (Group group in tournament!.Groups) {
 			if (group.IsCompleted) {
-				<dt>@group.Name Winner</dt>
-				<dd>@group.GroupPositions[0].PlayerId.DisplayName</dd>
-				<dt>@group.Name Runner-up</dt>
-				<dd>@group.GroupPositions[1].PlayerId.DisplayName</dd>
+				@foreach (int position in Positions) {
+					<dt>@group.Name @PositionName(position)</dt>
+					<dd>@group.GroupPositions[position].PlayerId.DisplayName</dd>
+				}
 			} else {
 				<dt>@group.Name</dt>
 				<dd>Not completed yet.</dd>
@@ -28,8 +28,28 @@
 	[PersistentState]
 	public Tournament? tournament { get; set; }
 
+	[Parameter]
+	public IEnumerable<int> Positions { get; set; } = [0, 1];
+
+	[Parameter]
+	public string Title { get; set; } = "Qualifiers";
+
 	protected override void OnInitialized()
 	{
 		tournament ??= _tournamentService.GetTournament();
+	}
+
+	private static string PositionName(int position)
+	{
+		return position switch
+		{
+			0 => "Winner",
+			1 => "Runner Up",
+			2 => "Third Place",
+			3 => "Fourth Place",
+			4 => "Fifth Place",
+			5 => "Sixth Place",
+			_ => "Unknown"
+		};
 	}
 }

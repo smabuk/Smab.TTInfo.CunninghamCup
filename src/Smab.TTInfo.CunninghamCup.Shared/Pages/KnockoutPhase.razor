@@ -22,7 +22,8 @@
 	</CanEdit>
 </h2>
 @if (tournament is null || knockoutStages.All(ks => ks is null)) {
-	<Qualifiers />
+	<Qualifiers Positions="[0, 1]" Title="Qualifiers for Main Knockout" />
+	<Qualifiers Positions="[2, 3]" Title="Qualifiers for Consolation" />
 	<div class="alert alert-info">
 		<h3>Not drawn yet</h3>
 		<p>The knockout draw hasn't been made yet.</p>
