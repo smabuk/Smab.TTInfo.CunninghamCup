@@ -152,11 +152,11 @@ public static partial class TournamentExtensions
 				knockoutRounds.Add(new KnockoutRound(roundType, [.. matches]));
 			}
 
-			return new KnockoutStage(name, knockoutRounds);
+			return new KnockoutStage(name, positions, knockoutRounds);
 		}
 
 
-		public bool TryDrawKnockoutStage(KnockoutStage knockoutStage, List<int> positions, out Tournament newTournament, [NotNullWhen(false)] out string? message)
+		public bool TryDrawKnockoutStage(KnockoutStage knockoutStage, out Tournament newTournament, [NotNullWhen(false)] out string? message)
 		{
 			newTournament = tournament;
 			message = "";
@@ -166,8 +166,8 @@ public static partial class TournamentExtensions
 				return false;
 			}
 
-			int winnersPosition = positions[0];
-			int runnersUpPosition = positions[1];
+			int winnersPosition = knockoutStage.GroupPositions[0];
+			int runnersUpPosition = knockoutStage.GroupPositions[1];
 			string winnersName   = PositionName(winnersPosition);
 			string runnersUpName = PositionName(runnersUpPosition);
 

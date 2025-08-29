@@ -44,8 +44,7 @@ public static partial class TournamentServiceExtensions
 				return tournament;
 			}
 
-			// TODO: FIX: currently hardcoded to 1st and 2nd place in groups
-			bool success = tournament.TryDrawKnockoutStage(tournament.KnockoutStage, [0, 1], out tournament, out string? _);
+			bool success = tournament.TryDrawKnockoutStage(tournament.KnockoutStage, out tournament, out string? _);
 			if (!success) {
 				throw new InvalidOperationException("Failed to update knockout phases.");
 			}
@@ -61,8 +60,7 @@ public static partial class TournamentServiceExtensions
 				return tournament;
 			}
 
-			// TODO: FIX: currently hardcoded to 3rd and 4th place in groups
-			bool success = tournament.TryDrawKnockoutStage(tournament.ConsolationStage, [2, 3], out tournament, out string? _);
+			bool success = tournament.TryDrawKnockoutStage(tournament.ConsolationStage, out tournament, out string? _);
 			if (!success) {
 				throw new InvalidOperationException("Failed to update knockout phases.");
 			}
