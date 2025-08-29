@@ -45,4 +45,16 @@ public static class CacheHelper
 
 		return true;
 	}
+
+	public static bool AppendTextToFileInCache(string contents, string fileName, string cacheFolder)
+	{
+		if (!Directory.Exists(cacheFolder))
+		{
+			_ = Directory.CreateDirectory(cacheFolder);
+		}
+		fileName = fileName.ToLowerInvariant();
+		string destination = Path.Combine(cacheFolder, fileName);
+		File.AppendAllText(destination, contents);
+		return true;
+	}
 }

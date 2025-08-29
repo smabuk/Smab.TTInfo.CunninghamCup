@@ -287,6 +287,7 @@
 		await InvokeAsync(StateHasChanged);
 		if (tournament is not null) {
 			_tournamentService.AddOrUpdateTournament(tournament);
+			_ = _tournamentService.LogToAuditFile($"Match updated: {updatedMatch}");
 		}
 		editingMatchNo = null;
 	}

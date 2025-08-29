@@ -9,6 +9,7 @@ public interface ITournamentService
 
 	Task<Tournament> LoadTournamentFromJsonAsync();
 	public Task<bool> SaveTournamentToJsonAsync();
+	public Task<bool> LogToAuditFile(string message);
 }
 
 public class TournamentService(TTInfoOptions ttinfoOptions) : ITournamentService
@@ -41,8 +42,21 @@ public class TournamentService(TTInfoOptions ttinfoOptions) : ITournamentService
 
 		// Use Task.Run to ensure the method is truly asynchronous
 		_ =    await Task.Run(() => _tournament.Save($"tournament_{_tournament.Id}_{_tournament.Name}_{DateTime.Now:yyyyMMdd-HHmmss}.json", CacheFolder));
+		_ = LogToAuditFile($"Tournament saved: {_tournament.Name}");
 		return await Task.Run(() => _tournament.Save($"tournament_{DateTime.UtcNow.Year}.json", CacheFolder));
 	}
+
+
+	public async Task<bool> LogToAuditFile(string messsage)
+	{
+		// append a line to the audit log file
+		// should have a timestamp and the message
+		// timestamp should be sortable
+		string logMessage = $"{DateTime.UtcNow:yyyy-MM-ddTHH:mm:ssZ} - {messsage}{Environment.NewLine}";
+		return await Task.Run(() => CacheHelper.AppendTextToFileInCache(logMessage, $"audit_2025.log", CacheFolder));
+	}
+
+
 }
 
 
