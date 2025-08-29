@@ -12,6 +12,9 @@ h3 {
 	padding-top: 1rem;
 }
 
+[data-winner] {
+	font-weight: bold;
+}
 
 dl {
 	display: grid;
@@ -22,10 +25,11 @@ dl {
 
 dt {
 	grid-column-start: 1;
-	font-weight: bold;
 	padding-left: 1rem;
+	font-weight: normal;
 }
 
 dd {
+	font-weight: normal;
 	grid-column-start: 2;
 }

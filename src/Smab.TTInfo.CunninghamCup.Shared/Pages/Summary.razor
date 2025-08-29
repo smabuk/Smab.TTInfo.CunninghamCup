@@ -1,8 +1,7 @@
 @page "/summary"
 @inject ITournamentService _tournamentService
 
-<PageTitle>Summary - Cunningham Cup</PageTitle>
-
+<PageTitle>Summary - @tournament?.Name</PageTitle>
 
 @if (tournament is not null) {
 	<h2>@tournament.Name</h2>
@@ -21,7 +20,7 @@
 		<dl>
 			@if (semifinals.Any(sf => sf.IsCompleted)) {
 				<dt>Winner</dt>
-				<dd>@final.Winner?.DisplayName</dd>
+				<dd data-winner>@final.Winner?.DisplayName</dd>
 				<dt>Runner Up</dt>
 				<dd>@final.Loser?.DisplayName</dd>
 				<dt>3rd/4th</dt>

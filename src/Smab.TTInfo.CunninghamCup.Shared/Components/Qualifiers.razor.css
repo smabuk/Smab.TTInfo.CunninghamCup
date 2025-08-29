@@ -17,10 +17,11 @@ dl {
 
 dt {
 	grid-column-start: 1;
-	font-weight: bold;
 	padding-left: 1rem;
+	font-weight: normal;
 }
 
 dd {
+	font-weight: normal;
 	grid-column-start: 2;
 }
