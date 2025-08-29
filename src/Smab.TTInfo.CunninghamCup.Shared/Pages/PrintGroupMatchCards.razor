@@ -86,5 +86,10 @@
 		tournament ??= _tournamentService.GetTournament();
 	}
 
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		await JS.InvokeVoidAsync("document.documentElement.setAttribute", "data-bs-theme", "light");
+	}
+
 	private void PrintPage() => JS.InvokeVoidAsync("window.print");
 }
