@@ -1,0 +1,33 @@
+h1 {
+	padding-top: 1rem;
+	display: flex;
+	justify-content: center;
+	padding-bottom: 2rem;
+}
+
+h2 {
+	padding-top: 1rem;
+}
+
+p {
+	margin: 0.5rem;
+/*	font-size: 1.3rem;*/
+}
+
+
+dl {
+	display: grid;
+	grid-template-columns: max-content auto;
+	grid-column-gap: 2rem;
+	grid-row-gap: 0;
+}
+
+dt {
+	grid-column-start: 1;
+	font-weight: bold;
+	padding-left: 1rem;
+}
+
+dd {
+	grid-column-start: 2;
+}
