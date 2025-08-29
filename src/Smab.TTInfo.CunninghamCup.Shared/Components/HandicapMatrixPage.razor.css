@@ -1,0 +1,69 @@
+.handicap-matrix-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 24px;
+}
+
+.handicap-matrix-table {
+	border-collapse: collapse;
+/*	font-family: Arial, sans-serif;*/
+	font-size: 1.1rem;
+	min-width: 400px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.matrix-title {
+	background: #ffd700;
+	color: #222;
+	font-weight: bold;
+	font-size: 1.3rem;
+	text-align: center;
+	border: 2px solid #222;
+	padding: 8px 0;
+}
+
+thead .gap-cell {
+	height: 2rem;
+}
+
+.diff-header, .start-header {
+	background: #ffd700;
+	color: #222;
+	font-weight: normal;
+	border: 2px solid #222;
+	text-align: center;
+	padding: 4px 0;
+}
+
+.gap-header {
+	background: #fff;
+	color: #222;
+	font-weight: bold;
+	border: 2px solid #222;
+	border-bottom: none;
+	text-align: center;
+	padding: 4px 0;
+	width: 3rem;
+}
+
+.diff-cell {
+	background: #ffff66;
+	border: 1px solid #222;
+	text-align: center;
+	padding: 4px 10px;
+}
+
+.gap-cell {
+	background: #fff;
+/*	border: 1px solid #222;*/
+	text-align: center;
+	padding: 4px 10px;
+}
+
+.start-cell {
+	background: #99cc66;
+	border: 1px solid #222;
+	text-align: center;
+	padding: 4px 10px;
+}
