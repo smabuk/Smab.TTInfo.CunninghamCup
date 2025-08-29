@@ -9,8 +9,9 @@
 	<h2>@tournament.Name</h2>
 	@if (tournament?.Groups is not null)
 	{
-		<Qualifiers />
-	}	
+		<Qualifiers Positions="[0, 1]" Title="Qualifiers for Main Knockout" />
+		<Qualifiers Positions="[2, 3]" Title="Qualifiers for Consolation" />
+	}
 
 	@if (tournament?.KnockoutStage is null)
 	{
