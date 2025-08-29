@@ -3,7 +3,7 @@
 
 <PageTitle>Entries - Cunningham Cup</PageTitle>
 
-<h2>@tournament?.ActivePlayers.Count() Entries</h2>
+<h2>@tournament?.Name - @tournament?.ActivePlayers.Count() Entries</h2>
 
 <div class="d-flex justify-content-center">
 	<QuickGrid Items="@playerEntries?.AsQueryable()" RowClass="GetRowClass">

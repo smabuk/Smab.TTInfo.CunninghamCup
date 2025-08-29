@@ -6,8 +6,7 @@
 <PageTitle>Knockout Phase - @tournament?.Name</PageTitle>
 
 <h2>
-	@* @(tournament?.KnockoutStage?.Name ?? "Knockout Phase") *@
-	Knockout Phase
+	@(tournament?.Name ?? "Knockout Phase")
 	<CanEdit>
 		@if (tournament?.KnockoutStage is null) {
 			<button class="btn btn-success ms-4" @onclick="DrawMainKnockout">Draw Main Knockout</button>
