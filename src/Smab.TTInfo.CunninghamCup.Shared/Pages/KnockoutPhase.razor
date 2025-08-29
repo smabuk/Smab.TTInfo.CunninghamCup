@@ -28,77 +28,67 @@
 		<p>The knockout draw hasn't been made yet.</p>
 	</div>
 } else {
-	<div>
+	<div class="accordian">
 		@foreach (KnockoutStage knockoutStage in knockoutStages.Where(ks => ks is not null)) {
 			<div>
-
-				<h3>@knockoutStage.Name</h3>
-				@for (int roundIdx = 0; roundIdx < knockoutStage.Rounds.Count; roundIdx++) {
+				<h3 class="accordian-header">@knockoutStage.Name</h3>
+				@for (int roundIdx = knockoutStage.Rounds.Count - 1; roundIdx >= 0; roundIdx--) {
 					int roundNo = roundIdx;
 					KnockoutRound round = knockoutStage.Rounds[roundNo];
-					<div class="card mb-4">
-						<div class="card-header">
-							<strong>@round.Type.ToFriendlyString()</strong>
-						</div>
-						<div class="card-body">
-							<table id="matches" class="table">
-								@* <thead>
-						<tr>
-							<th>#</th>
-							<th>Player A</th>
-							<th>Player B</th>
-							<th>Score</th>
-							<CanEdit>
-								<th>Edit</th>
-							</CanEdit>
-						</tr>
-					</thead> *@
-								<tbody>
-									@for (int i = 0; i < round.Matches.Count; i++) {
-										int matchNo = i;
-										Match match = round.Matches[i];
-										Player? playerA = match.PlayerA.IsPlayer ? tournament.GetPlayer(match.PlayerA) : null;
-										Player? playerB = match.PlayerB.IsPlayer ? tournament.GetPlayer(match.PlayerB) : null;
-										string score = match.Result is not null
-										? $"{string.Join(", ", match.Result.Sets.Select(set => $"{set.PlayerAScore}-{set.PlayerBScore}"))}"
-										: "";
-										<tr>
-											<td>@(i + 1)</td>
-											<td data-winner="@match.IsPlayerAWin">
-												@(match.PlayerA.IsPlaceHolder && char.IsAsciiDigit($"{match.PlayerA}"[1]) ? "" : match.PlayerA.DisplayName)
-												@(playerA is not null ? $"({@match.PlayerAStart})" : "")
-											</td>
-											<td data-winner="@match.IsPlayerBWin">
-												@(match.PlayerB.IsPlaceHolder && char.IsAsciiDigit($"{match.PlayerB}"[1]) ? "" : match.PlayerB.DisplayName)
-												@(playerB is not null ? $"({@match.PlayerBStart})" : "")
-											</td>
-											<td>@(match.IsCompleted ? $"{match.PlayerASets}-{match.PlayerBSets}" : "")</td>
-											<td>@score</td>
-											<CanEdit>
-												<td>
-													@if (match.PlayerA.IsPlayer && match.PlayerB.IsPlayer) {
-														<button class="btn btn-primary btn-sm float-end" @onclick="() => EditMatch(knockoutStage, roundNo, matchNo)">Edit</button>
-														<button class="btn btn-sm btn-warning float-end" @onclick="() => CompleteMatchWithRandomScores(knockoutStage, roundNo, matchNo)">
-															<svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#shuffle" /></svg>
-														</button>
-													}
+					@if (roundNo == 0 || round.Matches.Any(m => m.PlayerA.IsPlayer || m.PlayerB.IsPlayer)) {
+						<div class="card mb-4">
+							<div class="card-header">
+								<strong>@round.Type.ToFriendlyString()</strong>
+							</div>
+							<div class="card-body">
+								<table id="matches" class="table">
+									<tbody>
+										@for (int i = 0; i < round.Matches.Count; i++) {
+											int matchNo = i;
+											Match match = round.Matches[i];
+											Player? playerA = match.PlayerA.IsPlayer ? tournament.GetPlayer(match.PlayerA) : null;
+											Player? playerB = match.PlayerB.IsPlayer ? tournament.GetPlayer(match.PlayerB) : null;
+											string score = match.Result is not null
+											? $"{string.Join(", ", match.Result.Sets.Select(set => $"{set.PlayerAScore}-{set.PlayerBScore}"))}"
+											: "";
+											<tr>
+												<td>@(i + 1)</td>
+												<td data-winner="@match.IsPlayerAWin">
+													@(match.PlayerA.IsPlaceHolder && char.IsAsciiDigit($"{match.PlayerA}"[1]) ? "" : match.PlayerA.DisplayName)
+													@(playerA is not null ? $"({@match.PlayerAStart})" : "")
 												</td>
-											</CanEdit>
-										</tr>
-										<CanEdit>
-											@if (editingMatchNo == (knockoutStage, roundNo, matchNo)) {
-												<tr>
-													<td colspan="6">
-														<MatchEditor Match="@match" OnSave="OnMatchSaveAsync" OnCancel="CancelEditMatch" />
+												<td data-winner="@match.IsPlayerBWin">
+													@(match.PlayerB.IsPlaceHolder && char.IsAsciiDigit($"{match.PlayerB}"[1]) ? "" : match.PlayerB.DisplayName)
+													@(playerB is not null ? $"({@match.PlayerBStart})" : "")
+												</td>
+												<td>@(match.IsCompleted ? $"{match.PlayerASets}-{match.PlayerBSets}" : "")</td>
+												<td>@score</td>
+												<CanEdit>
+													<td>
+														@if (match.PlayerA.IsPlayer && match.PlayerB.IsPlayer) {
+															<button class="btn btn-primary btn-sm float-end" @onclick="() => EditMatch(knockoutStage, roundNo, matchNo)">Edit</button>
+															<button class="btn btn-sm btn-warning float-end" @onclick="() => CompleteMatchWithRandomScores(knockoutStage, roundNo, matchNo)">
+																<svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#shuffle" /></svg>
+															</button>
+														}
 													</td>
-												</tr>
-											}
-										</CanEdit>
-									}
-								</tbody>
-							</table>
+												</CanEdit>
+											</tr>
+											<CanEdit>
+												@if (editingMatchNo == (knockoutStage, roundNo, matchNo)) {
+													<tr>
+														<td colspan="6">
+															<MatchEditor Match="@match" OnSave="OnMatchSaveAsync" OnCancel="CancelEditMatch" />
+														</td>
+													</tr>
+												}
+											</CanEdit>
+										}
+									</tbody>
+								</table>
+							</div>
 						</div>
-					</div>
+					}
 				}
 			</div>
 		}
