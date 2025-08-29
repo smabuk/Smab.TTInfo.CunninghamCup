@@ -51,7 +51,7 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 		Tournament? tournament = CreateTestTournamentWithPlayers(noOfPlayers, groupSize);
 
 		// Ensure the tournament has groups drawn
-		tournament = tournament with { KnockoutStage = tournament.DrawKnockoutStage("Knockout Stage")};
+		tournament = tournament with { KnockoutStage = tournament.DrawKnockoutStage("Knockout Stage", [0, 1])};
 		tournament.KnockoutStage!.Rounds.Count.ShouldBe(expectedNoOfRounds);
 		tournament.KnockoutStage.Rounds[0].Matches
 			.Any(match => match.PlayerA.IsPlayer).ShouldBeFalse();
@@ -62,7 +62,7 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 		tournament.Groups[2].IsCompleted.ShouldBeTrue();
 
 		// Ensure the tournament can still draw knockout stage
-		tournament.TryDrawKnockoutStage(out tournament, out string? message).ShouldBeTrue();
+		tournament.TryDrawKnockoutStage(tournament.KnockoutStage!, [0, 1], out tournament, out string? message).ShouldBeTrue();
 		if(tournament.KnockoutStage is null)
 		{
 			return;
@@ -84,7 +84,7 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 		testOutputHelper.WriteLine(tournament.KnockoutStage.Rounds[1].AsString());
 
 
-		bool success = tournament.TryDrawKnockoutStage(out tournament, out message);
+		bool success = tournament.TryDrawKnockoutStage(tournament.KnockoutStage, [0, 1], out tournament, out message);
 		success.ShouldBeTrue();
 		message.ShouldBeEmpty();
 		_ = tournament.ShouldNotBeNull();
@@ -107,7 +107,7 @@ public class KnockoutTests(ITestOutputHelper testOutputHelper)
 			}
 
 			round.IsCompleted.ShouldBeTrue();
-			bool _ = tournament.TryDrawKnockoutStage(out tournament, out message);
+			bool _ = tournament.TryDrawKnockoutStage(tournament.KnockoutStage, [0, 1], out tournament, out message);
 		}
 
 		testOutputHelper.WriteLine("After all the rounds have been played:");

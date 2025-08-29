@@ -15,24 +15,54 @@ public static partial class TournamentServiceExtensions
 
 	extension(ITournamentService tournamentService)
 	{
-		public Tournament DrawKnockoutStage(bool redraw = false)
+		public Tournament DrawMainKnockoutStage(bool redraw = false)
 		{
 			Tournament tournament = tournamentService.GetTournament();
-			tournament = tournament 
-				with { KnockoutStage = tournament.DrawKnockoutStage("Main Knockout", redraw) };
-			tournament = tournament 
-				with { ConsolationStage = tournament.DrawKnockoutStage("Consolation", redraw) };
+			// TODO: FIX: currently hardcoded to 1st and 2nd place in groups
+			tournament = tournament  with {
+				KnockoutStage = tournament.DrawKnockoutStage("Main Knockout", [0, 1], redraw)
+			};
 			tournamentService.AddOrUpdateTournament(tournament);
 			return tournament;
 		}
-	}
 
-	extension(ITournamentService tournamentService)
-	{
-		public Tournament UpdateKnockoutPhases()
+		public Tournament DrawConsolationStage(bool redraw = false)
 		{
 			Tournament tournament = tournamentService.GetTournament();
-			bool success = tournament.TryDrawKnockoutStage(tournament.KnockoutStage!, out tournament, out string? _);
+			// TODO: FIX: currently hardcoded to 3rd and 4th place in groups
+			tournament = tournament with {
+				ConsolationStage = tournament.DrawKnockoutStage("Consolation", [2, 3], redraw)
+			};
+			tournamentService.AddOrUpdateTournament(tournament);
+			return tournament;
+		}
+
+		public Tournament UpdateMainKnockoutRounds()
+		{
+			Tournament tournament = tournamentService.GetTournament();
+			if (tournament.KnockoutStage is null) {
+				return tournament;
+			}
+
+			// TODO: FIX: currently hardcoded to 1st and 2nd place in groups
+			bool success = tournament.TryDrawKnockoutStage(tournament.KnockoutStage, [0, 1], out tournament, out string? _);
+			if (!success) {
+				throw new InvalidOperationException("Failed to update knockout phases.");
+			}
+
+			tournamentService.AddOrUpdateTournament(tournament);
+			return tournament;
+		}
+
+		public Tournament UpdateConsolationRounds()
+		{
+			Tournament tournament = tournamentService.GetTournament();
+			if (tournament.ConsolationStage is null) {
+				return tournament;
+			}
+
+			// TODO: FIX: currently hardcoded to 3rd and 4th place in groups
+			bool success = tournament.TryDrawKnockoutStage(tournament.ConsolationStage, [2, 3], out tournament, out string? _);
 			if (!success) {
 				throw new InvalidOperationException("Failed to update knockout phases.");
 			}

@@ -52,7 +52,8 @@ public static partial class TournamentExtensions
 		public static List<Match> CreateFirstKnockoutRound(
 			int matchesPerRound,
 			int noOfGroups,
-			RoundType roundType
+			RoundType roundType,
+			List<int> positions
 		)
 		{
 			int noOfByes = (matchesPerRound * 2) - (noOfGroups * 2);
@@ -78,11 +79,11 @@ public static partial class TournamentExtensions
 
 			PlayerId[] firstRoundPlacements = new PlayerId[matchesPerRound * 2];
 			for (int i = 0; i < winnerPositions.Count; i++) {
-				firstRoundPlacements[winnerPositions[i]] = (PlayerId)$"{PlayerId.PlaceHolderSymbol}Group {(char)(i + 'A')} Winner";
+				firstRoundPlacements[winnerPositions[i]] = (PlayerId)$"{PlayerId.PlaceHolderSymbol}Group {(char)(i + 'A')} {PositionName(positions[0])}";
 			}
 
 			for (int i = 0; i < runnerUpPositions.Count; i++) {
-				firstRoundPlacements[runnerUpPositions[i]] = (PlayerId)$"{PlayerId.PlaceHolderSymbol}Group {(char)(i + 'A')} Runner Up";
+				firstRoundPlacements[runnerUpPositions[i]] = (PlayerId)$"{PlayerId.PlaceHolderSymbol}Group {(char)(i + 'A')} {PositionName(positions[1])}";
 			}
 
 			for (int i = 0; i < byePositions.Count; i++) {
@@ -107,7 +108,7 @@ public static partial class TournamentExtensions
 			return matches;
 		}
 
-		public KnockoutStage DrawKnockoutStage(string name, bool redraw = false)
+		public KnockoutStage DrawKnockoutStage(string name, List<int> positions, bool redraw = false)
 		{
 			//if (knockoutStage is not null && redraw is false) {
 			//	return knockoutStage;
@@ -132,7 +133,7 @@ public static partial class TournamentExtensions
 
 				int noOfGroups = tournament.GroupsCount;
 				if (round == 0) {
-					matches = CreateFirstKnockoutRound(matchesPerRound, noOfGroups, roundType);
+					matches = CreateFirstKnockoutRound(matchesPerRound, noOfGroups, roundType, positions);
 					matchNo += matches.Count;
 				} else {
 					for (int i = 0; i < matchesPerRound; i++) {
@@ -155,7 +156,7 @@ public static partial class TournamentExtensions
 		}
 
 
-		public bool TryDrawKnockoutStage(KnockoutStage knockoutStage, out Tournament newTournament, [NotNullWhen(false)] out string? message)
+		public bool TryDrawKnockoutStage(KnockoutStage knockoutStage, List<int> positions, out Tournament newTournament, [NotNullWhen(false)] out string? message)
 		{
 			newTournament = tournament;
 			message = "";
@@ -165,20 +166,25 @@ public static partial class TournamentExtensions
 				return false;
 			}
 
+			int winnersPosition = positions[0];
+			int runnersUpPosition = positions[1];
+			string winnersName   = PositionName(winnersPosition);
+			string runnersUpName = PositionName(runnersUpPosition);
+
 			for (int roundIdx = 0; roundIdx < knockoutStage.Rounds.Count; roundIdx++) {
 				KnockoutRound knockoutRound = knockoutStage.Rounds[roundIdx];
 				if (roundIdx is 0 && knockoutRound.IsNotPopulated)
 				{
-					// take top 2 players from each group
+					// take 2 players from each group
 					foreach (Group group in newTournament.Groups) {
 						if (group.IsCompleted) {
 							Match match = null!;
 							int winnerIndex = knockoutRound
 								.Matches
-								.FindIndex(m => m.PlayerA.IsPlaceHolder && m.PlayerA.StringId == $"{PlayerId.PlaceHolderSymbol}{group.Name} Winner");
+								.FindIndex(m => m.PlayerA.IsPlaceHolder && m.PlayerA.StringId == $"{PlayerId.PlaceHolderSymbol}{group.Name} {winnersName}");
 							if (winnerIndex >= 0) {
 								match = knockoutRound.Matches[winnerIndex];
-								match = match with { PlayerA = group.GroupPositions[0].PlayerId };
+								match = match with { PlayerA = group.GroupPositions[winnersPosition].PlayerId };
 								if (match.PlayerB.IsPlayer) {
 									(int playerAStart, int playerBStart) = newTournament.StartingHandicap(match.PlayerA, match.PlayerB);
 									match = match with
@@ -193,18 +199,18 @@ public static partial class TournamentExtensions
 
 							int runnerUpIndex = knockoutRound
 								.Matches
-								.FindIndex(m => m.PlayerB.IsPlaceHolder && m.PlayerB.StringId == $"{PlayerId.PlaceHolderSymbol}{group.Name} Runner Up");
+								.FindIndex(m => m.PlayerB.IsPlaceHolder && m.PlayerB.StringId == $"{PlayerId.PlaceHolderSymbol}{group.Name} {runnersUpName}");
 							if (runnerUpIndex < 0) {
 								runnerUpIndex = knockoutRound
 									.Matches
-									.FindIndex(m => m.PlayerA.IsPlaceHolder && m.PlayerA.StringId == $"{PlayerId.PlaceHolderSymbol}{group.Name} Runner Up");
+									.FindIndex(m => m.PlayerA.IsPlaceHolder && m.PlayerA.StringId == $"{PlayerId.PlaceHolderSymbol}{group.Name} {runnersUpName}");
 								if (runnerUpIndex >= 0) {
 									match = knockoutRound.Matches[runnerUpIndex];
-									match = match with { PlayerA = group.GroupPositions[1].PlayerId };
+									match = match with { PlayerA = group.GroupPositions[runnersUpPosition].PlayerId };
 								}
 							} else {
 								match = knockoutRound.Matches[runnerUpIndex];
-								match = match with { PlayerB = group.GroupPositions[1].PlayerId };
+								match = match with { PlayerB = group.GroupPositions[runnersUpPosition].PlayerId };
 							}
 
 							if (runnerUpIndex >= 0) {
@@ -277,5 +283,18 @@ public static partial class TournamentExtensions
 			return true;
 		}
 
+		private static string PositionName(int position)
+		{
+			return position switch
+			{
+				0 => "Winner",
+				1 => "Runner Up",
+				2 => "Third Place",
+				3 => "Fourth Place",
+				4 => "Fifth Place",
+				5 => "Sixth Place",
+				_ => "Unknown"
+			};
+		}
 	}
 }

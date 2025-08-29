@@ -6,7 +6,8 @@
 <PageTitle>Knockout Phase - @tournament?.Name</PageTitle>
 
 <h2>
-	@(tournament?.KnockoutStage?.Name ?? "Knockout Phase" )
+	@* @(tournament?.KnockoutStage?.Name ?? "Knockout Phase") *@
+	Knockout Phase
 	<CanEdit>
 		@if (tournament?.KnockoutStage is null) {
 			<button class="btn btn-success ms-4" @onclick="DrawMainKnockout">Draw Main Knockout</button>
@@ -20,23 +21,25 @@
 		}
 	</CanEdit>
 </h2>
-@if (tournament is null || tournament.KnockoutStage is null) {
+@if (tournament is null || knockoutStages.All(ks => ks is null)) {
 	<Qualifiers />
 	<div class="alert alert-info">
 		<h3>Not drawn yet</h3>
-		<p>The knockout phase hasn't been drawn yet.</p>
+		<p>The knockout draw hasn't been made yet.</p>
 	</div>
 } else {
-	@for (int roundIdx = 0; roundIdx < tournament.KnockoutStage.Rounds.Count; roundIdx++) {
-		int roundNo = roundIdx;
-		KnockoutRound round = tournament.KnockoutStage.Rounds[roundNo];
-		<div class="card mb-4">
-			<div class="card-header">
-				<strong>@round.Type.ToFriendlyString()</strong>
-			</div>
-			<div class="card-body">
-				<table id="matches" class="table">
-					@* <thead>
+	@foreach (KnockoutStage knockoutStage in knockoutStages.Where(ks => ks is not null)) {
+		<h3>@knockoutStage.Name</h3>
+		@for (int roundIdx = 0; roundIdx < knockoutStage.Rounds.Count; roundIdx++) {
+			int roundNo = roundIdx;
+			KnockoutRound round = knockoutStage.Rounds[roundNo];
+			<div class="card mb-4">
+				<div class="card-header">
+					<strong>@round.Type.ToFriendlyString()</strong>
+				</div>
+				<div class="card-body">
+					<table id="matches" class="table">
+						@* <thead>
 						<tr>
 							<th>#</th>
 							<th>Player A</th>
@@ -47,52 +50,53 @@
 							</CanEdit>
 						</tr>
 					</thead> *@
-					<tbody>
-						@for (int i = 0; i < round.Matches.Count; i++) {
-							int matchNo = i;
-							Match match = round.Matches[i];
-							Player? playerA = match.PlayerA.IsPlayer ? tournament.GetPlayer(match.PlayerA) : null;
-							Player? playerB = match.PlayerB.IsPlayer ? tournament.GetPlayer(match.PlayerB) : null;
-							string score = match.Result is not null
-							? $"{string.Join(", ", match.Result.Sets.Select(set => $"{set.PlayerAScore}-{set.PlayerBScore}"))}"
-							: "";
-							<tr>
-								<td>@(i + 1)</td>
-								<td data-winner="@match.IsPlayerAWin">
-									@(match.PlayerA.IsPlaceHolder && char.IsAsciiDigit($"{match.PlayerA}"[1]) ? "" : match.PlayerA.DisplayName)
-									@(playerA is not null ? $"({@match.PlayerAStart})" : "")
-								</td>
-								<td data-winner="@match.IsPlayerBWin">
-									@(match.PlayerB.IsPlaceHolder && char.IsAsciiDigit($"{match.PlayerB}"[1]) ? "" : match.PlayerB.DisplayName)
-									@(playerB is not null ? $"({@match.PlayerBStart})" : "")
-								</td>
-								<td>@(match.IsCompleted ? $"{match.PlayerASets}-{match.PlayerBSets}" : "")</td>
-								<td>@score</td>
-								<CanEdit>
-									<td>
-										@if (match.PlayerA.IsPlayer && match.PlayerB.IsPlayer) {
-											<button class="btn btn-primary btn-sm float-end" @onclick="() => EditMatch(roundNo, matchNo)">Edit</button>
-											<button class="btn btn-sm btn-warning float-end" @onclick="() => CompleteMatchWithRandomScores(roundNo, matchNo)">
-												<svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#shuffle" /></svg>
-											</button>
-										}
+						<tbody>
+							@for (int i = 0; i < round.Matches.Count; i++) {
+								int matchNo = i;
+								Match match = round.Matches[i];
+								Player? playerA = match.PlayerA.IsPlayer ? tournament.GetPlayer(match.PlayerA) : null;
+								Player? playerB = match.PlayerB.IsPlayer ? tournament.GetPlayer(match.PlayerB) : null;
+								string score = match.Result is not null
+								? $"{string.Join(", ", match.Result.Sets.Select(set => $"{set.PlayerAScore}-{set.PlayerBScore}"))}"
+								: "";
+								<tr>
+									<td>@(i + 1)</td>
+									<td data-winner="@match.IsPlayerAWin">
+										@(match.PlayerA.IsPlaceHolder && char.IsAsciiDigit($"{match.PlayerA}"[1]) ? "" : match.PlayerA.DisplayName)
+										@(playerA is not null ? $"({@match.PlayerAStart})" : "")
 									</td>
-								</CanEdit>
-							</tr>
-							<CanEdit>
-								@if (editingMatchNo == (roundNo, matchNo)) {
-									<tr>
-										<td colspan="6">
-											<MatchEditor Match="@match" OnSave="OnMatchSaveAsync" OnCancel="CancelEditMatch" />
+									<td data-winner="@match.IsPlayerBWin">
+										@(match.PlayerB.IsPlaceHolder && char.IsAsciiDigit($"{match.PlayerB}"[1]) ? "" : match.PlayerB.DisplayName)
+										@(playerB is not null ? $"({@match.PlayerBStart})" : "")
+									</td>
+									<td>@(match.IsCompleted ? $"{match.PlayerASets}-{match.PlayerBSets}" : "")</td>
+									<td>@score</td>
+									<CanEdit>
+										<td>
+											@if (match.PlayerA.IsPlayer && match.PlayerB.IsPlayer) {
+												<button class="btn btn-primary btn-sm float-end" @onclick="() => EditMatch(knockoutStage, roundNo, matchNo)">Edit</button>
+												<button class="btn btn-sm btn-warning float-end" @onclick="() => CompleteMatchWithRandomScores(knockoutStage, roundNo, matchNo)">
+													<svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#shuffle" /></svg>
+												</button>
+											}
 										</td>
-									</tr>
-								}
-							</CanEdit>
-						}
-					</tbody>
-				</table>
+									</CanEdit>
+								</tr>
+								<CanEdit>
+									@if (editingMatchNo == (knockoutStage, roundNo, matchNo)) {
+										<tr>
+											<td colspan="6">
+												<MatchEditor Match="@match" OnSave="OnMatchSaveAsync" OnCancel="CancelEditMatch" />
+											</td>
+										</tr>
+									}
+								</CanEdit>
+							}
+						</tbody>
+					</table>
+				</div>
 			</div>
-		</div>
+		}
 	}
 }
 
@@ -103,17 +107,19 @@
 	[PersistentState]
 	public Tournament? tournament { get; set; }
 
+	private List<KnockoutStage> knockoutStages = [];
 	private Dictionary<PlayerId, Player>? players;
-	private (int RoundNo, int MatchNo)? editingMatchNo = null;
+	private (KnockoutStage knockoutStage, int RoundNo, int MatchNo)? editingMatchNo = null;
 
 	protected override void OnInitialized()
 	{
 		tournament ??= _tournamentService.GetTournament();
 		players = tournament.Players;
+		knockoutStages = [tournament.KnockoutStage, tournament.ConsolationStage];
 	}
 
 
-	private void EditMatch(int roundNo, int matchNo) => editingMatchNo = (roundNo, matchNo);
+	private void EditMatch(KnockoutStage knockoutStage, int roundNo, int matchNo) => editingMatchNo = (knockoutStage, roundNo, matchNo);
 	private void CancelEditMatch() => editingMatchNo = null;
 
 	private async Task OnMatchSaveAsync(Match updatedMatch)
@@ -122,8 +128,8 @@
 		// 	group.Matches[editingMatchNo.Value] = updatedMatch;
 		// }
 
-		(int roundNo, int matchNo) = editingMatchNo!.Value;
-		tournament?.KnockoutStage!.Rounds[roundNo].Matches[matchNo] = updatedMatch;
+		(KnockoutStage knockoutStage, int roundNo, int matchNo) = editingMatchNo!.Value;
+		knockoutStage!.Rounds[roundNo].Matches[matchNo] = updatedMatch;
 		await InvokeAsync(StateHasChanged);
 		if (tournament is not null) {
 			_tournamentService.AddOrUpdateTournament(tournament);
@@ -133,38 +139,38 @@
 	}
 
 	// private void CompleteMatchWithRandomScores(int matchNo) => group = _tournamentService.CompleteMatchWithRandomScores(group!.Name, matchNo);
-	private void CompleteMatchWithRandomScores(int roundNo, int matchNo)
+	private void CompleteMatchWithRandomScores(KnockoutStage knockoutStage, int roundNo, int matchNo)
 	{
-		Match match = tournament!.KnockoutStage!.Rounds[roundNo].Matches[matchNo];
+		Match match = knockoutStage.Rounds[roundNo].Matches[matchNo];
 		match = TournamentService.SetRandomResult(match);
-		tournament.KnockoutStage.Rounds[roundNo].Matches[matchNo] = match;
-		_tournamentService.AddOrUpdateTournament(tournament);
+		knockoutStage.Rounds[roundNo].Matches[matchNo] = match;
+		_tournamentService.AddOrUpdateTournament(tournament!);
 		StateHasChanged();
 	}
 
 	private void UpdateMainKnockout()
 	{
-		tournament = _tournamentService.UpdateKnockoutPhases();
+		tournament = _tournamentService.UpdateMainKnockoutRounds();
 		StateHasChanged();
 	}
 
 	private void DrawMainKnockout()
 	{
-		tournament = _tournamentService.DrawKnockoutStage();
-		tournament = _tournamentService.UpdateKnockoutPhases();
+		tournament = _tournamentService.DrawMainKnockoutStage();
+		tournament = _tournamentService.UpdateMainKnockoutRounds();
 		StateHasChanged();
 	}
 
 	private void UpdateConsolation()
 	{
-		// tournament = _tournamentService.UpdateKnockoutPhases();
-		// StateHasChanged();
+		tournament = _tournamentService.UpdateConsolationRounds();
+		StateHasChanged();
 	}
 
 	private void DrawConsolation()
 	{
-		// tournament = _tournamentService.DrawKnockoutStage();
-		// tournament = _tournamentService.UpdateKnockoutPhases();
-		// StateHasChanged();
+		tournament = _tournamentService.DrawConsolationStage();
+		tournament = _tournamentService.UpdateConsolationRounds();
+		StateHasChanged();
 	}
 }
