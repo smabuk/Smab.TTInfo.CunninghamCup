@@ -1,7 +1,7 @@
 @using Smab.TTInfo.CunninghamCup.Shared.Models
 @inject ITournamentService _tournamentService
 
-<h2>@Title</h2>
+<h3>@Title</h3>
 
 @if (tournament?.Groups is null || tournament?.Groups.Count == 0) {
 	<div class="alert alert-info">

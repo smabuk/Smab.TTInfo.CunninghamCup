@@ -30,6 +30,12 @@ public record Match(
 			: PlayerB
 		: null;
 
+	public PlayerId? Loser => IsCompleted
+		? IsPlayerAWin
+			? PlayerB
+			: PlayerA
+		: null;
+
 	public bool IsPlayerAWin => (IsCompleted && PlayerB.IsBye) || (Result?.IsPlayerAWin ?? false);
 	public bool IsPlayerBWin => (IsCompleted && PlayerA.IsBye) || (Result?.IsPlayerBWin ?? false);
 	public int PlayerASets => Result?.PlayerASets ?? 0;
