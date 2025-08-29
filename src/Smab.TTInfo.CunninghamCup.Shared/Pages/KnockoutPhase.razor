@@ -153,7 +153,7 @@
 	{
 		tournament = _tournamentService.DrawMainKnockoutStage();
 		tournament = _tournamentService.UpdateMainKnockoutRounds();
-		_ = _tournamentService.LogToAuditFile($"Draw Main Knockout: {tournament?.KnockoutStage?.Rounds[0]}");
+		_ = _tournamentService.LogToAuditFile($"Draw Main Knockout: {tournament?.KnockoutStage}");
 		StateHasChanged();
 	}
 
@@ -167,7 +167,7 @@
 	{
 		tournament = _tournamentService.DrawConsolationStage();
 		tournament = _tournamentService.UpdateConsolationRounds();
-		_ = _tournamentService.LogToAuditFile($"Draw Consolation: {tournament?.ConsolationStage?.Rounds[0]}");
+		_ = _tournamentService.LogToAuditFile($"Draw Consolation: {tournament?.ConsolationStage}");
 		StateHasChanged();
 	}
 }

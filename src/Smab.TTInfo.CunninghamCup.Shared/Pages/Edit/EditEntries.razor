@@ -26,6 +26,8 @@
 			<PropertyColumn Title="Gender" Property="@(m => m.Contact.User.Gender == 1 ? "Male" : "Female")" Sortable="true" />
 			<PropertyColumn Title="Membership Type" Property="@(m => Pretty(m.Contact.User.MembershipType))" Sortable="true" />
 			<PropertyColumn Title="Phone #" Property="@(m => PrettyPhone(m.Contact.User.PhoneNumber))" Sortable="false" />
+			<PropertyColumn Title="Emergency Name" Property="@(m => m.Contact.EmergencyName)" Sortable="false" />
+			<PropertyColumn Title="Emergency #" Property="@(m => PrettyPhone(m.Contact.EmergencyNumber))" Sortable="false" />
 		</QuickGrid>
 
 	</div>
@@ -95,6 +97,10 @@
 
 	string PrettyPhone(string input)
 	{
+		if (string.IsNullOrWhiteSpace(input))
+		{
+			return "";
+		}
 		string newString = $"{input}";
 
 		newString = newString

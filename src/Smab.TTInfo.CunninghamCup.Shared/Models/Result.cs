@@ -23,4 +23,26 @@ public record Result(
 	public bool IsPlayerBWin => IsCompleted && PlayerBSets > PlayerASets;
 
 	public bool IsCompleted => PlayerASets >= 2 || PlayerBSets >= 2;
+
+	public override string ToString()
+	{
+		// Join sets as "A-B"
+		string setsJoined = Sets is { Count: > 0 }
+			? string.Join(", ", Sets.Select(s => $"{s.PlayerAScore}-{s.PlayerBScore}"))
+			: "no sets";
+
+		// Summary components
+		string setsScore = $"{PlayerASets}-{PlayerBSets}";
+		string points = $"{PlayerATotalPoints}-{PlayerBTotalPoints}";
+
+		// Outcome
+		string outcome = IsCompleted
+			? (IsPlayerAWin ? "Player A wins" : IsPlayerBWin ? "Player B wins" : "Draw")
+			: "Incomplete";
+
+		// Notes
+		string notesPart = string.IsNullOrWhiteSpace(Notes) ? string.Empty : $" Notes: {Notes}";
+
+		return $$"""{{nameof(Result)}} { {{outcome}} [{{setsJoined}}]; Sets: {{setsScore}}; Points: {{points}}; {{notesPart}} }""";
+	}
 }
