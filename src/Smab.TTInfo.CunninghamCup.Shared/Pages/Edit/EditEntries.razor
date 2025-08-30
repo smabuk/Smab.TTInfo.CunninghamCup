@@ -70,7 +70,7 @@
 		Memberships ??= await _TTClubsReader.GetMemberships(ttinfoId);
 		if (MembershipId is null) {
 			if (Memberships is not null) {
-				MembershipId = Memberships.Items.Single(m => m.Name.Contains("Cunningham")).Id;
+				MembershipId = Memberships.Items.SingleOrDefault(m => m.Name.Contains("Cunningham"))?.Id ?? 533;
 			}
 		}
 
