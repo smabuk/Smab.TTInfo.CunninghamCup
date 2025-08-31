@@ -245,8 +245,10 @@
 
 	private void DrawGroups(MouseEventArgs args)
 	{
+		_tournamentService.SaveTournamentToJsonAsync("before drawing groups");
 		_tournamentService.DrawGroups(groupSize);
-		_tournamentService.SaveTournamentToJsonAsync();
+		_tournamentService.SaveTournamentToJsonAsync("after drawing groups");
+		_ = _tournamentService.LogToAuditFile($"Groups drawn: Group size = {groupSize}, No of groups = {tournament!.GroupsCount}");
 		navigationManager.NavigateTo($"/group", true);
 	}
 
