@@ -1,0 +1,24 @@
+@using Microsoft.Extensions.Options
+@inject IJSRuntime JS
+@inject IOptions<TTInfoOptions> _options
+@if (canEdit is false)
+{
+	@ChildContent
+}
+@* @RendererInfo.Name *@
+@code {
+	bool canEdit = false;
+
+	[Parameter] public RenderFragment ChildContent { get; set; } = default!;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (!firstRender) return;
+		// Check cookie for edit permission
+		string cookie = await JS.InvokeAsync<string>("eval", "document.cookie");
+		canEdit = cookie.Contains($"canEdit={_options.Value.MagicWord}");
+		StateHasChanged();
+		await base.OnAfterRenderAsync(firstRender);
+	}
+
+}

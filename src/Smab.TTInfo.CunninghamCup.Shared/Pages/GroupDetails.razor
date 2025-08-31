@@ -27,12 +27,10 @@
 					int groupNo = i;
 					Group group = tournament.Groups[i];
 					<h3>
-						<CanEdit>
-							<CantEdit>
-								<a class="btn btn-primary " role="button" href="group/@group.Name">@group.Name</a>
-								<span class="fs-6">@group.ScheduledTime?.ToShortTimeString()</span>
-							</CantEdit>
-						</CanEdit>
+						<CantEdit>
+							<a class="btn btn-primary " role="button" href="group/@group.Name">@group.Name</a>
+							<span class="fs-6">@group.ScheduledTime?.ToShortTimeString()</span>
+						</CantEdit>
 						<CanEdit>
 							<a class="btn btn-primary " role="button" href="edit/group/@group.Name">@group.Name</a>
 							<span class="fs-6">@group.ScheduledTime?.ToShortTimeString()</span>
@@ -57,16 +55,14 @@
 
 	} else {
 		<nav class="mb-3 container-fluid">
-			<CanEdit>
-				<CantEdit>
-					@foreach (Group g in tournament.Groups) {
-						<a class="btn btn-primary m-1 @((g.Name == GroupName) ? "disabled" : null)"
-						   role="button"
-						   href="group/@g.Name"
-						   aria-disabled="@((g.Name == GroupName) ? "true" : null)">@g.Name</a>
-					}
-				</CantEdit>
-			</CanEdit>
+			<CantEdit>
+				@foreach (Group g in tournament.Groups) {
+					<a class="btn btn-primary m-1 @((g.Name == GroupName) ? "disabled" : null)"
+						role="button"
+						href="group/@g.Name"
+						aria-disabled="@((g.Name == GroupName) ? "true" : null)">@g.Name</a>
+				}
+			</CantEdit>
 			<CanEdit>
 				@foreach (Group g in tournament.Groups) {
 					<a class="btn btn-primary m-1 @((g.Name == GroupName) ? "disabled" : null)"

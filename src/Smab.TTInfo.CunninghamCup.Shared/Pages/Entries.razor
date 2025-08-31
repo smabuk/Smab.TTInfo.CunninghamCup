@@ -1,5 +1,6 @@
 @page "/entries"
 @inject ITournamentService _tournamentService
+@rendermode InteractiveServer
 
 <PageTitle>Entries - Cunningham Cup</PageTitle>
 
@@ -7,10 +8,10 @@
 
 <div class="d-flex justify-content-center">
 	<QuickGrid Items="@playerEntries?.AsQueryable()" RowClass="GetRowClass">
-		<PropertyColumn Title="Name" Property="@(p => p.Name)" Sortable="false" />
+		<PropertyColumn Title="Name" Property="@(p => p.Name)" Sortable="true" />
 		@* <PropertyColumn Title="TTE #" Property="@(p => p.TTEId)" Sortable="true" /> *@
-		<PropertyColumn Align="Align.End" Title="Hcap" Property="@(p => p.Handicap)" Sortable="false" />
-		<PropertyColumn Title="Group" Property="@(p => p.GroupName)" Sortable="false" Class="text-nowrap" />
+		<PropertyColumn Align="Align.End" Title="Hcap" Property="@(p => p.Handicap)" Sortable="true" />
+		<PropertyColumn Title="Group" Property="@(p => p.GroupName)" Sortable="true" Class="text-nowrap" />
 		@* <PropertyColumn Title="Start time" Property="@(p => p.StartTime)" Sortable="true" /> *@
 	</QuickGrid>
 </div>
