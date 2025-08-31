@@ -5,6 +5,9 @@
 /// </summary>
 public static class CacheHelper
 {
+	private static readonly Lock _fileAppendLock = new();
+	private static readonly Lock _tournamentFileLock = new();
+
 	/// <summary>
 	/// Loads the contents of a cached file as a string.
 	/// </summary>
@@ -13,8 +16,7 @@ public static class CacheHelper
 	/// <returns>The file contents as a string, or null if not found.</returns>
 	public static string? LoadFileFromCache(string fileName, string cacheFolder)
 	{
-		if (!Directory.Exists(cacheFolder))
-		{
+		if (!Directory.Exists(cacheFolder)) {
 			return null;
 		}
 
@@ -33,28 +35,31 @@ public static class CacheHelper
 	/// <returns>True if the file was saved successfully.</returns>
 	public static bool SaveFileToCache(string contents, string fileName, string cacheFolder)
 	{
-		if (!Directory.Exists(cacheFolder))
-		{
-			_ = Directory.CreateDirectory(cacheFolder);
+		lock (_tournamentFileLock) {
+			if (!Directory.Exists(cacheFolder)) {
+				_ = Directory.CreateDirectory(cacheFolder);
+			}
+
+			fileName = fileName.ToLowerInvariant();
+			string destination = Path.Combine(cacheFolder, fileName);
+
+			File.WriteAllText(destination, contents);
+
+			return true;
 		}
-
-		fileName = fileName.ToLowerInvariant();
-		string destination = Path.Combine(cacheFolder, fileName);
-
-		File.WriteAllText(destination, contents);
-
-		return true;
 	}
 
 	public static bool AppendTextToFileInCache(string contents, string fileName, string cacheFolder)
 	{
-		if (!Directory.Exists(cacheFolder))
-		{
-			_ = Directory.CreateDirectory(cacheFolder);
+		lock (_fileAppendLock) {
+			if (!Directory.Exists(cacheFolder)) {
+				_ = Directory.CreateDirectory(cacheFolder);
+			}
+
+			fileName = fileName.ToLowerInvariant();
+			string destination = Path.Combine(cacheFolder, fileName);
+			File.AppendAllText(destination, contents);
+			return true;
 		}
-		fileName = fileName.ToLowerInvariant();
-		string destination = Path.Combine(cacheFolder, fileName);
-		File.AppendAllText(destination, contents);
-		return true;
 	}
 }
