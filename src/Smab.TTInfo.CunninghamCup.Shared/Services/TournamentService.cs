@@ -30,7 +30,7 @@ public class TournamentService(TTInfoOptions ttinfoOptions) : ITournamentService
 				players: []
 			);
 
-		_tournament = await Task.Run(() => _tournament.Load($"tournament_{DateTime.UtcNow.Year}.json", CacheFolder) ?? _tournament);
+		_tournament = await Task.Run(() => _tournament.Load($"tournament_{DateTime.Now.Year}.json", CacheFolder) ?? _tournament);
 		return _tournament ?? throw new InvalidOperationException("Tournament not initialised.");
 	}
 
@@ -49,14 +49,14 @@ public class TournamentService(TTInfoOptions ttinfoOptions) : ITournamentService
 			_ = LogToAuditFile($"Tournament saved: {_tournament.Name}");
 		}
 
-		return await Task.Run(() => _tournament.Save($"tournament_{DateTime.UtcNow.Year}.json", CacheFolder));
+		return await Task.Run(() => _tournament.Save($"tournament_{DateTime.Now.Year}.json", CacheFolder));
 	}
 
 
 	public async Task<bool> LogToAuditFile(string messsage)
 	{
-		string logMessage = $"{DateTime.UtcNow:yyyy-MM-ddTHH:mm:ssZ} - {messsage}{Environment.NewLine}";
-		return await Task.Run(() => CacheHelper.AppendTextToFileInCache(logMessage, $"tournament_{DateTime.UtcNow.Year}.log", CacheFolder));
+		string logMessage = $"{DateTime.Now:yyyy-MM-ddTHH:mm:ssZ} - {messsage}{Environment.NewLine}";
+		return await Task.Run(() => CacheHelper.AppendTextToFileInCache(logMessage, $"tournament_{DateTime.Now.Year}.log", CacheFolder));
 	}
 
 

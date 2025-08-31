@@ -1,78 +1,78 @@
 @page "/edit/create"
+@inject IHostEnvironment env
 @inject ITournamentService _tournamentService
 @rendermode InteractiveServer
 
 <PageTitle>Create Tournament</PageTitle>
 
-<h1>Create Tournament - Cunningham Cup</h1>
+<h1>
+	<button type="button" class="btn btn-primary" @onclick="CreateTournament">Create tournament</button>
+	<button type="submit" class="btn btn-success">Update tournament</button>
+</h1>
 
 <CantEdit>
 	<div class="alert alert-danger">Permission denied</div>
 </CantEdit>
 
 <CanEdit>
-<EditForm Model="tournamentModel" OnValidSubmit="UpdateTournament" FormName="tForm">
-	<DataAnnotationsValidator />
-	<ValidationSummary />
-	<div class="mb-3">
-		<label>Tournament Name</label>
-		<InputText @bind-Value="tournamentModel.Name" class="form-control" />
-	</div>
-	<div class="mb-3">
-		<label>Date</label>
-		<InputDate @bind-Value="tournamentModel.Date" class="form-control" />
-	</div>
-	<h3>Players</h3>
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>TTE #</th>
-				<th>Handicap</th>
-				<th>Withdrawn</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (PlayerEditModel player in tournamentModel.Players) {
+
+	@if (env.IsDevelopment()) {
+		<EditForm FormName="seedForm" Model="seedEditModel">
+			<table>
 				<tr>
-					<td><InputText placeholder="Name" @bind-Value="player.Name" class="form-control" autocomplete="off" /></td>
-					<td><InputNumber @bind-Value="player.TTEId" class="form-control" autocomplete="off" /></td>
-					<td><InputNumber @bind-Value="player.Handicap" class="form-control" autocomplete="off" /></td>
-					<td><InputCheckbox @bind-Value="player.Withdrawn" class="" autocomplete="off" /></td>
-					<td><button type="button" class="btn btn-danger" @onclick="() => RemovePlayer(player)">Remove</button></td>
+					<td><InputNumber title="No of players" @bind-Value="seedEditModel.NumPlayers" class="form-control d-inline m-1" /></td>
+					<td><InputNumber title="No of groups" @bind-Value="seedEditModel.NumGroups" class="form-control d-inline m-1" /></td>
+					@* <td><button type="button" class="btn btn-success mx-1" @onclick="ReDrawGroups">Draw Groups</button></td> *@
+					<td><button type="submit" class="btn btn-warning mx-2" @onclick="RandomTournament">Seed random tournament</button></td>
 				</tr>
-			}
-		</tbody>
-	</table>
-	<button type="button" class="btn btn-primary" @onclick="AddPlayer">Add Player</button>
-	<br /><br />
-	<button type="button" class="btn btn-primary" @onclick="CreateTournament">Create tournament</button>
-	<button type="submit" class="btn btn-success">Update tournament</button>
-	<button type="button" class="btn btn-warning" @onclick="SaveTournament">Save tournament</button>
-	<br /><br />
-</EditForm>
+			</table>
+		</EditForm>
+	}
 
-<br />
-
-<EditForm FormName="seedForm" Model="seedEditModel">
-	<table>
-		<tr>
-			<td><InputNumber title="No of players" @bind-Value="seedEditModel.NumPlayers" class="form-control d-inline m-1" /></td>
-			<td><InputNumber title="No of groups" @bind-Value="seedEditModel.NumGroups" class="form-control d-inline m-1" /></td>
-			<td><button type="button" class="btn btn-success mx-1" @onclick="ReDrawGroups">Draw Groups</button></td>
-			<td><button type="submit" class="btn btn-warning mx-2" @onclick="RandomTournament">Seed random tournament</button></td>
-		</tr>
-	</table>
-</EditForm>
+	<EditForm Model="tournamentModel" OnValidSubmit="UpdateTournament" FormName="tForm">
+		<DataAnnotationsValidator />
+		<ValidationSummary />
+		<div class="mb-3">
+			<label>Tournament Name</label>
+			<InputText @bind-Value="tournamentModel.Name" class="form-control" />
+		</div>
+		<div class="mb-3">
+			<label>Date</label>
+			<InputDate @bind-Value="tournamentModel.Date" class="form-control" />
+		</div>
+		<h3>Players</h3>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>TTE #</th>
+					<th>Handicap</th>
+					<th>Withdrawn</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (PlayerEditModel player in tournamentModel.Players) {
+					<tr>
+						<td><InputText placeholder="Name" @bind-Value="player.Name" class="form-control" autocomplete="off" /></td>
+						<td><InputNumber @bind-Value="player.TTEId" class="form-control" autocomplete="off" /></td>
+						<td><InputNumber @bind-Value="player.Handicap" class="form-control" autocomplete="off" /></td>
+						<td><InputCheckbox @bind-Value="player.Withdrawn" class="" autocomplete="off" /></td>
+						<td><button type="button" class="btn btn-danger" @onclick="() => RemovePlayer(player)">Remove</button></td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<button type="button" class="btn btn-primary" @onclick="AddPlayer">Add Player</button>
+	</EditForm>
 </CanEdit>
 
 @code {
 	private TournamentEditModel tournamentModel = new()
-		{
-			Name = string.Empty,
-			Date = DateOnly.FromDateTime(DateTime.Today)
-		};
+	{
+		Name = string.Empty,
+		Date = DateOnly.FromDateTime(DateTime.Today)
+	};
 
 	private SeedEditModel seedEditModel = new();
 
@@ -87,7 +87,8 @@
 		tournamentModel.Name = tournament.Name;
 		tournamentModel.Date = tournament.Date;
 		tournamentModel.Players = tournament.Players
-			.Select(p => new PlayerEditModel {
+			.Select(p => new PlayerEditModel
+			{
 				Name = p.Value.Name,
 				Handicap = p.Value.Handicap,
 				Withdrawn = p.Value.WithDrawn,
@@ -111,19 +112,11 @@
 		StateHasChanged();
 	}
 
-	private async Task SaveTournament()
-	{
-		await _tournamentService.SaveTournamentToJsonAsync();	
-	}
-
 	private void UpdateTournament()
 	{
-		if (tournament is null)
-		{
+		if (tournament is null) {
 			tournament = Tournament.Create(tournamentModel.Name, tournamentModel.Date);
-		}
-		else
-		{
+		} else {
 			tournament = tournament with { Name = tournamentModel.Name, Date = tournamentModel.Date };
 		}
 
@@ -134,10 +127,10 @@
 
 		tournament = tournament!.AddOrUpdatePlayers([.. players]);
 		tournament = tournament with
-			{
-				Name = tournamentModel.Name,
-				Date = tournamentModel.Date
-			};
+		{
+			Name = tournamentModel.Name,
+			Date = tournamentModel.Date
+		};
 		_tournamentService.AddOrUpdateTournament(tournament);
 	}
 
