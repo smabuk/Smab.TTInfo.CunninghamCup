@@ -6,62 +6,62 @@
 @if (tournament is not null) {
 	<h2>@tournament.Name</h2>
 
+	<div id="summary">
+		<div>
+			@if (tournament?.KnockoutStage is not null) {
+				KnockoutStage knockoutStage = tournament.KnockoutStage;
+				Match final = knockoutStage.Rounds[^1].Matches[0];
+				List<Match> semifinals = [.. knockoutStage.Rounds[^2].Matches];
 
-	@if (tournament?.KnockoutStage is not null) {
-		KnockoutStage knockoutStage = tournament.KnockoutStage;
-		Match final = knockoutStage.Rounds[^1].Matches[0];
-		List<Match> semifinals = [.. knockoutStage.Rounds[^2].Matches];
-
-		<h3>@knockoutStage.Name</h3>
-		@if (final.IsCompleted is false)
-		{
-			<div>In progress</div>
-		}
-		<dl>
-			@if (semifinals.Any(sf => sf.IsCompleted)) {
-				<dt>Winner</dt>
-				<dd data-winner>@final.Winner?.DisplayName</dd>
-				<dt>Runner Up</dt>
-				<dd>@final.Loser?.DisplayName</dd>
-				<dt>3rd/4th</dt>
-				<dd>@(string.Join(", ", semifinals.Where(sf => sf.IsCompleted).Select(sf => sf.Loser?.DisplayName)))</dd>
+				<h3>@knockoutStage.Name</h3>
+				@if (semifinals.Any(sf => sf.IsCompleted)) {
+					<dl>
+						<dt>Winner</dt>
+						<dd data-winner>@final.Winner?.DisplayName</dd>
+						<dt>Runner Up</dt>
+						<dd>@final.Loser?.DisplayName</dd>
+						<dt>3rd/4th</dt>
+						<dd>@(string.Join(", ", semifinals.Where(sf => sf.IsCompleted).Select(sf => sf.Loser?.DisplayName)))</dd>
+					</dl>
+				} else {
+					<div>In progress</div>
+				}
 			}
-		</dl>
-	}
 
-	@if (tournament?.ConsolationStage is not null) {
-		KnockoutStage knockoutStage = tournament.ConsolationStage;
-		Match final = knockoutStage.Rounds[^1].Matches[0];
-		List<Match> semifinals = [.. knockoutStage.Rounds[^2].Matches];
+			@if (tournament?.ConsolationStage is not null) {
+				KnockoutStage knockoutStage = tournament.ConsolationStage;
+				Match final = knockoutStage.Rounds[^1].Matches[0];
+				List<Match> semifinals = [.. knockoutStage.Rounds[^2].Matches];
 
-		<h3>@knockoutStage.Name</h3>
-		@if (final.IsCompleted is false) {
-			<div>In progress</div>
-		}
-		<dl>
-			@if (semifinals.Any(sf => sf.IsCompleted)) {
-				<dt>Winner</dt>
-				<dd>@final.Winner?.DisplayName</dd>
-				<dt>Runner Up</dt>
-				<dd>@final.Loser?.DisplayName</dd>
-				<dt>3rd/4th</dt>
-				<dd>@(string.Join(", ", semifinals.Where(sf => sf.IsCompleted).Select(sf => sf.Loser?.DisplayName)))</dd>
+				<h3>@knockoutStage.Name</h3>
+				@if (semifinals.Any(sf => sf.IsCompleted)) {
+					<dl>
+						<dt>Winner</dt>
+						<dd data-winner>@final.Winner?.DisplayName</dd>
+						<dt>Runner Up</dt>
+						<dd>@final.Loser?.DisplayName</dd>
+						<dt>3rd/4th</dt>
+						<dd>@(string.Join(", ", semifinals.Where(sf => sf.IsCompleted).Select(sf => sf.Loser?.DisplayName)))</dd>
+					</dl>
+				} else {
+					<div>In progress</div>
+				}
 			}
-		</dl>
-	}
 
-	@if (tournament?.Groups is not null) {
-		<Qualifiers Positions="[0, 1]" Title="Qualifiers for Main Knockout" />
-		<Qualifiers Positions="[2, 3]" Title="Qualifiers for Consolation" />
-	}
+		@if (tournament?.Groups is not null) {
+			<Qualifiers Positions="[0, 1]" Title="Qualifiers for Main Knockout" />
+			<Qualifiers Positions="[2, 3]" Title="Qualifiers for Consolation" />
+		}
 
-	@if (tournament?.KnockoutStage is null) {
-		<div class="alert alert-info">
-			<h3>Come back soon</h3>
-			<p>The tournament has not yet begun, come back on or after <strong>@tournament!.Date.ToLongDateString()</strong> to see more information.</p>
+		@if (tournament?.KnockoutStage is null) {
+			<div class="alert alert-info">
+				<h3>Come back soon</h3>
+				<p>The tournament has not yet begun, come back on or after <strong>@tournament!.Date.ToLongDateString()</strong> to see more information.</p>
+			</div>
+
+		}
 		</div>
-
-	}
+	</div>
 }
 
 @code {
