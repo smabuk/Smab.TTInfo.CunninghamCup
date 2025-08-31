@@ -208,9 +208,12 @@ public static partial class TournamentExtensions
 									match = knockoutRound.Matches[runnerUpIndex];
 									match = match with { PlayerA = group.GroupPositions[runnersUpPosition].PlayerId };
 								}
-							} else {
+							} else if (runnersUpPosition < group.GroupPositions.Count) {
 								match = knockoutRound.Matches[runnerUpIndex];
 								match = match with { PlayerB = group.GroupPositions[runnersUpPosition].PlayerId };
+							} else {
+								match = knockoutRound.Matches[runnerUpIndex];
+								match = match with { PlayerB = PlayerId.Bye };
 							}
 
 							if (runnerUpIndex >= 0) {

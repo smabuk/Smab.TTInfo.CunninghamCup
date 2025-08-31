@@ -12,7 +12,7 @@
 	<dl>
 		@foreach (Group group in tournament!.Groups) {
 			if (group.IsCompleted) {
-				@foreach (int position in Positions) {
+				@foreach (int position in Positions.Where(pos => pos < (group.Players.Count))) {
 					<dt>@group.Name @PositionName(position)</dt>
 					<dd>@group.GroupPositions[position].PlayerId.DisplayName</dd>
 				}
