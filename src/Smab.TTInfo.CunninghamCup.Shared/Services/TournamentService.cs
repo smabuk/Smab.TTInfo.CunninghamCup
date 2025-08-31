@@ -8,7 +8,7 @@ public interface ITournamentService
 	void AddOrUpdateTournament(Tournament tournament);
 
 	Task<Tournament> LoadTournamentFromJsonAsync();
-	public Task<bool> SaveTournamentToJsonAsync();
+	public Task<bool> SaveTournamentToJsonAsync(string? stage = null);
 	public Task<bool> LogToAuditFile(string message);
 }
 
@@ -30,19 +30,25 @@ public class TournamentService(TTInfoOptions ttinfoOptions) : ITournamentService
 				players: []
 			);
 
-		_tournament = await Task.Run(() => _tournament.Load( $"tournament_{DateTime.UtcNow.Year}.json", CacheFolder) ?? _tournament);
+		_tournament = await Task.Run(() => _tournament.Load($"tournament_{DateTime.UtcNow.Year}.json", CacheFolder) ?? _tournament);
 		return _tournament ?? throw new InvalidOperationException("Tournament not initialised.");
 	}
 
-	public async Task<bool> SaveTournamentToJsonAsync()
+	public async Task<bool> SaveTournamentToJsonAsync(string? stage = null)
 	{
 		if (_tournament is null) {
 			return false;
 		}
 
-		// Use Task.Run to ensure the method is truly asynchronous
-		_ =    await Task.Run(() => _tournament.Save($"tournament_{_tournament.Id}_{_tournament.Name}_{DateTime.Now:yyyyMMdd-HHmmss}.json", CacheFolder));
-		_ = LogToAuditFile($"Tournament saved: {_tournament.Name}");
+		// if stage is provided, include it in the filename
+		if (!string.IsNullOrWhiteSpace(stage)) {
+			_ = await Task.Run(() => _tournament.Save($"tournament_{_tournament.Name}_{DateTime.Now:yyyyMMdd-HHmmss}_{stage.Replace(' ', '_')}.json", CacheFolder));
+			_ = LogToAuditFile($"Tournament saved: {_tournament.Name} at stage {stage}");
+		} else {
+			_ = await Task.Run(() => _tournament.Save($"tournament_{_tournament.Name}_{DateTime.Now:yyyyMMdd-HHmmss}.json", CacheFolder));
+			_ = LogToAuditFile($"Tournament saved: {_tournament.Name}");
+		}
+
 		return await Task.Run(() => _tournament.Save($"tournament_{DateTime.UtcNow.Year}.json", CacheFolder));
 	}
 

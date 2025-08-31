@@ -139,35 +139,42 @@
 		Match match = knockoutStage.Rounds[roundNo].Matches[matchNo];
 		match = TournamentService.SetRandomResult(match);
 		knockoutStage.Rounds[roundNo].Matches[matchNo] = match;
-		_tournamentService.AddOrUpdateTournament(tournament!);
 		StateHasChanged();
 	}
 
 	private void UpdateMainKnockout()
 	{
 		tournament = _tournamentService.UpdateMainKnockoutRounds();
+		_tournamentService.AddOrUpdateTournament(tournament!);
 		StateHasChanged();
 	}
 
-	private void DrawMainKnockout()
+	private async Task DrawMainKnockout()
 	{
+		await _tournamentService.SaveTournamentToJsonAsync("before main knockout draw");
 		tournament = _tournamentService.DrawMainKnockoutStage();
 		tournament = _tournamentService.UpdateMainKnockoutRounds();
+		_tournamentService.AddOrUpdateTournament(tournament!);
 		_ = _tournamentService.LogToAuditFile($"Draw Main Knockout: {tournament?.KnockoutStage}");
+		await _tournamentService.SaveTournamentToJsonAsync("after main knockout draw");
 		StateHasChanged();
 	}
 
 	private void UpdateConsolation()
 	{
 		tournament = _tournamentService.UpdateConsolationRounds();
+		_tournamentService.AddOrUpdateTournament(tournament!);
 		StateHasChanged();
 	}
 
-	private void DrawConsolation()
+	private async Task DrawConsolation()
 	{
+		await _tournamentService.SaveTournamentToJsonAsync("before consolation draw");
 		tournament = _tournamentService.DrawConsolationStage();
 		tournament = _tournamentService.UpdateConsolationRounds();
+		_tournamentService.AddOrUpdateTournament(tournament!);
 		_ = _tournamentService.LogToAuditFile($"Draw Consolation: {tournament?.ConsolationStage}");
+		await _tournamentService.SaveTournamentToJsonAsync("after consolation draw");
 		StateHasChanged();
 	}
 }
