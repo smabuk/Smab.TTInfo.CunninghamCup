@@ -55,11 +55,8 @@ public class TournamentService(TTInfoOptions ttinfoOptions) : ITournamentService
 
 	public async Task<bool> LogToAuditFile(string messsage)
 	{
-		// append a line to the audit log file
-		// should have a timestamp and the message
-		// timestamp should be sortable
 		string logMessage = $"{DateTime.UtcNow:yyyy-MM-ddTHH:mm:ssZ} - {messsage}{Environment.NewLine}";
-		return await Task.Run(() => CacheHelper.AppendTextToFileInCache(logMessage, $"audit_2025.log", CacheFolder));
+		return await Task.Run(() => CacheHelper.AppendTextToFileInCache(logMessage, $"tournament_{DateTime.UtcNow.Year}.log", CacheFolder));
 	}
 
 
