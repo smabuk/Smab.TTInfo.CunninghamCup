@@ -1,11 +1,5 @@
 h1, h2 {
-	display: flex;
-	justify-content: center;
-}
-
-h1, h2 {
 	padding-top: 3.5rem;
-	padding-bottom: 1.5rem;
 }
 
 p {

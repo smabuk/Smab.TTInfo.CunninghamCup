@@ -4,8 +4,8 @@
 @inject IHostEnvironment env
 @inject NavigationManager navigationManager
 
-<PageTitle>@(GroupName is not null ? GroupName : "Groups") - @tournament?.Name</PageTitle>
-<h2>@tournament?.Name</h2>
+<PageTitle>@(GroupName is not null ? GroupName : "Groups") - @(tournament?.Name ?? "Cunningham Cup")</PageTitle>
+<h1>@(tournament?.Name ?? "Cunningham Cup")</h1>
 
 @if (tournament?.Groups.Count > 0) {
 	@if (false && RendererInfo.IsInteractive) {

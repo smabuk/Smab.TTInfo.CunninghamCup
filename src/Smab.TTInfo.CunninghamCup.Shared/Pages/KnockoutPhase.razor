@@ -3,9 +3,9 @@
 @using Smab.TTInfo.CunninghamCup.Shared.Models
 @inject ITournamentService _tournamentService
 
-<PageTitle>Knockout Phase - @tournament?.Name</PageTitle>
+<PageTitle>Knockout Phase - @(tournament?.Name ?? "Cunningham Cup")</PageTitle>
 
-<h2>
+<h1>
 	@(tournament?.Name ?? "Knockout Phase")
 	<CanEdit>
 		@if (tournament?.KnockoutStage is null) {
@@ -19,7 +19,7 @@
 			<button class="btn btn-success ms-4" @onclick="UpdateConsolation">Update consolation</button>
 		}
 	</CanEdit>
-</h2>
+</h1>
 @if (tournament is null || knockoutStages.All(ks => ks is null)) {
 	<Qualifiers Positions="[0, 1]" Title="Qualifiers for Main Knockout" />
 	<Qualifiers Positions="[2, 3]" Title="Qualifiers for Consolation" />

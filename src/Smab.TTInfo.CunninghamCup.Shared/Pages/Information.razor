@@ -1,10 +1,11 @@
 ﻿@page "/information"
+@inject ITournamentService _tournamentService
 
-<PageTitle>Information - Cunningham Cup 2025</PageTitle>
+<PageTitle>Information - @(tournament?.Name ?? "Cunningham Cup")</PageTitle>
 
-<h1>Cunningham Cup 2025</h1>
+<h1>@(tournament?.Name ?? "Cunningham Cup")</h1>
 
-<h2>Program for the day (if all runs to plan)</h2>
+<h3>Program for the day (if all runs to plan)</h3>
 <dl>
 	<dt>09:15</dt>
 	<dd>Registration and first set of group matches begin</dd>
@@ -20,7 +21,7 @@
 	<dd>Finals</dd>
 </dl>
 
-<h2>Tournaments</h2>
+<h3>Tournaments</h3>
 
 <div>
 	<p>There will be 2 knockout tournaments after the group stages.</p>
@@ -29,3 +30,12 @@
 </div>
 
 <MatchRules />
+
+@code {
+	public Tournament? tournament { get; set; }
+
+	protected override void OnInitialized()
+	{
+		tournament ??= _tournamentService.GetTournament();
+	}
+}

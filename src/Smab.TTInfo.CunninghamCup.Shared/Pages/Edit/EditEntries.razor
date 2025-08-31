@@ -4,7 +4,7 @@
 @inject TTClubsReader _TTClubsReader
 @inject ITournamentService _tournamentService
 
-<PageTitle>Edit Entries - Cunningham Cup</PageTitle>
+<PageTitle>Edit Entries - @(tournament?.Name ?? "Cunningham Cup")</PageTitle>
 
 <CantEdit>
 	<div class="alert alert-danger">Permission denied</div>

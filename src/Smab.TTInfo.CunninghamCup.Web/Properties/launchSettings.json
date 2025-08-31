@@ -31,7 +31,7 @@
     "Printing": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "printknockout/3/Main Knockout",
+      "launchUrl": "print/knockout/3/Main Knockout",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

@@ -2,9 +2,9 @@
 @inject ITournamentService _tournamentService
 @rendermode InteractiveServer
 
-<PageTitle>Entries - Cunningham Cup</PageTitle>
+<PageTitle>Entries - @(tournament?.Name ?? "Cunningham Cup")</PageTitle>
 
-<h2>@tournament?.Name</h2>
+<h1>@tournament?.Name</h1>
 
 <div class="d-flex justify-content-center">
 	<QuickGrid Items="@playerEntries?.AsQueryable()" RowClass="GetRowClass">

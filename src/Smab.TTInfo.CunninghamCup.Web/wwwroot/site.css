@@ -1,0 +1,26 @@
+﻿h1, h2 {
+	display: flex;
+	justify-content: center;
+	padding-top: 1.5rem;
+	padding-bottom: 1.5rem;
+}
+
+h3 {
+	padding-top: 1rem;
+}
+
+/* The same size as h2 in Bootstrap */
+h1 {
+	font-size: calc(1.325rem + .9vw)
+}
+
+@media (max-width: 640px) {
+	h1 {
+		margin-bottom: 0rem;
+		padding-top: 0.3rem;
+		padding-bottom: 0.7rem;
+	}
+}
+
+@media (min-width: 641px) {
+}

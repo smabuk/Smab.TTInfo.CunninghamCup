@@ -1,10 +1,11 @@
 ﻿@using Smab.TTInfo.CunninghamCup.Shared.Services
 @inject NavigationManager navigationManager
+@inject ITournamentService _tournamentService
 
 <div class="top-row ps-3 navbar" data-bs-theme="dark">
 	<div class="container-fluid">
-		<a class="navbar-brand" title="Cunningham Cup 2025" href=""><img src="/olop-square-motif.svg" height="48" /></a>
-		<span class="navbar-brand-title">Cunningham Cup 2025</span>
+		<a class="navbar-brand" title="@(tournament?.Name ?? "Cunningham Cup")" href=""><img src="/olop-square-motif.svg" height="48" /></a>
+		<span class="navbar-brand-title">@(tournament?.Name ?? "Cunningham Cup")</span>
 		<nav class="nav">
 			@* <CanEdit>
 				<CantEdit>
@@ -149,3 +150,12 @@
 		</nav>
 	</div>
 </div>
+
+@code {
+	public Tournament? tournament { get; set; }
+
+	protected override void OnInitialized()
+	{
+		tournament ??= _tournamentService.GetTournament();
+	}
+}

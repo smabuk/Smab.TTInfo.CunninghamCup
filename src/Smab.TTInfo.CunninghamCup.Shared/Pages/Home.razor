@@ -1,8 +1,9 @@
 ﻿@page "/"
+@inject ITournamentService _tournamentService
 
-<PageTitle>Cunningham Cup 2025</PageTitle>
+<PageTitle>@(tournament?.Name ?? "Cunningham Cup")</PageTitle>
 
-<h1>Cunningham Cup 2025</h1>
+<h1>@(tournament?.Name ?? "Cunningham Cup")</h1>
 
 <p>The Cunningham Cup will be run on Saturday, August 30th 2025 and it is open to all paid up
 	OLOP members for the new season.</p>
@@ -27,5 +28,11 @@
 @* <p><a href="https://olop.ttclubs.co.uk/memberships/533" class="btn btn-large btn-primary">Sign up here</a></p> *@
 
 
+@code {
+	public Tournament? tournament { get; set; }
 
-
+	protected override void OnInitialized()
+	{
+		tournament ??= _tournamentService.GetTournament();
+	}
+}

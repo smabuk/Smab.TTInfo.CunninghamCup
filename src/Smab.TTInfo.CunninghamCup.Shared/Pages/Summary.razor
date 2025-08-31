@@ -1,10 +1,10 @@
 @page "/summary"
 @inject ITournamentService _tournamentService
 
-<PageTitle>Summary - @tournament?.Name</PageTitle>
+<PageTitle>Summary - @(tournament?.Name ?? "Cunningham Cup")</PageTitle>
 
 @if (tournament is not null) {
-	<h2>@tournament.Name</h2>
+	<h1>@(tournament?.Name ?? "Cunningham Cup")</h1>
 
 	<div id="summary">
 		<div>
