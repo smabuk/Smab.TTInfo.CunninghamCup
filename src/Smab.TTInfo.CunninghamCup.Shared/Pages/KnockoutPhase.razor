@@ -29,7 +29,7 @@
 	</div>
 } else {
 	<div class="accordian">
-		@foreach (KnockoutStage knockoutStage in knockoutStages.Where(ks => ks is not null)) {
+		@foreach (KnockoutStage knockoutStage in knockoutStages.Where(ks => ks is not null).Select(ks => (KnockoutStage)ks!)) {
 			<div>
 				<h3 class="accordian-header">@knockoutStage.Name</h3>
 				@for (int roundIdx = knockoutStage.Rounds.Count - 1; roundIdx >= 0; roundIdx--) {
@@ -102,7 +102,7 @@
 	[PersistentState]
 	public Tournament? tournament { get; set; }
 
-	private List<KnockoutStage> knockoutStages = [];
+	private List<KnockoutStage?> knockoutStages = [];
 	private Dictionary<PlayerId, Player>? players;
 	private (KnockoutStage knockoutStage, int RoundNo, int MatchNo)? editingMatchNo = null;
 
@@ -119,10 +119,6 @@
 
 	private async Task OnMatchSaveAsync(Match updatedMatch)
 	{
-		// if (group is not null && editingMatchNo is not null) {
-		// 	group.Matches[editingMatchNo.Value] = updatedMatch;
-		// }
-
 		(KnockoutStage knockoutStage, int roundNo, int matchNo) = editingMatchNo!.Value;
 		knockoutStage!.Rounds[roundNo].Matches[matchNo] = updatedMatch;
 		await InvokeAsync(StateHasChanged);
