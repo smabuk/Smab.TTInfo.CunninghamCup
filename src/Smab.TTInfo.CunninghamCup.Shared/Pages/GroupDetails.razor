@@ -5,7 +5,7 @@
 @inject NavigationManager navigationManager
 
 <PageTitle>@(GroupName is not null ? GroupName : "Groups") - @(tournament?.Name ?? "Cunningham Cup")</PageTitle>
-<h1>@(tournament?.Name ?? "Cunningham Cup")</h1>
+<h1>@(tournament?.Name ?? "Cunningham Cup")<span>@(GroupName is not null ? $" - {GroupName}" : "")</span></h1>
 
 @if (tournament?.Groups.Count > 0) {
 	@if (false && RendererInfo.IsInteractive) {
@@ -97,7 +97,8 @@
 	<p>Group or player data not loaded.</p>
 } else {
 	<div class="group-header">
-		<h2>@group.Name</h2>
+		@* <h2>@group.Name</h2> *@
+		@* <h3>Summary</h3> *@
 		<span class="badge text-bg-info">Round Robin</span>
 		<span class="badge bg-secondary">Size @group.Players.Count</span>
 		@if (env.IsDevelopment()) {
@@ -110,7 +111,6 @@
 		}
 	</div>
 
-	<h3>Summary</h3>
 	<GroupSummaryDetails Group="group" />
 
 	<h3>Matches</h3>
