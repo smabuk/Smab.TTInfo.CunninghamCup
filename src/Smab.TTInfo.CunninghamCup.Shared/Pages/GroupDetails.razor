@@ -45,10 +45,7 @@
 						</CanEdit>
 					</h3>
 
-					@foreach (PlayerId playerId in group.Players) {
-						Player player = tournament.GetPlayer(playerId);
-						<div data-withdrawn="@player.WithDrawn">@playerId.DisplayName (@tournament.GetPlayer(playerId).Handicap)</div>
-					}
+					<GroupSummaryDetails Group="group" />
 				}
 			</div>
 		</div>
@@ -114,52 +111,7 @@
 	</div>
 
 	<h3>Summary</h3>
-	<table id="summary" class="table table-striped">
-		<thead>
-			<tr>
-				<th>#</th>
-				<th>Player</th>
-				<th>PL</th>
-				<th>M</th>
-				<th>S</th>
-				<th>Pts</th>
-				<th>Hist</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach ((int i, GroupPlayerSummary summary) in group.GroupPositions.Index()) {
-				Player player = players.ContainsKey(summary.PlayerId) ? players[summary.PlayerId] : new Player(summary.PlayerId, "Unknown");
-				<tr data-withdrawn="@player.WithDrawn">
-					<td>@(i + 1)</td>
-					<td>@player.Name (@player.Handicap)</td>
-					<td>@summary.Played</td>
-					<td>@summary.MatchWins-@summary.MatchLosses</td>
-					<td>@summary.SetsFor-@summary.SetsAgainst</td>
-					<td>@summary.PointsFor-@summary.PointsAgainst</td>
-					<td>
-						@foreach (Match match in group.Matches.Where(m => summary.PlayerId == m.PlayerA || summary.PlayerId == m.PlayerB)) {
-							@if (match.IsCompleted) {
-								@if (match.PlayerA == summary.PlayerId) {
-									@if (match.IsPlayerAWin) {
-										<span class="badge bg-success rounded-pill">W</span>
-									} else {
-										<span class="badge bg-danger rounded-pill">L</span>
-									}
-								}
-								@if (match.PlayerB == summary.PlayerId) {
-									@if (match.IsPlayerBWin) {
-										<span class="badge bg-success rounded-pill">W</span>
-									} else {
-										<span class="badge bg-danger rounded-pill">L</span>
-									}
-								}
-							}
-						}
-					</td>
-				</tr>
-			}
-		</tbody>
-	</table>
+	<GroupSummaryDetails Group="group" />
 
 	<h3>Matches</h3>
 	<table id="matches" class="table table-bordered">
