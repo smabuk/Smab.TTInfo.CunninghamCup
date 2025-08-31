@@ -24,7 +24,7 @@
 				<dt>Runner Up</dt>
 				<dd>@final.Loser?.DisplayName</dd>
 				<dt>3rd/4th</dt>
-				<dd>@(string.Join(", ", [semifinals[0].Loser?.DisplayName, semifinals[1].Loser?.DisplayName]))</dd>
+				<dd>@(string.Join(", ", semifinals.Where(sf => sf.IsCompleted).Select(sf => sf.Loser?.DisplayName)))</dd>
 			}
 		</dl>
 	}
@@ -45,7 +45,7 @@
 				<dt>Runner Up</dt>
 				<dd>@final.Loser?.DisplayName</dd>
 				<dt>3rd/4th</dt>
-				<dd>@(string.Join(", ", [semifinals[0].Loser?.DisplayName, semifinals[1].Loser?.DisplayName]))</dd>
+				<dd>@(string.Join(", ", semifinals.Where(sf => sf.IsCompleted).Select(sf => sf.Loser?.DisplayName)))</dd>
 			}
 		</dl>
 	}
