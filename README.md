@@ -97,8 +97,6 @@ Add appsettings.Development.json in ```src/Smab.TTInfo.CunninghamCup.Web``` if y
 {
   "TTInfo": {
     "CacheFolder": "cache",
-    "CacheHours": 6,
-    "UseTestFiles": false,
     "MagicWord": "please"
   }
 }
