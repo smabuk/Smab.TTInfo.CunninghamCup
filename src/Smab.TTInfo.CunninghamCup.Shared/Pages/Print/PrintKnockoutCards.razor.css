@@ -12,12 +12,12 @@
 }
 	.header img:nth-child(1) {
 		margin-right: auto;
-		height: 46px;
+		height: 44px;
 	}
 
 	.header img:nth-child(2) {
 		margin-left: auto;
-		height: 46px;
+		height: 44px;
 	}
 
 .print-page {
