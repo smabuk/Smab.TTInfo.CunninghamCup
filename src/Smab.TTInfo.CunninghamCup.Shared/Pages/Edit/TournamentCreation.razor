@@ -3,71 +3,77 @@
 @inject ITournamentService _tournamentService
 @rendermode InteractiveServer
 
-<PageTitle>Create Tournament</PageTitle>
+<PageTitle>Create - @(tournament?.Name ?? "Cunningham Cup")</PageTitle>
 <CantEdit>
 	<div class="alert alert-danger">Permission denied</div>
 </CantEdit>
 
 <CanEdit>
+	<h1>@(tournament?.Name ?? "Cunningham Cup")</h1>
+	<div>
+		<div>
 
-	@if (env.IsDevelopment()) {
-		<EditForm FormName="seedForm" Model="seedEditModel">
-			<table>
-				<tr>
-					<td><InputNumber title="No of players" @bind-Value="seedEditModel.NumPlayers" class="form-control d-inline m-1" /></td>
-					<td><InputNumber title="No of groups" @bind-Value="seedEditModel.NumGroups" class="form-control d-inline m-1" /></td>
-					@* <td><button type="button" class="btn btn-success mx-1" @onclick="ReDrawGroups">Draw Groups</button></td> *@
-					<td><button type="submit" class="btn btn-warning mx-2" @onclick="RandomTournament">Seed random tournament</button></td>
-				</tr>
-			</table>
-		</EditForm>
-	}
+			@if (env.IsDevelopment()) {
+				<EditForm FormName="seedForm" Model="seedEditModel">
+					<table>
+						<tr>
+							<td><InputNumber title="No of players" @bind-Value="seedEditModel.NumPlayers" class="form-control d-inline m-1" /></td>
+							<td><InputNumber title="No of groups" @bind-Value="seedEditModel.NumGroups" class="form-control d-inline m-1" /></td>
+							@* <td><button type="button" class="btn btn-success mx-1" @onclick="ReDrawGroups">Draw Groups</button></td> *@
+							<td><button type="submit" class="btn btn-warning mx-2" @onclick="RandomTournament">Seed random tournament</button></td>
+						</tr>
+					</table>
+				</EditForm>
+			}
 
-	<EditForm Model="tournamentModel" OnValidSubmit="UpdateTournament" FormName="tForm">
-		<DataAnnotationsValidator />
-		<ValidationSummary />
-		<div class="mb-3 mt-3">
-			<label>Tournament Name</label>
-			<InputText @bind-Value="tournamentModel.Name" class="form-control" />
+			<EditForm Model="tournamentModel" OnValidSubmit="UpdateTournament" FormName="tForm">
+				<DataAnnotationsValidator />
+				<ValidationSummary />
+				<div class="mb-3 mt-3">
+					<label>Tournament Name</label>
+					<InputText @bind-Value="tournamentModel.Name" class="form-control" />
+				</div>
+				<div class="mb-3">
+					<label>Date</label>
+					<InputDate @bind-Value="tournamentModel.Date" class="form-control" />
+				</div>
+
+				<h1>
+					<button type="button" class="btn btn-primary" @onclick="CreateTournament">Create tournament</button>
+					<button type="submit" class="btn btn-success">Update tournament</button>
+				</h1>
+
+				<h3>Players</h3>
+				<table id="players" class="table">
+					<thead>
+						<tr>
+							<th title="Name">Name</th>
+							<th title="TTE #">TTE #</th>
+							<th title="Handicap">Hcap</th>
+							<th title="Withdrawn">W</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (PlayerEditModel player in tournamentModel.Players) {
+							<tr>
+								<td><InputText placeholder="Name" @bind-Value="player.Name" class="form-control" autocomplete="off" /></td>
+								<td title="TTE #"><InputNumber @bind-Value="player.TTEId" class="form-control" autocomplete="off" /></td>
+								<td><InputNumber @bind-Value="player.Handicap" class="form-control" autocomplete="off" /></td>
+								<td><InputCheckbox @bind-Value="player.Withdrawn" class="" autocomplete="off" /></td>
+								<td>
+									<button type="button" class="btn btn-danger" @onclick="() => RemovePlayer(player)">
+										<span aria-hidden="true"><svg class="bi" fill="currentColor"><use xlink:href="bootstrap-icons.svg#trash3" /></svg></span>
+									</button>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+				<button type="button" class="btn btn-primary" @onclick="AddPlayer">Add Player</button>
+			</EditForm>
 		</div>
-		<div class="mb-3">
-			<label>Date</label>
-			<InputDate @bind-Value="tournamentModel.Date" class="form-control" />
-		</div>
-
-		<h1>
-			<button type="button" class="btn btn-primary" @onclick="CreateTournament">Create tournament</button>
-			<button type="submit" class="btn btn-success">Update tournament</button>
-		</h1>
-
-		<h3>Players</h3>
-		<table id="players" class="table">
-			<thead>
-				<tr>
-					<th title="Name">Name</th>
-					<th title="TTE #">TTE #</th>
-					<th title="Handicap">Hcap</th>
-					<th title="Withdrawn">W</th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach (PlayerEditModel player in tournamentModel.Players) {
-					<tr>
-						<td><InputText placeholder="Name" @bind-Value="player.Name" class="form-control" autocomplete="off" /></td>
-						<td title="TTE #"><InputNumber @bind-Value="player.TTEId" class="form-control" autocomplete="off" /></td>
-						<td><InputNumber @bind-Value="player.Handicap" class="form-control" autocomplete="off" /></td>
-						<td><InputCheckbox @bind-Value="player.Withdrawn" class="" autocomplete="off" /></td>
-						<td>
-							<button type="button" class="btn btn-danger" @onclick="() => RemovePlayer(player)">
-							<span aria-hidden="true"><svg class="bi" fill="currentColor"><use xlink:href="bootstrap-icons.svg#trash3" /></svg></span>
-						</button></td>
-					</tr>
-				}
-			</tbody>
-		</table>
-		<button type="button" class="btn btn-primary" @onclick="AddPlayer">Add Player</button>
-	</EditForm>
+	</div>
 </CanEdit>
 
 @code {

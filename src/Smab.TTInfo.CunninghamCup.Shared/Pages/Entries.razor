@@ -6,15 +6,18 @@
 
 <h1>@tournament?.Name</h1>
 
-<div class="d-flex justify-content-center">
-	<QuickGrid Items="@playerEntries?.AsQueryable()" RowClass="GetRowClass">
-		<PropertyColumn Title="Name" Property="@(p => p.Name)" Sortable="true" />
-		@* <PropertyColumn Title="TTE #" Property="@(p => p.TTEId)" Sortable="true" /> *@
-		<PropertyColumn Align="Align.End" Title="Hcap" Property="@(p => p.Handicap)" Sortable="true" />
-		<PropertyColumn Title="Group" Property="@(p => p.GroupName)" Sortable="true" Class="text-nowrap" />
-		@* <PropertyColumn Title="Start time" Property="@(p => p.StartTime)" Sortable="true" /> *@
-	</QuickGrid>
+<div>
+	<div>
+		<QuickGrid Items="@playerEntries?.AsQueryable()" RowClass="GetRowClass">
+			<PropertyColumn Title="Name" Property="@(p => p.Name)" Sortable="true" />
+			@* <PropertyColumn Title="TTE #" Property="@(p => p.TTEId)" Sortable="true" /> *@
+			<PropertyColumn Align="Align.End" Title="Hcap" Property="@(p => p.Handicap)" Sortable="true" />
+			<PropertyColumn Title="Group" Property="@(p => p.GroupName)" Sortable="true" Class="text-nowrap" />
+			@* <PropertyColumn Title="Start time" Property="@(p => p.StartTime)" Sortable="true" /> *@
+		</QuickGrid>
+	</div>
 </div>
+
 @code {
 	public Tournament? tournament { get; set; }
 	List<PlayerEntry>? playerEntries;

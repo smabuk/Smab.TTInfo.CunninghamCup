@@ -6,7 +6,7 @@
 @if (tournament is not null) {
 	<h1>@(tournament?.Name ?? "Cunningham Cup")</h1>
 
-	<div id="summary">
+	<div>
 		<div>
 			@if (tournament?.KnockoutStage is not null) {
 				KnockoutStage knockoutStage = tournament.KnockoutStage;
