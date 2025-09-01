@@ -73,7 +73,7 @@ External data and caching
 
 Because this project targets .NET 10 preview and Blazor 10 preview packages, use a matching SDK/IDE:
 - .NET SDK 10.0.100-preview (preview 7 or later matching the package versions)
-- Visual Studio 2022 17.12 Preview or VS Code + C# Dev Kit
+- Visual Studio 2022 17.14 Preview or VS Code + C# Dev Kit
 - Optional: Git
 
 Check SDK
