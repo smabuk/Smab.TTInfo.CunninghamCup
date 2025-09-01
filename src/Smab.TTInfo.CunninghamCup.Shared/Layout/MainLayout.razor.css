@@ -1,19 +1,26 @@
-#blazor-error-ui {
-    background: lightyellow;
-    bottom: 0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
-    box-sizing: border-box;
-    display: none;
-    left: 0;
-    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
+/* The same size as h2 in Bootstrap */
+h1 {
+	font-size: calc(1.325rem + .9vw)
 }
 
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
-    }
+	h1 + article {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+@media (max-width: 640px) {
+	h1 {
+		margin-bottom: 0rem;
+		padding-top: 0.3rem;
+		padding-bottom: 0.7rem;
+	}
+}
+
+@media (min-width: 641px) {
+	h1 + article {
+		max-width: 75%;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}

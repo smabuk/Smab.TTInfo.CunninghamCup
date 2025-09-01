@@ -8,31 +8,3 @@
 h3 {
 	padding-top: 1rem;
 }
-
-/* The same size as h2 in Bootstrap */
-h1 {
-	font-size: calc(1.325rem + .9vw)
-}
-
-	h1 + div {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-
-@media (max-width: 640px) {
-	h1 {
-		margin-bottom: 0rem;
-		padding-top: 0.3rem;
-		padding-bottom: 0.7rem;
-	}
-}
-
-@media (min-width: 641px) {
-	h1 + div {
-		max-width: 75%;
-		margin-left: auto;
-		margin-right: auto;
-	}
-
-}

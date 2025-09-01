@@ -3,43 +3,36 @@
 
 <PageTitle>@(tournament?.Name ?? "Cunningham Cup")</PageTitle>
 
-<h1>@(tournament?.Name ?? "Cunningham Cup")</h1>
+<p>
+	The tournament was held on Saturday, August 30th 2025 and was open to all paid up
+	OLOP members for the new season.
+</p>
 
-<div>
-	<div>
-		<p>
-			The tournament was held on Saturday, August 30th 2025 and was open to all paid up
-			OLOP members for the new season.
-		</p>
+<p>
+	The Cunningham Cup is a Handicap Tournament we began in memory of our founder,
+	the late John Cunningham, and was run, pre-season, every year since his passing until COVID.
+	This is the first year since then that we have revived it.
+</p>
 
-		<p>
-			The Cunningham Cup is a Handicap Tournament we began in memory of our founder,
-			the late John Cunningham, and was run, pre-season, every year since his passing until COVID.
-			This is the first year since then that we have revived it.
-		</p>
+<p>
+	Ideally we begin with up to 8 groups of 3 or 4 players (so a maximum of 32 entries),
+	guaranteeing a minimum of 2 or 3 matches (depending on numbers).
+	The top 2 from each group will go through to the knock out stages.
+	The next 2 from each group will go through to a consolation knockout stage.
+	Sets will be best of 3 games to 21. The first groups will start at about 9am.
+</p>
 
-		<p>
-			Ideally we begin with up to 8 groups of 3 or 4 players (so a maximum of 32 entries),
-			guaranteeing a minimum of 2 or 3 matches (depending on numbers).
-			The top 2 from each group will go through to the knock out stages.
-			The next 2 from each group will go through to a consolation knockout stage.
-			Sets will be best of 3 games to 21. The first groups will start at about 9am.
-		</p>
+<p>We will then have a break for you to have lunch, followed by the knockout stages.</p>
 
-		<p>We will then have a break for you to have lunch, followed by the knockout stages.</p>
+<p>
+	We use a maximum of 3 tables at any one time so there is plenty of playing room,
+	and because the tournament is handicapped anyone has a chance of winning.
+	Where available handicaps will be taken from the current Reading Handicaps.
+</p>
 
-		<p>
-			We use a maximum of 3 tables at any one time so there is plenty of playing room,
-			and because the tournament is handicapped anyone has a chance of winning.
-			Where available handicaps will be taken from the current Reading Handicaps.
-		</p>
+<p>Closing date for entries was 26th August.</p>
 
-		<p>Closing date for entries was 26th August.</p>
-
-		@* <p><a href="https://olop.ttclubs.co.uk/memberships/533" class="btn btn-large btn-primary">Sign up here</a></p> *@
-
-	</div>
-</div>
+@* <p><a href="https://olop.ttclubs.co.uk/memberships/533" class="btn btn-large btn-primary">Sign up here</a></p> *@
 
 @code {
 	public Tournament? tournament { get; set; }

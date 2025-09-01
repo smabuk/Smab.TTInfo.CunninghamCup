@@ -5,173 +5,167 @@
 @inject NavigationManager navigationManager
 
 <PageTitle>@(GroupName is not null ? GroupName : "Groups") - @(tournament?.Name ?? "Cunningham Cup")</PageTitle>
-<h1>@(tournament?.Name ?? "Cunningham Cup")<span>@(GroupName is not null ? $" - {GroupName}" : "")</span></h1>
 
-<div>
-	<div>
-
-		@if (tournament?.Groups.Count > 0) {
-			@if (false && RendererInfo.IsInteractive) {
-				<nav class="mb-3 container-fluid">
-					<label for="groupSelector" class="form-label">Select Group:</label>
-					<select id="groupSelector" class="form-select" @onchange="OnGroupChanged" value="@GroupName">
-						@if (GroupName is null) {
-							<option value=" " selected>Select a group</option>
-						}
-						@foreach (Group g in tournament.Groups) {
-							<option value="@g.Name" selected="@(g.Name == GroupName)">@g.Name</option>
-						}
-					</select>
-				</nav>
-			} else if (GroupName is null) {
-				<div class="container-fluid d-flex justify-content-center">
-					<div>
-						@for (int i = 0; i < tournament.Groups.Count; i++) {
-							int groupNo = i;
-							Group group = tournament.Groups[i];
-							<h3>
-								<CantEdit>
-									<a class="btn btn-primary " role="button" href="group/@group.Name">@group.Name</a>
-									<span class="fs-6">@group.ScheduledTime?.ToShortTimeString()</span>
-								</CantEdit>
-								<CanEdit>
-									<a class="btn btn-primary " role="button" href="edit/group/@group.Name">@group.Name</a>
-									<span class="fs-6">@group.ScheduledTime?.ToShortTimeString()</span>
-									<button class="btn btn-primary btn-sm" @onclick="() => EditTimeOfGroup(groupNo)"><svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#pencil" /></svg></button>
-									@if (groupNo == editingScheduledTimeNo) {
-										<span>
-											<input type="time" class="form-control d-inline ms-2" @bind-value="editScheduledTime" />
-											<button type="button" class="btn btn-sm btn-success ms-2" @onclick="() => SaveScheduledTime(groupNo)">Set Time</button>
-										</span>
-									}
-								</CanEdit>
-							</h3>
-
-							<GroupSummaryDetails Group="group" />
-						}
-					</div>
-				</div>
-
-			} else {
-				<nav class="mb-3 container-fluid">
-					<CantEdit>
-						@foreach (Group g in tournament.Groups) {
-							<a class="btn btn-primary m-1 @((g.Name == GroupName) ? "disabled" : null)"
-							   role="button"
-							   href="group/@g.Name"
-							   aria-disabled="@((g.Name == GroupName) ? "true" : null)">@g.Name</a>
-						}
-					</CantEdit>
-					<CanEdit>
-						@foreach (Group g in tournament.Groups) {
-							<a class="btn btn-primary m-1 @((g.Name == GroupName) ? "disabled" : null)"
-							   role="button"
-							   href="edit/group/@g.Name"
-							   aria-disabled="@((g.Name == GroupName) ? "true" : null)">@g.Name</a>
-						}
-					</CanEdit>
-				</nav>
-			}
-		}
-		@if (tournament?.Groups.Count == 0) {
-			<div class="alert alert-info">
-				<h3>No Groups Available</h3>
-				<p>Groups have not been drawn yet.</p>
-			</div>
-			<CanEdit>
-				<table>
-					<tr>
-						<td class="pe-3">No of players <input type="number" title="Group size" value="@tournament.ActivePlayers.Count" class="form-control d-inline m-1" disabled /></td>
-						<td>Group size<input type="number" title="Group size" @bind-value="groupSize" class="form-control d-inline m-1" /></td>
-						<td><button type="button" class="btn btn-success ms-3" @onclick="DrawGroups">Draw Groups</button></td>
-					</tr>
-				</table>
-			</CanEdit>
-		} else if (GroupName is null) {
-			@* @foreach (Group group in tournament?.Groups ?? []) {
-		<h3><a class="btn btn-primary m-1" role="button" href="group/@group.Name">@group.Name</a></h3>
-		@foreach (PlayerId playerId in group.Players)
-		{
-			<div>@playerId.DisplayName</div>
-		}
-	} *@
-		} else if ((group is null || players is null)) {
-			<p>Group or player data not loaded.</p>
-		} else {
-			<div class="group-header">
-				@* <h2>@group.Name</h2> *@
-				@* <h3>Summary</h3> *@
-				<span class="badge text-bg-info">Round Robin</span>
-				<span class="badge bg-secondary">Size @group.Players.Count</span>
-				@if (env.IsDevelopment()) {
-					<CanEdit>
-						<button title="Reset all match scores" class="btn btn-sm btn-warning float-end" @onclick="ResetGroup">Reset</button>
-						<button title="Random match scores" class="btn btn-sm btn-warning float-end mx-3" @onclick="CompleteWithRandomScores">
-							<svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#shuffle" /></svg>
-						</button>
-					</CanEdit>
+@if (tournament?.Groups.Count > 0) {
+	@if (false && RendererInfo.IsInteractive) {
+		<nav class="mb-3 container-fluid">
+			<label for="groupSelector" class="form-label">Select Group:</label>
+			<select id="groupSelector" class="form-select" @onchange="OnGroupChanged" value="@GroupName">
+				@if (GroupName is null) {
+					<option value=" " selected>Select a group</option>
 				}
-			</div>
-
-			<GroupSummaryDetails Group="group" />
-
-			<h3>Matches</h3>
-			<table id="matches" class="table table-bordered">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th>Player A</th>
-						<th>Player B</th>
-						@if (group.Matches.Any(m => m.IsCompleted)) {
-							<th>Sets</th>
-							<th>Score</th>
-						}
-						<CanEdit><th></th></CanEdit>
-					</tr>
-				</thead>
-				<tbody>
-					@for (int i = 0; i < group.Matches.Count; i++) {
-						int matchNo = i;
-						Match match = group.Matches[i];
-						Player playerA = players.ContainsKey(match.PlayerA) ? players[match.PlayerA] : new Player(match.PlayerA, "Unknown");
-						Player playerB = players.ContainsKey(match.PlayerB) ? players[match.PlayerB] : new Player(match.PlayerB, "Unknown");
-						string score = match.Result is not null
-						? $"{string.Join(", ", match.Result.Sets.Select(set => $"{set.PlayerAScore}-{set.PlayerBScore}"))}"
-						: "";
-						<tr>
-							<td>@(i + 1)</td>
-							<td data-winner="@match.IsPlayerAWin">@playerA.Name (@match.PlayerAStart)</td>
-							<td data-winner="@match.IsPlayerBWin">@playerB.Name (@match.PlayerBStart)</td>
-							@if (group.Matches.Any(m => m.IsCompleted)) {
-								<td>@($"{match.PlayerASets}-{match.PlayerBSets}")</td>
-								<td>@score</td>
-							}
-							<CanEdit>
-								<td class="edit">
-									<button class="btn btn-primary btn-sm" @onclick="() => EditMatch(matchNo)"><svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#pencil" /></svg></button>
-									@if (env.IsDevelopment()) {
-										<button class="btn btn-sm btn-warning" @onclick="() => CompleteMatchWithRandomScores(matchNo)">
-											<svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#shuffle" /></svg>
-										</button>
-									}
-								</td>
-							</CanEdit>
-						</tr>
+				@foreach (Group g in tournament.Groups) {
+					<option value="@g.Name" selected="@(g.Name == GroupName)">@g.Name</option>
+				}
+			</select>
+		</nav>
+	} else if (GroupName is null) {
+		<div class="container-fluid d-flex justify-content-center">
+			<div>
+				@for (int i = 0; i < tournament.Groups.Count; i++) {
+					int groupNo = i;
+					Group group = tournament.Groups[i];
+					<h3>
+						<CantEdit>
+							<a class="btn btn-primary " role="button" href="group/@group.Name">@group.Name</a>
+							<span class="fs-6">@group.ScheduledTime?.ToShortTimeString()</span>
+						</CantEdit>
 						<CanEdit>
-							@if (editingMatchNo == matchNo) {
-								<tr>
-									<td colspan="6">
-										<MatchEditor Match="@match" OnSave="OnMatchSaveAsync" OnCancel="CancelEditMatch" />
-									</td>
-								</tr>
+							<a class="btn btn-primary " role="button" href="edit/group/@group.Name">@group.Name</a>
+							<span class="fs-6">@group.ScheduledTime?.ToShortTimeString()</span>
+							<button class="btn btn-primary btn-sm" @onclick="() => EditTimeOfGroup(groupNo)"><svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#pencil" /></svg></button>
+							@if (groupNo == editingScheduledTimeNo) {
+								<span>
+									<input type="time" class="form-control d-inline ms-2" @bind-value="editScheduledTime" />
+									<button type="button" class="btn btn-sm btn-success ms-2" @onclick="() => SaveScheduledTime(groupNo)">Set Time</button>
+								</span>
 							}
 						</CanEdit>
-					}
-				</tbody>
-			</table>
+					</h3>
+
+					<GroupSummaryDetails Group="group" />
+				}
+			</div>
+		</div>
+
+	} else {
+		<nav class="mb-3 container-fluid">
+			<CantEdit>
+				@foreach (Group g in tournament.Groups) {
+					<a class="btn btn-primary m-1 @((g.Name == GroupName) ? "disabled" : null)"
+						role="button"
+						href="group/@g.Name"
+						aria-disabled="@((g.Name == GroupName) ? "true" : null)">@g.Name</a>
+				}
+			</CantEdit>
+			<CanEdit>
+				@foreach (Group g in tournament.Groups) {
+					<a class="btn btn-primary m-1 @((g.Name == GroupName) ? "disabled" : null)"
+						role="button"
+						href="edit/group/@g.Name"
+						aria-disabled="@((g.Name == GroupName) ? "true" : null)">@g.Name</a>
+				}
+			</CanEdit>
+		</nav>
+	}
+}
+@if (tournament?.Groups.Count == 0) {
+	<div class="alert alert-info">
+		<h3>No Groups Available</h3>
+		<p>Groups have not been drawn yet.</p>
+	</div>
+	<CanEdit>
+		<table>
+			<tr>
+				<td class="pe-3">No of players <input type="number" title="Group size" value="@tournament.ActivePlayers.Count" class="form-control d-inline m-1" disabled /></td>
+				<td>Group size<input type="number" title="Group size" @bind-value="groupSize" class="form-control d-inline m-1" /></td>
+				<td><button type="button" class="btn btn-success ms-3" @onclick="DrawGroups">Draw Groups</button></td>
+			</tr>
+		</table>
+	</CanEdit>
+} else if (GroupName is null) {
+	@* @foreach (Group group in tournament?.Groups ?? []) {
+<h3><a class="btn btn-primary m-1" role="button" href="group/@group.Name">@group.Name</a></h3>
+@foreach (PlayerId playerId in group.Players)
+{
+	<div>@playerId.DisplayName</div>
+}
+} *@
+} else if ((group is null || players is null)) {
+	<p>Group or player data not loaded.</p>
+} else {
+	<div class="group-header">
+		@* <h2>@group.Name</h2> *@
+		@* <h3>Summary</h3> *@
+		<span class="badge text-bg-info">Round Robin</span>
+		<span class="badge bg-secondary">Size @group.Players.Count</span>
+		@if (env.IsDevelopment()) {
+			<CanEdit>
+				<button title="Reset all match scores" class="btn btn-sm btn-warning float-end" @onclick="ResetGroup">Reset</button>
+				<button title="Random match scores" class="btn btn-sm btn-warning float-end mx-3" @onclick="CompleteWithRandomScores">
+					<svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#shuffle" /></svg>
+				</button>
+			</CanEdit>
 		}
 	</div>
-</div>
+
+	<GroupSummaryDetails Group="group" />
+
+	<h3>Matches</h3>
+	<table id="matches" class="table table-bordered">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Player A</th>
+				<th>Player B</th>
+				@if (group.Matches.Any(m => m.IsCompleted)) {
+					<th>Sets</th>
+					<th>Score</th>
+				}
+				<CanEdit><th></th></CanEdit>
+			</tr>
+		</thead>
+		<tbody>
+			@for (int i = 0; i < group.Matches.Count; i++) {
+				int matchNo = i;
+				Match match = group.Matches[i];
+				Player playerA = players.ContainsKey(match.PlayerA) ? players[match.PlayerA] : new Player(match.PlayerA, "Unknown");
+				Player playerB = players.ContainsKey(match.PlayerB) ? players[match.PlayerB] : new Player(match.PlayerB, "Unknown");
+				string score = match.Result is not null
+				? $"{string.Join(", ", match.Result.Sets.Select(set => $"{set.PlayerAScore}-{set.PlayerBScore}"))}"
+				: "";
+				<tr>
+					<td>@(i + 1)</td>
+					<td data-winner="@match.IsPlayerAWin">@playerA.Name (@match.PlayerAStart)</td>
+					<td data-winner="@match.IsPlayerBWin">@playerB.Name (@match.PlayerBStart)</td>
+					@if (group.Matches.Any(m => m.IsCompleted)) {
+						<td>@($"{match.PlayerASets}-{match.PlayerBSets}")</td>
+						<td>@score</td>
+					}
+					<CanEdit>
+						<td class="edit">
+							<button class="btn btn-primary btn-sm" @onclick="() => EditMatch(matchNo)"><svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#pencil" /></svg></button>
+							@if (env.IsDevelopment()) {
+								<button class="btn btn-sm btn-warning" @onclick="() => CompleteMatchWithRandomScores(matchNo)">
+									<svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#shuffle" /></svg>
+								</button>
+							}
+						</td>
+					</CanEdit>
+				</tr>
+				<CanEdit>
+					@if (editingMatchNo == matchNo) {
+						<tr>
+							<td colspan="6">
+								<MatchEditor Match="@match" OnSave="OnMatchSaveAsync" OnCancel="CancelEditMatch" />
+							</td>
+						</tr>
+					}
+				</CanEdit>
+			}
+		</tbody>
+	</table>
+}
 
 @code {
 	[Parameter] public string GroupName { get; set; } = string.Empty;

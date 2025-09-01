@@ -1,3 +1,8 @@
+div {
+	display: flex;
+	justify-content: center;
+}
+
 ::deep .withdrawn {
 	-webkit-text-decoration: line-through;
 	text-decoration: line-through;

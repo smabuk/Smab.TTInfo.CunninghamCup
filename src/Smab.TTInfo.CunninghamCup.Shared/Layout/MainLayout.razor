@@ -1,9 +1,22 @@
 ﻿@inherits LayoutComponentBase
-
-@Body
-
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
+@inject ITournamentService _tournamentService
+<div class="page">
+	<main>
+		<NavMenu />
+		<h1>@(tournament?.Name ?? "Cunningham Cup")</h1>
+		<article class="content px-4">
+			<div>
+				@Body
+			</div>
+		</article>
+	</main>
 </div>
+
+@code {
+	private Tournament? tournament;
+
+	protected override void OnInitialized()
+	{
+		tournament = _tournamentService.GetTournament();
+	}
+}

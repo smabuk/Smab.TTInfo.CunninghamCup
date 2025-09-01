@@ -4,76 +4,70 @@
 <PageTitle>Summary - @(tournament?.Name ?? "Cunningham Cup")</PageTitle>
 
 @if (tournament is not null) {
-	<h1>@(tournament?.Name ?? "Cunningham Cup")</h1>
+	@if (tournament?.KnockoutStage is not null) {
+		KnockoutStage knockoutStage = tournament.KnockoutStage;
+		if (knockoutStage.Rounds[0].Matches.Any(m => m.IsCompleted)) {
+			Match final = knockoutStage.Rounds[^1].Matches[0];
+			List<Match> semifinals = [.. knockoutStage.Rounds[^2].Matches];
 
-	<div>
-		<div>
-			@if (tournament?.KnockoutStage is not null) {
-				KnockoutStage knockoutStage = tournament.KnockoutStage;
-				if (knockoutStage.Rounds[0].Matches.Any(m => m.IsCompleted)) {
-					Match final = knockoutStage.Rounds[^1].Matches[0];
-					List<Match> semifinals = [.. knockoutStage.Rounds[^2].Matches];
-
-					<h3>@knockoutStage.Name</h3>
-					@if (semifinals.Any(sf => sf.IsCompleted)) {
-						<dl>
-							<dt>Winner</dt>
-							<dd data-winner>@final.Winner?.DisplayName</dd>
-							<dt>Runner Up</dt>
-							<dd>@final.Loser?.DisplayName</dd>
-							<dt>3rd/4th</dt>
-							<dd>@(string.Join(", ", semifinals.Where(sf => sf.IsCompleted).Select(sf => sf.Loser?.DisplayName)))</dd>
-						</dl>
-					} else {
-						<div>In progress</div>
-					}
-				}
+			<h3>@knockoutStage.Name</h3>
+			@if (semifinals.Any(sf => sf.IsCompleted)) {
+				<dl>
+					<dt>Winner</dt>
+					<dd data-winner>@final.Winner?.DisplayName</dd>
+					<dt>Runner Up</dt>
+					<dd>@final.Loser?.DisplayName</dd>
+					<dt>3rd/4th</dt>
+					<dd>@(string.Join(", ", semifinals.Where(sf => sf.IsCompleted).Select(sf => sf.Loser?.DisplayName)))</dd>
+				</dl>
+			} else {
+				<div>In progress</div>
 			}
+		}
+	}
 
-			@if (tournament?.ConsolationStage is not null) {
-				KnockoutStage knockoutStage = tournament.ConsolationStage;
-				if (knockoutStage.Rounds[0].Matches.Any(m => m.IsCompleted)) {
-					Match final = knockoutStage.Rounds[^1].Matches[0];
-					List<Match> semifinals = [.. knockoutStage.Rounds[^2].Matches];
+	@if (tournament?.ConsolationStage is not null) {
+		KnockoutStage knockoutStage = tournament.ConsolationStage;
+		if (knockoutStage.Rounds[0].Matches.Any(m => m.IsCompleted)) {
+			Match final = knockoutStage.Rounds[^1].Matches[0];
+			List<Match> semifinals = [.. knockoutStage.Rounds[^2].Matches];
 
-					<h3>@knockoutStage.Name</h3>
-					@if (semifinals.Any(sf => sf.IsCompleted)) {
-						<dl>
-							<dt>Winner</dt>
-							<dd data-winner>@final.Winner?.DisplayName</dd>
-							<dt>Runner Up</dt>
-							<dd>@final.Loser?.DisplayName</dd>
-							<dt>3rd/4th</dt>
-							<dd>@(string.Join(", ", semifinals.Where(sf => sf.IsCompleted).Select(sf => sf.Loser?.DisplayName)))</dd>
-						</dl>
-					} else {
-						<div>In progress</div>
-					}
-				}
+			<h3>@knockoutStage.Name</h3>
+			@if (semifinals.Any(sf => sf.IsCompleted)) {
+				<dl>
+					<dt>Winner</dt>
+					<dd data-winner>@final.Winner?.DisplayName</dd>
+					<dt>Runner Up</dt>
+					<dd>@final.Loser?.DisplayName</dd>
+					<dt>3rd/4th</dt>
+					<dd>@(string.Join(", ", semifinals.Where(sf => sf.IsCompleted).Select(sf => sf.Loser?.DisplayName)))</dd>
+				</dl>
+			} else {
+				<div>In progress</div>
 			}
+		}
+	}
 
-			@if (tournament?.Groups is not null) {
-				<Qualifiers Positions="[0, 1]" Title="Qualifiers for Main Knockout" />
-				<Qualifiers Positions="[2, 3]" Title="Qualifiers for Consolation" />
-			}
+	@if (tournament?.Groups is not null) {
+		<Qualifiers Positions="[0, 1]" Title="Qualifiers for Main Knockout" />
+		<Qualifiers Positions="[2, 3]" Title="Qualifiers for Consolation" />
+	}
 
-			@if (tournament?.Groups.Any(group => group.IsCompleted) ?? false) {
-				<h3>Completed groups</h3>
-				foreach (Group group in tournament.Groups.Where(g => g.IsCompleted)) {
-					<h4>@group.Name</h4>
-					<GroupSummaryDetails Group="group" />
-				}
-			}
+	@if (tournament?.Groups.Any(group => group.IsCompleted) ?? false) {
+		<h3>Completed groups</h3>
+		foreach (Group group in tournament.Groups.Where(g => g.IsCompleted)) {
+			<h4>@group.Name</h4>
+			<GroupSummaryDetails Group="group" />
+		}
+	}
 
-			@if (tournament?.Groups.Count == 0) {
-				<div class="alert alert-info">
-					<h3>Come back soon</h3>
-					<p>The tournament has not yet begun, come back on or after <strong>@tournament!.Date.ToLongDateString()</strong> to see more information.</p>
-				</div>
-
-			}
+	@if (tournament?.Groups.Count == 0) {
+		<div class="alert alert-info">
+			<h3>Come back soon</h3>
+			<p>The tournament has not yet begun, come back on or after <strong>@tournament!.Date.ToLongDateString()</strong> to see more information.</p>
 		</div>
-	</div>
+
+	}
 }
 
 @code {

@@ -4,18 +4,15 @@
 
 <PageTitle>Entries - @(tournament?.Name ?? "Cunningham Cup")</PageTitle>
 
-<h1>@tournament?.Name</h1>
-
 <div>
-	<div>
-		<QuickGrid Items="@playerEntries?.AsQueryable()" RowClass="GetRowClass">
-			<PropertyColumn Title="Name" Property="@(p => p.Name)" Sortable="true" />
-			@* <PropertyColumn Title="TTE #" Property="@(p => p.TTEId)" Sortable="true" /> *@
-			<PropertyColumn Align="Align.End" Title="Hcap" Property="@(p => p.Handicap)" Sortable="true" />
-			<PropertyColumn Title="Group" Property="@(p => p.GroupName)" Sortable="true" Class="text-nowrap" />
-			@* <PropertyColumn Title="Start time" Property="@(p => p.StartTime)" Sortable="true" /> *@
-		</QuickGrid>
-	</div>
+	<QuickGrid Items="@playerEntries?.AsQueryable()" RowClass="GetRowClass">
+		<PropertyColumn Title="Name" Property="@(p => p.Name)" Sortable="true" />
+		@* <PropertyColumn Title="TTE #" Property="@(p => p.TTEId)" Sortable="true" /> *@
+		<PropertyColumn Align="Align.End" Title="Hcap" Property="@(p => p.Handicap)" Sortable="true" />
+		<PropertyColumn Title="Group" Property="@(p => p.GroupName)" Sortable="true" Class="text-nowrap" />
+		@* <PropertyColumn Title="Start time" Property="@(p => p.StartTime)" Sortable="true" /> *@
+	</QuickGrid>
+
 </div>
 
 @code {
