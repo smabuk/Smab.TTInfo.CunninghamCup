@@ -1,17 +1,20 @@
 # Cunningham Cup Tournament Site
 
-A Blazor-powered web app for running the OLOP “Cunningham Cup” handicap table-tennis tournament. It supports seeding players, drawing round?robin groups, entering results, calculating qualifiers, and running the main and consolation knockout stages. State is persisted to JSON files for resilience and auditing.
+A Blazor-powered web app for running the OLOP “Cunningham Cup” handicap table-tennis
+tournament. It supports drawing round-robin groups, entering results, calculating
+qualifiers, and running the main and consolation knockout stages.
+State is persisted to JSON files for resilience and auditing.
 
 ## Solution overview
 
 Projects
-- src/Smab.TTInfo.CunninghamCup.Shared (Razor class library)
+- ```src/Smab.TTInfo.CunninghamCup.Shared``` (Razor class library)
   - Components, pages, domain models, and services shared with the host
-  - Core models: Tournament, Group, Player, Match, KnockoutStage, KnockoutRound, PlayerId, MatchId
-  - Services: ITournamentService (JSON persistence + audit logging), TTClubsReader (external data integration, cached)
-- src/Smab.TTInfo.CunninghamCup.Web (Blazor SSR host)
+  - Core models: ```Tournament```, ```Group```, ```Player```, ```Match```, ```KnockoutStage```, ```KnockoutRound```, ```PlayerId```, ```MatchId```
+  - Services: ```ITournamentService``` (JSON persistence + audit logging), ```TTClubsReader``` (external data integration, cached)
+- ```src/Smab.TTInfo.CunninghamCup.Web``` (Blazor SSR host)
   - Hosts the UI using Blazor Server render mode for interactivity
-- tests/Smab.TTInfo.CunninghamCup.Tests (unit tests)
+- ```tests/Smab.TTInfo.CunninghamCup.Tests``` (unit tests)
 
 Target framework and language
 - .NET 10 (preview)
@@ -19,55 +22,57 @@ Target framework and language
 
 Key UI pages
 - / (Home) – tournament intro, title, and date
-- /entries – QuickGrid of players, handicaps, and groups
-- /group – list of groups, schedule times, and summary; admin draw groups from here
-- /group/{GroupName} – round?robin group details; enter/edit results per match
-- /knockout – draw and manage main and consolation knockout brackets
+- /edit/create – admin: create/update tournament and player list, dev helpers for random seeding
+- [/edit]/entries – QuickGrid of players, handicaps, and groups
+- [/edit]/group – list of groups, schedule times, and summary; admin draw groups from here
+- [/edit]/group/\{GroupName\} – round-robin group details; enter/edit results per match
+- [/edit]/knockout – draw and manage main and consolation knockout brackets
 - /summary – qualifiers, bracket summaries, and winners once available
 - /information – event schedule and rules
-- /edit/create – admin: create/update tournament and player list, dev helpers for random seeding
 
 Admin/editing
-- Admin routes use <CanEdit/>/<CantEdit/> components to gate editing UI
-- Extra developer-only tools (e.g., random results, reset) are shown when ASPNETCORE_ENVIRONMENT=Development
+- Admin routes use ```<CanEdit/>```/```<CantEdit/>``` components to gate editing UI
+- Extra developer-only tools (e.g., random results, reset) are shown when ```ASPNETCORE_ENVIRONMENT=Development```
 
 Persistence and logging
-- ITournamentService saves the live state to cache folder as JSON: tournament_{yyyy}.json plus timestamped snapshots
-- Audit log appended to tournament_{yyyy}.log
+- ```ITournamentService``` saves the live state to cache folder as JSON: tournament_\{yyyy\}.json plus timestamped snapshots
+- Audit log appended to tournament_\{yyyy\}.log
 
 ## Domain model and flow
 
-Tournament
-- Name, Date, Players (Dictionary<PlayerId, Player>), Groups (List<Group>), KnockoutStage, ConsolationStage
+```Tournament```
+- ```Name```, ```Date```, ```Players``` (```Dictionary<PlayerId, Player>```), ```Groups``` (```List<Group>```), ```KnockoutStage```, ```ConsolationStage```
 - DrawGroups(int groupSize) distributes active players across lettered groups (A..), assigning two start times by default
 
-Group
-- Players (List<PlayerId>) participate in a round?robin; Matches capture per?set scores
-- GroupPositions compute ranking for qualifiers; IsCompleted indicates all matches finished
+```Group```
+- ```Players``` (```List<PlayerId>```) participate in a round-robin; Matches capture per-set scores
+- ```GroupPositions``` compute ranking for qualifiers; ```IsCompleted``` indicates all matches finished
 
-Match
-- PlayerA/PlayerB (PlayerId) may be a real player, a Bye, or a placeholder during knockout seeding
-- Best of 3 to 21; Result holds set scores; IsCompleted and Winner/Loser derived
-- Handicap start points computed from Tournament.StartingHandicap(playerA, playerB)
+```Match```
+- ```PlayerA```/```PlayerB``` (```PlayerId```) may be a real player, a ```Bye```, or a placeholder during knockout seeding
+- Best of 3 to 21; ```Result``` holds set scores; ```IsCompleted``` and Winner/Loser derived
+- Handicap start points computed from ```Tournament.StartingHandicap(playerA, playerB)```
 
-KnockoutStage and KnockoutRound
-- DrawKnockoutStage(name, [positions]) builds bracket with placeholders (e.g., Group A Winner vs Group D Runner Up) and automatically carries forward winners to later rounds once results are entered
-- UpdateMainKnockoutRounds/UpdateConsolationRounds populate brackets as groups finish
+```KnockoutStage``` and ```KnockoutRound```
+- ```DrawKnockoutStage(name, [positions])``` builds bracket with placeholders
+-  (e.g., Group A Winner vs Group D Runner Up) and automatically carries forward
+-  winners to later rounds once results are entered
+- ```UpdateMainKnockoutRounds```/```UpdateConsolationRounds``` populate brackets as groups finish
 
 Service layer (ITournamentService)
-- GetTournament()/AddOrUpdateTournament()
-- LoadTournamentFromJsonAsync()/SaveTournamentToJsonAsync(stage?) for persistence and snapshotting
-- LogToAuditFile(message) for operational traceability
-- Extension helpers: DrawGroups, DrawMainKnockoutStage, DrawConsolationStage, Update*Rounds
+- ```GetTournament()```/```AddOrUpdateTournament()```
+- ```LoadTournamentFromJsonAsync()```/```SaveTournamentToJsonAsync(stage?)``` for persistence and snapshotting
+- ```LogToAuditFile(message)``` for operational traceability
+- Extension helpers: ```DrawGroups```, ```DrawMainKnockoutStage```, ```DrawConsolationStage```, ```UpdateRounds```
 
 External data and caching
 - TTClubsReader integrates with ttleagues API when needed and caches JSON responses
-- File?based cache via CacheHelper; configurable via options
+- File-based cache via CacheHelper; configurable via options
 
 ## Prerequisites
 
 Because this project targets .NET 10 preview and Blazor 10 preview packages, use a matching SDK/IDE:
-- .NET SDK 10.0.100?preview (preview 7 or later matching the package versions)
+- .NET SDK 10.0.100-preview (preview 7 or later matching the package versions)
 - Visual Studio 2022 17.12 Preview or VS Code + C# Dev Kit
 - Optional: Git
 
@@ -84,10 +89,11 @@ Install from https://dotnet.microsoft.com/ if needed.
 
 ## Local configuration
 
-The app uses Options binding (section TTInfo) and a file?based cache folder for state.
+The app uses Options binding (section TTInfo) and a file-based cache folder for state.
 
-Add appsettings.Development.json in src/Smab.TTInfo.CunninghamCup.Web if you want to override defaults:
+Add appsettings.Development.json in ```src/Smab.TTInfo.CunninghamCup.Web``` if you want to override defaults:
 
+```codejson
 {
   "TTInfo": {
     "CacheFolder": "cache",
@@ -96,6 +102,7 @@ Add appsettings.Development.json in src/Smab.TTInfo.CunninghamCup.Web if you wan
     "MagicWord": "please"
   }
 }
+```
 
 Notes
 - CacheFolder must be writable by the app. Default relative folder “cache” will be created if missing
@@ -104,7 +111,7 @@ Notes
 ## Run locally
 
 Option 1 – Visual Studio
-- Set Smab.TTInfo.CunninghamCup.Web as startup project
+- Set ```Smab.TTInfo.CunninghamCup.Web``` as startup project
 - Run (Ctrl+F5/F5). The app uses Blazor SSR with InteractiveServer render mode
 
 Option 2 – CLI
@@ -124,7 +131,7 @@ Option 2 – CLI
 - Start times are assigned (e.g., 09:30 for earlier groups, 11:00 for later)
 
 3) Enter group results
-- Open /group/{GroupName}
+- Open /group/\{GroupName\}
 - Click the pencil to edit a match. Enter set scores (best of 3 to 21)
 - Completed groups automatically determine positions (Winner, Runner Up, Third, Fourth)
 
@@ -146,7 +153,7 @@ Option 2 – CLI
 
 - Build Release and deploy the Web project to your target (Windows service, IIS, Linux systemd, container)
 - Ensure the .NET 10 preview runtime matching your build is available on the server
-- Configure TTInfo:CacheFolder to a persistent writable path
+- Configure ```TTInfo:CacheFolder``` to a persistent writable path
 - Expose HTTPS via your preferred reverse proxy (IIS, Nginx, Apache, Azure App Service)
 - Preserve the cache directory across updates
 
@@ -158,17 +165,17 @@ Option 2 – CLI
 
 - Blazor SSR with Interactive Server render mode
 - QuickGrid for tabular data
-- Dependency Injection (services.AddSingleton<ITournamentService>)
-- Options pattern with validation (TTInfoOptions)
+- Dependency Injection (```services.AddSingleton<ITournamentService>```)
+- Options pattern with validation (```TTInfoOptions```)
 - Records, collection expressions, and modern C# patterns
-- File?based persistence and audit logging
-- External API access with HttpClient and caching (TTClubsReader)
+- File-based persistence and audit logging
+- External API access with ```HttpClient``` and caching (```TTClubsReader```)
 - DataAnnotations validation in forms
-- Component state via [PersistentState]
-- Environment?specific behavior (Development helpers)
+- Component state via ```[PersistentState]```
+- Environment-specific behavior (Development helpers)
 
 ## Troubleshooting
 
 - No editing controls visible: ensure you’re on an /edit route and admin/edit mode is enabled in your hosting setup
-- State not saving: verify TTInfo:CacheFolder is writable
+- State not saving: verify ```TTInfo:CacheFolder``` is writable
 - Build errors: confirm you’re on a .NET 10 preview SDK matching the package versions in the csproj files
