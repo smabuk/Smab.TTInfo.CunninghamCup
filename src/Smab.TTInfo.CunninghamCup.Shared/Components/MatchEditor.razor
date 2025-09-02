@@ -5,7 +5,7 @@
 	<DataAnnotationsValidator />
 	<div class="card mt-2 mb-2">
 		<div class="card-body">
-			<h5 class="card-title">@Match.PlayerA.DisplayName vs @Match.PlayerB.DisplayName</h5>
+			@* <h5 class="card-title">@Match.PlayerA.DisplayName vs @Match.PlayerB.DisplayName</h5> *@
 			<div>
 				<label class="player-label">@Match.PlayerA.DisplayName</label>
 				@for (int i = 0; i < MAX_SETS; i++) {
@@ -22,13 +22,14 @@
 			</div>
 			<div>
 				<label>Notes:</label>
-				<InputText @bind-Value="editModel.Notes" class="form-control" tabindex="7"  />
+				<InputText @bind-Value="editModel.Notes" class="form-control" tabindex="7" />
 			</div>
 			<CustomValidation @ref="customValidation" />
 			<ValidationSummary />
 			<div class="mt-2">
-				<button type="submit" class="btn btn-success me-2" tabindex="8">Save</button>
-				<button type="button" class="btn btn-secondary" tabindex="9" @onclick="() => OnCancel.InvokeAsync()">Cancel</button>
+				<button type="submit" class="btn btn-success btn-sm me-2" tabindex="8">Save</button>
+				<button type="button" class="btn btn-warning btn-sm me-2" tabindex="9" @onclick="Reset">Reset</button>
+				<button type="button" class="btn btn-secondary btn-sm" tabindex="9" @onclick="() => OnCancel.InvokeAsync()">Cancel</button>
 			</div>
 		</div>
 	</div>
@@ -39,6 +40,7 @@
 	[Parameter] public Match Match { get; set; } = default!;
 	[Parameter] public Func<Match, Task>? OnSave { get; set; }
 	[Parameter] public EventCallback OnCancel { get; set; }
+	[Parameter] public Func<Match, Task>? OnReset { get; set; }
 
 	private CustomValidation? customValidation;
 	private MatchEditModel editModel = new();
@@ -68,42 +70,35 @@
 		}
 
 		if (sets.Count is > 0 and < 2) {
-			errors.Add("Sets", [ "There must be at least 2 sets entered"]);
-		} else
-		{
+			errors.Add("Sets", ["There must be at least 2 sets entered"]);
+		} else if (sets.Count != 0) {
 			result = new(sets, editModel.Notes);
-			if (!result.IsCompleted)
-			{
-				errors.Add("SetsValid", [ "Not a valid result"]);
+			if (!result.IsCompleted) {
+				errors.Add("SetsValid", ["Not a valid result, doesn't appear to be a completed result"]);
 			}
 
 			List<string> setErrors = [];
 			for (int i = 0; i < result.Sets.Count; i++) {
 				Set set = result.Sets[i];
 				int setNo = i + 1;
-				if (set.PlayerAScore < 21 && set.PlayerBScore < 21)
-				{
+				if (set.PlayerAScore < 21 && set.PlayerBScore < 21) {
 					setErrors.Add($"Set {setNo} is not finished");
 				}
-				if ((set.PlayerAScore == 21 || set.PlayerBScore == 21) && int.Abs(set.PlayerAScore - set.PlayerBScore) < 2)
-				{
+				if ((set.PlayerAScore == 21 || set.PlayerBScore == 21) && int.Abs(set.PlayerAScore - set.PlayerBScore) < 2) {
 					setErrors.Add($"Set {setNo} has a score with less than 2 points difference");
 				}
-				if ((set.PlayerAScore > 21 || set.PlayerBScore > 21) && int.Abs(set.PlayerAScore - set.PlayerBScore) != 2)
-				{
+				if ((set.PlayerAScore > 21 || set.PlayerBScore > 21) && int.Abs(set.PlayerAScore - set.PlayerBScore) != 2) {
 					setErrors.Add($"Set {setNo} has a score with more than 2 points difference");
 				}
-				if (set.PlayerAScore > 30 || set.PlayerBScore > 30)
-				{
+				if (set.PlayerAScore > 30 || set.PlayerBScore > 30) {
 					setErrors.Add($"Set {setNo} has a score greater than 30");
 				}
 			}
 
-			if (setErrors.Any())
-			{
+			if (setErrors.Any()) {
 				errors.Add("SetsScores", setErrors);
 			}
-		}	
+		}
 
 		if (errors.Any()) {
 			customValidation?.DisplayErrors(errors);
@@ -116,6 +111,16 @@
 			}
 		}
 
+	}
+
+	private async Task Reset()
+	{
+		customValidation?.ClearErrors();
+
+		Match = Match with { Result = null };
+
+		OnInitialized();
+		StateHasChanged();
 	}
 
 	public class MatchEditModel

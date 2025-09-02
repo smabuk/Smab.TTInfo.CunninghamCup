@@ -18,4 +18,6 @@ public record Set(
 	public bool IsPlayerAWin => PlayerAScore > PlayerBScore;
 	public bool IsPlayerBWin => PlayerBScore > PlayerAScore;
 	public bool IsDraw => PlayerAScore == PlayerBScore;
+
+	public const Set Empty = default;
 }

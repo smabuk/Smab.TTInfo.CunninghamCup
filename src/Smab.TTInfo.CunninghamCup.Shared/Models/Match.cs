@@ -47,6 +47,7 @@ public record Match(
 		|| (PlayerA.IsBye && PlayerB.IsPlayer)
 		|| (PlayerB.IsBye && PlayerA.IsPlayer)
 		|| (PlayerB.IsBye && PlayerA.IsBye);
+	public bool IsNotCompleted => !IsCompleted;
 	public string? Notes => Result?.Notes;
 	public DateTime? ActualTime => Result?.Sets.Count > 0 ? DateTime.Now : ScheduledTime;
 }

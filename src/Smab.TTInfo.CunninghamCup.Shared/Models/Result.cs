@@ -23,6 +23,7 @@ public record Result(
 	public bool IsPlayerBWin => IsCompleted && PlayerBSets > PlayerASets;
 
 	public bool IsCompleted => PlayerASets >= 2 || PlayerBSets >= 2;
+	public bool IsNotCompleted => !IsCompleted;
 
 	public override string ToString()
 	{
