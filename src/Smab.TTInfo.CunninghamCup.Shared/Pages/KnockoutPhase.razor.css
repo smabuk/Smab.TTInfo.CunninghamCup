@@ -2,7 +2,6 @@
 	font-weight: bold;
 }
 
-
 @media (min-width: 641px) {
 	[data-winner]::before {
 		content: "";
@@ -42,6 +41,34 @@
 		#matches th:nth-child(1),
 		#matches td:nth-child(1) {
 			display: none;
+		}
+
+		#matches td:nth-child(2),
+		#matches td:nth-child(3) {
+			text-wrap: auto;
+		}
+
+		#matches td:nth-child(2),
+		#matches td:nth-child(3) {
+			text-wrap: auto;
+		}
+}
+
+@media (max-width: 1024px) {
+	table {
+		font-size: small;
+	}
+
+	#matches.table {
+		margin-bottom: 0;
+	}
+
+	#matches td {
+		text-wrap: nowrap;
+	}
+
+		#matches td.edit {
+			text-wrap: auto;
 		}
 
 		#matches td:nth-child(2),
