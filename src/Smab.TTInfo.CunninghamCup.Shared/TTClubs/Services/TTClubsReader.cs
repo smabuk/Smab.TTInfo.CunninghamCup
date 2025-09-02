@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿#pragma warning disable IDE1006 // Naming Styles
+using System.Globalization;
 
 using Microsoft.Extensions.Options;
 
@@ -68,3 +69,5 @@ public sealed partial class TTClubsReader : ITTClubsReader
 	/// </summary>
 	public bool UseTestFiles { get; set; }
 }
+
+#pragma warning restore IDE1006 // Naming Styles

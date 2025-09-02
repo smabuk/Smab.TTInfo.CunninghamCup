@@ -5,7 +5,7 @@ namespace Smab.TTInfo.CunninghamCup.Shared.Components;
 
 public class CustomValidation : ComponentBase
 {
-	private ValidationMessageStore? messageStore;
+	private ValidationMessageStore? _messageStore;
 
 	[CascadingParameter]
 	private EditContext? CurrentEditContext { get; set; }
@@ -20,19 +20,19 @@ public class CustomValidation : ComponentBase
 				$"inside an {nameof(EditForm)}.");
 		}
 
-		messageStore = new(CurrentEditContext);
+		_messageStore = new(CurrentEditContext);
 
 		CurrentEditContext.OnValidationRequested += (s, e) =>
-			messageStore?.Clear();
+			_messageStore?.Clear();
 		CurrentEditContext.OnFieldChanged += (s, e) =>
-			messageStore?.Clear(e.FieldIdentifier);
+			_messageStore?.Clear(e.FieldIdentifier);
 	}
 
 	public void DisplayErrors(Dictionary<string, List<string>> errors)
 	{
 		if (CurrentEditContext is not null) {
 			foreach ((string key, List<string> value) in errors) {
-				messageStore?.Add(CurrentEditContext.Field(key), value);
+				_messageStore?.Add(CurrentEditContext.Field(key), value);
 			}
 
 			CurrentEditContext.NotifyValidationStateChanged();
@@ -41,7 +41,7 @@ public class CustomValidation : ComponentBase
 
 	public void ClearErrors()
 	{
-		messageStore?.Clear();
+		_messageStore?.Clear();
 		CurrentEditContext?.NotifyValidationStateChanged();
 	}
 }
