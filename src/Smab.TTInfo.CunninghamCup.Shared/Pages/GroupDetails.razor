@@ -33,7 +33,7 @@
 						<CanEdit>
 							<a class="btn btn-primary " role="button" href="edit/group/@group.Name">@group.Name</a>
 							<span class="fs-6">@group.ScheduledTime?.ToShortTimeString()</span>
-							<button class="btn btn-primary btn-sm" @onclick="() => EditTimeOfGroup(groupNo)"><svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#pencil" /></svg></button>
+							<button class="btn btn-primary btn-sm" @onclick="() => EditTimeOfGroup(groupNo)"><svg class="bi" height="16" width="16" fill="currentColor"><use xlink:href="bootstrap-icons.svg#clock" /></svg></button>
 							@if (groupNo == editingScheduledTimeNo) {
 								<span>
 									<input type="time" class="form-control d-inline ms-2" @bind-value="editScheduledTime" />

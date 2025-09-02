@@ -73,8 +73,12 @@
 			errors.Add("Sets", ["There must be at least 2 sets entered"]);
 		} else if (sets.Count != 0) {
 			result = new(sets, editModel.Notes);
-			if (!result.IsCompleted) {
+			if (result.IsNotCompleted) {
 				errors.Add("SetsValid", ["Not a valid result, doesn't appear to be a completed result"]);
+			}
+
+			if (int.Abs(result.PlayerASets - result.PlayerBSets) is < 1 or > 2) {
+				errors.Add("Sets", [$"Difference in sets of {int.Abs(result.PlayerASets - result.PlayerBSets)} is not valid"]);
 			}
 
 			List<string> setErrors = [];
@@ -103,8 +107,6 @@
 		if (errors.Any()) {
 			customValidation?.DisplayErrors(errors);
 		} else {
-			//Logger.LogInformation("Submit called: Processing the form");
-			// Result result = new(sets, editModel.Notes);
 			Match updatedMatch = Match with { Result = result };
 			if (OnSave is not null) {
 				await OnSave.Invoke(updatedMatch);
@@ -113,7 +115,7 @@
 
 	}
 
-	private async Task Reset()
+	private void Reset()
 	{
 		customValidation?.ClearErrors();
 
