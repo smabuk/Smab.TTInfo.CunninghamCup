@@ -5,6 +5,9 @@ public static partial class TournamentExtensions
 	extension(Tournament tournament)
 	{
 
+		/// <summary>
+		/// Gets a value indicating whether all groups in the tournament have been completed.
+		/// </summary>
 		public bool GroupsCompleted => tournament.Groups.All(g => g.IsCompleted);
 
 
@@ -20,13 +23,10 @@ public static partial class TournamentExtensions
 		/// the tournament.</exception>
 		public (int PlayerAStart, int PlayerBStart) StartingHandicap(PlayerId playerAId, PlayerId playerBId)
 		{
-			if (tournament.Players.TryGetValue(playerAId, out Player? playerA) &&
-				tournament.Players.TryGetValue(playerBId, out Player? playerB))
-			{
-				return (playerA.StartingHandicap(playerB), playerB.StartingHandicap(playerA));
-			}
-
-			throw new ArgumentException("Player or opponent not found in tournament.");
+			return tournament.Players.TryGetValue(playerAId, out Player? playerA) &&
+				   tournament.Players.TryGetValue(playerBId, out Player? playerB)
+				? ((int PlayerAStart, int PlayerBStart))(playerA.StartingHandicap(playerB), playerB.StartingHandicap(playerA))
+				: throw new ArgumentException("Player or opponent not found in tournament.");
 		}
 	}
 }
